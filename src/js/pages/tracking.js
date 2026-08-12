@@ -1,4 +1,4 @@
-import { ROUTES } from '../config/app.js';
+import { APP_NAME, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import {
@@ -7,7 +7,6 @@ import {
 } from '../services/dailyLogService.js';
 import { upsertPeriodEntry } from '../services/cycleService.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { todayString } from '../utils/dates.js';
@@ -59,7 +58,10 @@ export async function renderTracking(container) {
       <p>${new Date(logDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
     </div>
 
-    ${renderDuckCompanion({ state: 'happy', message: 'Registre só o que quiser — sem pressão.', size: 'sm' })}
+    <div class="duck-companion">
+      <img src="/pato_nas_flores.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--wide" width="260" height="260" decoding="async" />
+      <p class="duck-message">Registre só o que quiser — sem pressão.</p>
+    </div>
 
     <form id="tracking-form" class="card-stack mt-5">
       ${renderCard('Menstruação', `

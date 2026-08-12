@@ -569,6 +569,10 @@
   display: block;
 }
 
+.bloom-mascot-img--wide {
+  width: min(280px, 85vw);
+}
+
 .duck-message {
   text-align: center;
   font-size: var(--font-size-sm);
