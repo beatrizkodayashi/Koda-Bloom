@@ -553,6 +553,14 @@
 .duck-companion.sm svg { width: 80px; height: 80px; }
 .duck-companion.lg svg { width: 160px; height: 160px; }
 
+.bloom-mascot-img {
+  width: 160px;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .duck-message {
   text-align: center;
   font-size: var(--font-size-sm);

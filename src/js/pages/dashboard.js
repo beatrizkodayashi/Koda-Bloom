@@ -1,4 +1,4 @@
-import { HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
+import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getLastPeriodStart, getCycleStarts } from '../services/cycleService.js';
@@ -10,7 +10,7 @@ import {
   hasEnoughDataForPrediction,
 } from '../services/cycleCalculator.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { renderDuckCompanion, duckStateForPhase, generateDailySummary } from '../components/duckCompanion.js';
+import { generateDailySummary } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
 import { formatDaysUntil, greetingName, phaseLabel } from '../utils/formatters.js';
 import { todayString } from '../utils/dates.js';
@@ -42,7 +42,6 @@ export async function renderDashboard(container) {
   const phase = cycleDay ? getCyclePhase(cycleDay, avgCycle, avgPeriod) : 'unknown';
   const daysUntil = lastPeriodStart ? daysUntilNextPeriod(lastPeriodStart, avgCycle, today) : null;
   const enoughData = hasEnoughDataForPrediction(cycleStarts);
-  const duckState = lastPeriodStart ? duckStateForPhase(phase) : 'empty';
 
   const symptoms = (todayLog?.daily_symptoms || []).map((s) => s.symptom.replace('_', ' '));
   const summary = cycleDay
@@ -55,7 +54,10 @@ export async function renderDashboard(container) {
       <p>${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
     </div>
 
-    ${renderDuckCompanion({ state: duckState, message: summary, size: 'md' })}
+    <div class="duck-companion">
+      <img src="/pato_comemorando.png" alt="${APP_NAME}" class="bloom-mascot-img" width="160" height="160" decoding="async" />
+      <p class="duck-message">${summary}</p>
+    </div>
 
     <div class="card-stack mt-5">
       ${cycleDay ? renderCard('Seu ciclo hoje', `
