@@ -8,9 +8,9 @@
   /* Paleta base */
   --palette-peach: #ffb28f;
   --palette-peach-light: #ffccbd;
-  --palette-cream: #fffef5;
-  --palette-cream-soft: rgba(255, 254, 248, 0.98);
-  --palette-cream-muted: rgba(255, 254, 248, 0.72);
+  --palette-cream: #fffbde;
+  --palette-cream-soft: #fffbde;
+  --palette-cream-muted: #fff6e0;
   --palette-pink: #ffadbb;
   --palette-lavender: #ffe3fc;
   --palette-brown: #6b4a42;
@@ -18,7 +18,7 @@
   --palette-brown-muted: rgba(107, 74, 66, 0.32);
 
   /* Superfícies , sem branco puro */
-  --color-background: #fffef8;
+  --color-background: #fff9eb;
   --color-surface: #ffe3fc;
   --color-surface-secondary: #ffccbd;
   --color-surface-cream: var(--palette-cream);
