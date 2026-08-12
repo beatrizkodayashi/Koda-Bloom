@@ -1,19 +1,16 @@
 import { ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
-import { getPeriodEntries, getCycleStarts } from '../services/cycleService.js';
+import { getPeriodEntries } from '../services/cycleService.js';
 import { getDailyLogs } from '../services/dailyLogService.js';
 import {
-  getCyclePhase,
   estimateFertileWindow,
-  estimateOvulation,
   predictNextPeriod,
 } from '../services/cycleCalculator.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { renderDuckCompanion } from '../components/duckCompanion.js';
+import { calculateStreak, formatStreakLabel } from '../utils/streak.js';
 import {
   formatDateString,
-  parseDateString,
   daysInMonth,
   getMonthYear,
   todayString,
@@ -44,12 +41,15 @@ export async function renderCalendar(container) {
     }
   }
 
+  const logDates = dailyLogs.map((l) => l.log_date);
+  const streak = calculateStreak(logDates, today);
+  const logDateSet = new Set(logDates);
+
   const avgCycle = profile?.average_cycle_length || 28;
   const avgPeriod = profile?.average_period_length || 5;
 
   function getDayClasses(dateStr) {
     const classes = [];
-    const dayNum = parseDateString(dateStr).getDate();
 
     periodEntries.forEach((entry) => {
       const start = entry.start_date;
@@ -71,7 +71,7 @@ export async function renderCalendar(container) {
       }
     }
 
-    if (dailyLogs.some((l) => l.log_date === dateStr)) classes.push('has-log');
+    if (logDateSet.has(dateStr)) classes.push('has-log');
     if (dateStr === today) classes.push('today');
 
     return classes.join(' ');
@@ -102,12 +102,17 @@ export async function renderCalendar(container) {
     for (let d = 1; d <= totalDays; d++) {
       const dateStr = formatDateString(new Date(viewYear, viewMonth, d));
       const classes = getDayClasses(dateStr);
-      html += `<button type="button" class="calendar-day ${classes}" data-date="${dateStr}" aria-label="${d} de ${monthNames[viewMonth]}">${d}</button>`;
+      const hasLog = logDateSet.has(dateStr);
+      html += `<button type="button" class="calendar-day ${classes}" data-date="${dateStr}" aria-label="${d} de ${monthNames[viewMonth]}${hasLog ? ', com registro' : ''}">
+        <span class="calendar-day-number">${d}</span>
+        ${hasLog ? '<i class="bi bi-heart-fill calendar-day-heart" aria-hidden="true"></i>' : ''}
+      </button>`;
     }
 
     html += '</div>';
     html += `
       <div class="calendar-legend">
+        <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
         <span class="legend-item"><span class="legend-dot" style="background: rgba(232,135,155,0.5)"></span> Menstruação</span>
         <span class="legend-item"><span class="legend-dot" style="background: rgba(232,135,155,0.2); border: 1px dashed var(--color-primary-light)"></span> Previsão</span>
         <span class="legend-item"><span class="legend-dot" style="background: rgba(168,213,186,0.4)"></span> Janela fértil</span>
@@ -118,29 +123,47 @@ export async function renderCalendar(container) {
   }
 
   const content = `
+    <div class="streak-banner card-bloom">
+      <div class="streak-banner-icon" aria-hidden="true">
+        <i class="bi bi-heart-fill"></i>
+      </div>
+      <div class="streak-banner-text">
+        <p class="streak-banner-count">${streak}</p>
+        <p class="streak-banner-label">${formatStreakLabel(streak)}</p>
+      </div>
+      <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm streak-banner-action" id="btn-streak-register">
+        Registrar hoje
+      </button>
+    </div>
+
     <div class="page-header">
       <h1>Calendário</h1>
       <p>Visualize seu ciclo, registros e estimativas.</p>
     </div>
-    <div class="card-bloom">${renderCalendarGrid()}</div>
+
+    <div class="card-bloom calendar-card">${renderCalendarGrid()}</div>
     <div id="day-detail" class="card-bloom mt-4" hidden></div>
   `;
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
 
+  container.querySelector('#btn-streak-register')?.addEventListener('click', () => {
+    navigate(ROUTES.REGISTRAR);
+  });
+
   function bindCalendarEvents() {
     container.querySelector('#prev-month')?.addEventListener('click', () => {
       viewMonth--;
       if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-      container.querySelector('.card-bloom').innerHTML = renderCalendarGrid();
+      container.querySelector('.calendar-card').innerHTML = renderCalendarGrid();
       bindCalendarEvents();
     });
 
     container.querySelector('#next-month')?.addEventListener('click', () => {
       viewMonth++;
       if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-      container.querySelector('.card-bloom').innerHTML = renderCalendarGrid();
+      container.querySelector('.calendar-card').innerHTML = renderCalendarGrid();
       bindCalendarEvents();
     });
 
@@ -154,7 +177,7 @@ export async function renderCalendar(container) {
         detail.hidden = false;
         detail.innerHTML = `
           <h3 class="h6">${new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
-          ${log ? `<p>Registro encontrado${log.mood ? ` — humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
+          ${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` — humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
           <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm mt-2" data-goto="${date}">Registrar neste dia</button>
         `;
         detail.querySelector('[data-goto]')?.addEventListener('click', () => {

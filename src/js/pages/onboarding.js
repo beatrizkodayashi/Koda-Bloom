@@ -224,7 +224,7 @@ export async function renderOnboarding(container) {
       });
 
       showToast('Onboarding concluído!', 'success');
-      navigate(ROUTES.HOJE);
+      navigate(ROUTES.CALENDARIO);
     } catch (err) {
       showToast(err.message || 'Erro ao salvar.', 'error');
     }

@@ -43,7 +43,7 @@ function registerRoutes() {
   registerRoute(ROUTES.RESET_PASSWORD, renderResetPassword);
   registerRoute(ROUTES.ONBOARDING, (c) => requireAuth(c, renderOnboarding));
 
-  registerRoute(ROUTES.APP, () => navigate(ROUTES.HOJE, true));
+  registerRoute(ROUTES.APP, () => navigate(ROUTES.CALENDARIO, true));
   registerRoute(ROUTES.HOJE, (c) => requireAuth(c, renderDashboard));
   registerRoute(ROUTES.CALENDARIO, (c) => requireAuth(c, renderCalendar));
   registerRoute(ROUTES.REGISTRAR, (c) => requireAuth(c, renderTracking));

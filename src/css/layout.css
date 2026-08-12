@@ -436,8 +436,10 @@
 .calendar-day {
   aspect-ratio: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   cursor: pointer;
@@ -445,8 +447,24 @@
   background: transparent;
   color: var(--color-text);
   position: relative;
-  min-height: 40px;
+  min-height: 44px;
+  padding: var(--space-1);
   transition: background var(--transition-fast);
+}
+
+.calendar-day-number {
+  line-height: 1;
+  font-weight: 500;
+}
+
+.calendar-day-heart {
+  font-size: 0.65rem;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.calendar-day.has-log {
+  background: rgba(232, 135, 155, 0.12);
 }
 
 .calendar-day:hover {
@@ -467,14 +485,9 @@
   background: var(--color-primary-light);
 }
 
-.calendar-day.has-log::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-primary);
+.calendar-legend-heart {
+  color: var(--color-accent);
+  font-size: 0.75rem;
 }
 
 .calendar-day.period { background: rgba(232, 135, 155, 0.35); }
@@ -503,34 +516,64 @@
   border-radius: var(--radius-sm);
 }
 
-/* Garden */
-.garden-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-3);
-  padding: var(--space-4);
+/* Streak banner */
+.streak-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  background: linear-gradient(135deg, var(--color-surface-secondary) 0%, #fff5f8 100%);
 }
 
-.garden-flower {
-  aspect-ratio: 1;
+.streak-banner-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-surface);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-accent);
   font-size: 1.5rem;
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-secondary);
-  opacity: 0.3;
-  transition: all var(--transition-base);
+  box-shadow: var(--shadow-soft);
+  flex-shrink: 0;
 }
 
-.garden-flower.unlocked {
-  opacity: 1;
-  animation: flower-bloom 0.5s ease;
+.streak-banner-text {
+  flex: 1;
+  min-width: 0;
 }
 
-@keyframes flower-bloom {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.streak-banner-count {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.streak-banner-label {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.streak-banner-action {
+  flex-shrink: 0;
+}
+
+@media (max-width: 400px) {
+  .streak-banner {
+    flex-wrap: wrap;
+  }
+
+  .streak-banner-action {
+    width: 100%;
+  }
+}
+
+.calendar-card {
+  overflow: hidden;
 }
 
 /* Onboarding */

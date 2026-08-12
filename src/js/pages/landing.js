@@ -44,11 +44,6 @@ export function renderLanding(container) {
             <p class="text-muted">Descubra tendências nos seus registros. Sem diagnóstico — apenas insights pessoais.</p>
           </div>
           <div class="card-bloom feature-card">
-            <i class="bi bi-flower2" aria-hidden="true"></i>
-            <h3>Meu Jardim</h3>
-            <p class="text-muted">Seu jardim virtual cresce junto com seu conhecimento. Positivo e sem punição.</p>
-          </div>
-          <div class="card-bloom feature-card">
             <i class="bi bi-shield-lock" aria-hidden="true"></i>
             <h3>Privacidade</h3>
             <p class="text-muted">Seus dados são seus. Proteção com autenticação e Row Level Security.</p>

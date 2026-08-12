@@ -11,7 +11,6 @@ export const TABLES = {
   PERIOD_ENTRIES: 'bloom_period_entries',
   DAILY_LOGS: 'bloom_daily_logs',
   DAILY_SYMPTOMS: 'bloom_daily_symptoms',
-  GARDEN_PROGRESS: 'bloom_garden_progress',
   ONBOARDING_PROGRESS: 'bloom_onboarding_progress',
 };
 

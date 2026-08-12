@@ -184,7 +184,6 @@ AS $$
 BEGIN
   INSERT INTO public.bloom_profiles (user_id) VALUES (NEW.id);
   INSERT INTO public.bloom_user_preferences (user_id) VALUES (NEW.id);
-  INSERT INTO public.bloom_garden_progress (user_id) VALUES (NEW.id);
   RETURN NEW;
 END;
 $$;

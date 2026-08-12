@@ -25,8 +25,8 @@ export const ROUTES = {
 };
 
 export const NAV_ITEMS = [
-  { path: '/app/hoje', label: 'Hoje', icon: 'bi-sun' },
   { path: '/app/calendario', label: 'Calendário', icon: 'bi-calendar3' },
+  { path: '/app/hoje', label: 'Hoje', icon: 'bi-sun' },
   { path: '/app/registrar', label: 'Registrar', icon: 'bi-plus-circle-fill', highlight: true },
   { path: '/app/insights', label: 'Insights', icon: 'bi-graph-up' },
   { path: '/app/perfil', label: 'Perfil', icon: 'bi-person' },

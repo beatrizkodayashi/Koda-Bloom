@@ -3,7 +3,6 @@ import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getLastPeriodStart, getCycleStarts } from '../services/cycleService.js';
 import { getDailyLog } from '../services/dailyLogService.js';
-import { getGardenProgress, renderGarden, getGardenMessage } from '../services/gardenService.js';
 import {
   getCycleDay,
   getCyclePhase,
@@ -23,15 +22,13 @@ export async function renderDashboard(container) {
   let lastPeriodStart = null;
   let cycleStarts = [];
   let todayLog = null;
-  let garden = { flowers_unlocked: 0 };
 
   if (isAuthConfigured() && user) {
     try {
-      [lastPeriodStart, cycleStarts, todayLog, garden] = await Promise.all([
+      [lastPeriodStart, cycleStarts, todayLog] = await Promise.all([
         getLastPeriodStart(user.id),
         getCycleStarts(user.id),
         getDailyLog(user.id, today),
-        getGardenProgress(user.id),
       ]);
     } catch (err) {
       console.error(err);
@@ -77,12 +74,6 @@ export async function renderDashboard(container) {
         <button type="button" class="btn-bloom btn-bloom-primary" id="btn-first-log">Registrar menstruação</button>
       </div>
     `}
-
-    <div class="card-bloom mt-4">
-      <h3 class="h6 mb-3"><i class="bi bi-flower2" aria-hidden="true"></i> Meu Jardim</h3>
-      <div class="garden-grid">${renderGarden(garden.flowers_unlocked || 0)}</div>
-      <p class="text-muted text-center mt-2 mb-0"><small>${getGardenMessage(garden.flowers_unlocked || 0)}</small></p>
-    </div>
 
     <div class="d-flex gap-3 mt-4">
       <button type="button" class="btn-bloom btn-bloom-primary flex-fill" id="btn-checkin">

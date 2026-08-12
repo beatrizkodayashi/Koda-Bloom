@@ -6,7 +6,6 @@ import {
   getDailyLog, saveDailyLog, getPreferences, getDefaultPreferences,
 } from '../services/dailyLogService.js';
 import { upsertPeriodEntry } from '../services/cycleService.js';
-import { updateGardenOnLog } from '../services/gardenService.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { showToast } from '../components/toast.js';
@@ -185,9 +184,8 @@ export async function renderTracking(container) {
         [...selectedSymptoms]
       );
 
-      await updateGardenOnLog(user.id);
       showToast('Registro salvo!', 'success');
-      navigate(ROUTES.HOJE);
+      navigate(ROUTES.CALENDARIO);
     } catch (err) {
       showToast(err.message || 'Erro ao salvar.', 'error');
     }
