@@ -5,7 +5,6 @@ import { getDailyLogs } from '../services/dailyLogService.js';
 import { buildInsights, buildPatterns } from '../services/insightsService.js';
 import { getCyclePhase, getCycleDay } from '../services/cycleCalculator.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
 import { formatDays, phaseLabel } from '../utils/formatters.js';
 import { isAuthConfigured } from '../services/authService.js';
@@ -98,7 +97,10 @@ export async function renderInsights(container) {
         `).join('')}
       `) : renderCard('', `
         <div class="empty-state py-4">
-          ${renderDuckCompanion({ state: 'empty', message: 'Registre mais ciclos para ver insights detalhados.' })}
+          <div class="duck-companion">
+            <img src="/pato_padrao.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--empty" width="120" height="120" decoding="async" />
+            <p class="mascot-caption">Registre mais ciclos para ver insights detalhados.</p>
+          </div>
         </div>
       `, { plain: true, className: 'card-bloom--plain' })}
     </div>
