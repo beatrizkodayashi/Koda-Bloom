@@ -380,6 +380,55 @@
   border-color: var(--color-error);
 }
 
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+
+.password-field-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  transform: translateY(-50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.password-field-toggle:hover {
+  color: var(--color-accent-heart);
+  background: rgba(255, 227, 252, 0.55);
+}
+
+.password-field-toggle:focus-visible {
+  outline: none;
+  color: var(--color-accent-heart);
+  box-shadow: 0 0 0 3px rgba(255, 173, 187, 0.35);
+}
+
+.password-field-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  display: block;
+}
+
 .form-error {
   font-size: var(--font-size-sm);
   color: var(--color-error);

@@ -4,6 +4,7 @@ import { signIn, signUp, resetPassword, isAuthConfigured } from '../services/aut
 import { showToast } from '../components/toast.js';
 import { isValidEmail, isValidPassword } from '../utils/validators.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
+import { renderPasswordField, mountPasswordToggles } from '../components/passwordField.js';
 
 function renderAuthLayout(title, subtitle, formHtml, linksHtml, duckOptions = {}) {
   return `
@@ -28,10 +29,11 @@ export function renderLogin(container) {
         <label for="email">E-mail</label>
         <input type="email" id="email" name="email" autocomplete="email" required />
       </div>
-      <div class="form-bloom">
-        <label for="password">Senha</label>
-        <input type="password" id="password" name="password" autocomplete="current-password" required />
-      </div>
+      ${renderPasswordField({
+        id: 'password',
+        label: 'Senha',
+        autocomplete: 'current-password',
+      })}
       <div id="form-error" class="form-error" role="alert" hidden></div>
       <button type="submit" class="btn-bloom btn-bloom-primary w-100">Entrar</button>
     </form>`,
@@ -42,6 +44,8 @@ export function renderLogin(container) {
     </div>`,
     { message: 'Oi! Que bom ter você de volta.' }
   );
+
+  mountPasswordToggles(container);
 
   container.querySelector('#link-reset')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.RESET_PASSWORD); });
   container.querySelector('#link-signup')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.SIGNUP); });
@@ -86,14 +90,18 @@ export function renderSignup(container) {
         <label for="email">E-mail</label>
         <input type="email" id="email" name="email" autocomplete="email" required />
       </div>
-      <div class="form-bloom">
-        <label for="password">Senha (mínimo 8 caracteres)</label>
-        <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8" />
-      </div>
-      <div class="form-bloom">
-        <label for="password-confirm">Confirmar senha</label>
-        <input type="password" id="password-confirm" name="password-confirm" autocomplete="new-password" required />
-      </div>
+      ${renderPasswordField({
+        id: 'password',
+        label: 'Senha (mínimo 8 caracteres)',
+        autocomplete: 'new-password',
+        minlength: 8,
+      })}
+      ${renderPasswordField({
+        id: 'password-confirm',
+        name: 'password-confirm',
+        label: 'Confirmar senha',
+        autocomplete: 'new-password',
+      })}
       <div id="form-error" class="form-error" role="alert" hidden></div>
       <button type="submit" class="btn-bloom btn-bloom-primary w-100">Criar conta</button>
     </form>`,
