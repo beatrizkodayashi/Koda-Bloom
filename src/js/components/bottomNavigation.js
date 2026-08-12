@@ -57,7 +57,7 @@ export function renderSidebar() {
 
   const header = document.createElement('div');
   header.className = 'card-bloom-header sidebar-card-header';
-  header.innerHTML = renderBrandLogo('bloom-logo--sidebar') + CARD_DOTS;
+  header.innerHTML = renderBrandLogo('bloom-logo--sidebar');
 
   const body = document.createElement('div');
   body.className = 'card-bloom-body sidebar-card-body';
