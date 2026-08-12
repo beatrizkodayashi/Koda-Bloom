@@ -47,10 +47,47 @@ body {
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
+  position: relative;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--polka-bg);
+  background-image:
+    radial-gradient(
+      circle,
+      var(--polka-dot) var(--polka-dot-size),
+      transparent calc(var(--polka-dot-size) + 0.5px)
+    ),
+    radial-gradient(
+      circle,
+      var(--polka-dot) var(--polka-dot-size),
+      transparent calc(var(--polka-dot-size) + 0.5px)
+    );
+  background-size: var(--polka-spacing) var(--polka-spacing);
+  background-position:
+    0 0,
+    calc(var(--polka-spacing) / 2) calc(var(--polka-spacing) / 2);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, var(--polka-fade-max)) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, var(--polka-fade-max)) 100%
+  );
 }
 
 #app {
   min-height: 100dvh;
+  position: relative;
+  z-index: 1;
 }
 
 img,
@@ -93,13 +130,6 @@ a:hover {
 
 .gradient-bg {
   background: transparent;
-}
-
-.floral-pattern {
-  background-image:
-    radial-gradient(circle at 15% 85%, rgba(255, 173, 187, 0.35) 0%, transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(255, 227, 252, 0.5) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(255, 178, 143, 0.15) 0%, transparent 55%);
 }
 
 .health-disclaimer {
