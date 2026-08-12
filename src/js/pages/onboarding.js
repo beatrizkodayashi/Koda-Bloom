@@ -43,7 +43,7 @@ function renderStepContent() {
     case 'welcome':
       return `
         ${renderDuckCompanion({ state: 'welcome', size: 'lg' })}
-        <h2>Olá! Eu sou a ${APP_NAME}, sua companheira.</h2>
+        <h2>Olá! Eu sou o ${APP_NAME}, seu companheiro.</h2>
         <p class="text-muted">Vou te ajudar a entender seu ciclo com carinho. Vamos configurar algumas coisas juntas?</p>
         <div class="form-bloom mt-4">
           <label for="display_name">Como posso te chamar?</label>

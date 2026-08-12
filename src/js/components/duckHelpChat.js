@@ -1,6 +1,5 @@
 import { navigate } from '../router.js';
 import { APP_NAME } from '../config/app.js';
-import { renderDuckCompanion } from './duckCompanion.js';
 import { scrollElement } from '../utils/scroll.js';
 import {
   getWelcomeMessage,
@@ -28,7 +27,11 @@ function formatAnswerHtml(text) {
     .replace(/\n/g, '<br>');
 }
 
-function appendMessage(role, html, options = {}) {
+function renderChatAvatar() {
+  return '<img src="/favicon.png" alt="" class="duck-help-message-icon" width="40" height="40" decoding="async" />';
+}
+
+function appendMessage(role, html) {
   if (!messagesEl) return;
 
   const bubble = document.createElement('div');
@@ -36,7 +39,7 @@ function appendMessage(role, html, options = {}) {
 
   if (role === 'duck') {
     bubble.innerHTML = `
-      <div class="duck-help-message-avatar" aria-hidden="true">${renderDuckCompanion({ state: options.duckState || 'happy', size: 'sm', message: '' })}</div>
+      <div class="duck-help-message-avatar" aria-hidden="true">${renderChatAvatar()}</div>
       <div class="duck-help-message-bubble">${html}</div>
     `;
   } else {
@@ -66,7 +69,7 @@ function renderSuggestions() {
 function showAnswer(id) {
   const item = getAnswerById(id);
   if (!item) {
-    appendMessage('duck', formatAnswerHtml(getFallbackMessage()), { duckState: 'thinking' });
+    appendMessage('duck', formatAnswerHtml(getFallbackMessage()));
     return;
   }
 
@@ -76,7 +79,7 @@ function showAnswer(id) {
     answerHtml += `<br><br><button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm duck-help-action" data-route="${item.action.route}">${escapeHtml(item.action.label)}</button>`;
   }
 
-  appendMessage('duck', answerHtml, { duckState: 'happy' });
+  appendMessage('duck', answerHtml);
 
   const actionBtn = messagesEl?.querySelector('.duck-help-message:last-child .duck-help-action');
   actionBtn?.addEventListener('click', () => {
@@ -102,7 +105,7 @@ function handleUserInput(text) {
     return;
   }
 
-  appendMessage('duck', formatAnswerHtml(getFallbackMessage()), { duckState: 'thinking' });
+  appendMessage('duck', formatAnswerHtml(getFallbackMessage()));
 }
 
 function openPanel() {
@@ -113,7 +116,7 @@ function openPanel() {
   root?.querySelector('.duck-help-fab')?.setAttribute('aria-expanded', 'true');
 
   if (!panel.dataset.initialized) {
-    appendMessage('duck', formatAnswerHtml(getWelcomeMessage()), { duckState: 'welcome' });
+    appendMessage('duck', formatAnswerHtml(getWelcomeMessage()));
     renderSuggestions();
     panel.dataset.initialized = 'true';
   }
@@ -139,7 +142,7 @@ function buildUi() {
   root.id = 'duck-help-root';
   root.className = 'duck-help-root';
   root.innerHTML = `
-    <button type="button" class="duck-help-fab" aria-label="Abrir ajuda da ${APP_NAME}" aria-expanded="false" aria-controls="duck-help-panel">
+    <button type="button" class="duck-help-fab" aria-label="Abrir ajuda do ${APP_NAME}" aria-expanded="false" aria-controls="duck-help-panel">
       <img src="/favicon.png" alt="" class="duck-help-fab-icon" width="52" height="52" decoding="async" />
       <span class="duck-help-fab-badge" aria-hidden="true">?</span>
     </button>

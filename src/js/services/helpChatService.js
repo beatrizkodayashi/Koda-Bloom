@@ -103,7 +103,7 @@ Verifique spam. Em produção, a URL do app precisa estar nas **Redirect URLs** 
 ];
 
 const WELCOME_MESSAGE =
-  `Oi! Sou a ${APP_NAME}, sua assistente por aqui. Escolha uma sugestão abaixo ou descreva sua dúvida — login, assinatura, erros e mais.`;
+  `Oi! Sou o ${APP_NAME}, seu assistente por aqui. Escolha uma sugestão abaixo ou descreva sua dúvida — login, assinatura, erros e mais.`;
 
 const FALLBACK_MESSAGE =
   'Não encontrei uma resposta exata, mas posso ajudar com login, cadastro, assinatura, erros ou uso do calendário. Tente uma das sugestões abaixo.';
