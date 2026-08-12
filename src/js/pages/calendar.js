@@ -1,4 +1,4 @@
-import { ROUTES } from '../config/app.js';
+import { ROUTES, APP_NAME } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getPeriodEntries } from '../services/cycleService.js';
@@ -8,7 +8,7 @@ import {
   predictNextPeriod,
 } from '../services/cycleCalculator.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { calculateStreak, formatStreakLabel } from '../utils/streak.js';
+import { calculateStreak } from '../utils/streak.js';
 import {
   formatDateString,
   daysInMonth,
@@ -18,6 +18,7 @@ import {
 } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
 import { renderCard } from '../components/card.js';
+import { renderStreakCard } from '../components/streakCard.js';
 
 let viewYear, viewMonth;
 
@@ -131,17 +132,11 @@ export async function renderCalendar(container) {
         <h1>Calendário</h1>
         <p>Visualize seu ciclo, registros e estimativas.</p>
       </div>
-      <div class="calendar-streak">
-        <div class="calendar-streak-icon" aria-hidden="true">
-          <i class="bi bi-heart-fill"></i>
+      <div class="calendar-hero">
+        <div class="calendar-hero-mascot">
+          <img src="/pato_calendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar-hero" width="160" height="160" decoding="async" />
         </div>
-        <div class="calendar-streak-text">
-          <span class="calendar-streak-count">${streak}</span>
-          <span class="calendar-streak-label">${formatStreakLabel(streak)}</span>
-        </div>
-        <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm calendar-streak-action" id="btn-streak-register">
-          Registrar hoje
-        </button>
+        ${renderStreakCard({ streak })}
       </div>
     </div>
 
