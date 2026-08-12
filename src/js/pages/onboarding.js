@@ -1,4 +1,4 @@
-import { DEFAULTS, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
+import { APP_NAME, DEFAULTS, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { upsertProfile, upsertPeriodEntry, saveOnboardingProgress } from '../services/cycleService.js';
@@ -43,7 +43,7 @@ function renderStepContent() {
     case 'welcome':
       return `
         ${renderDuckCompanion({ state: 'welcome', size: 'lg' })}
-        <h2>Olá! Eu sou seu patinho companheiro.</h2>
+        <h2>Olá! Eu sou a ${APP_NAME}, sua companheira.</h2>
         <p class="text-muted">Vou te ajudar a entender seu ciclo com carinho. Vamos configurar algumas coisas juntas?</p>
         <div class="form-bloom mt-4">
           <label for="display_name">Como posso te chamar?</label>

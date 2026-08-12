@@ -50,8 +50,8 @@ export function renderLanding(container) {
       </section>
 
       <section class="landing-section landing-section-highlight">
-        <h2>Seu patinho te acompanha</h2>
-        <p class="text-center text-muted mb-4">Um mascote fofo e elegante que celebra seus registros e te dá dicas gentis.</p>
+        <h2>${APP_NAME} te acompanha</h2>
+        <p class="text-center text-muted mb-4">${APP_NAME} celebra seus registros e te dá dicas gentis, com carinho e leveza.</p>
         <div class="d-flex justify-content-center">${renderDuckCompanion({ state: 'flower', size: 'lg' })}</div>
       </section>
 

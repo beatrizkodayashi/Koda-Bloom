@@ -1,4 +1,4 @@
-import { ROUTES } from '../config/app.js';
+import { APP_NAME, ROUTES } from '../config/app.js';
 
 /**
  * Base de conhecimento do chat de ajuda — respostas locais, sem IA externa.
@@ -103,7 +103,7 @@ Verifique spam. Em produção, a URL do app precisa estar nas **Redirect URLs** 
 ];
 
 const WELCOME_MESSAGE =
-  'Oi! Sou seu patinho de ajuda. Escolha uma sugestão abaixo ou descreva sua dúvida — login, assinatura, erros e mais.';
+  `Oi! Sou a ${APP_NAME}, sua assistente por aqui. Escolha uma sugestão abaixo ou descreva sua dúvida — login, assinatura, erros e mais.`;
 
 const FALLBACK_MESSAGE =
   'Não encontrei uma resposta exata, mas posso ajudar com login, cadastro, assinatura, erros ou uso do calendário. Tente uma das sugestões abaixo.';

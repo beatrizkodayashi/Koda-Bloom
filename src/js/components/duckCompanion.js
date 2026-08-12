@@ -1,6 +1,8 @@
 /**
- * Duck Companion — mascote centralizado com estados SVG
+ * Duck Companion — mascote Bloom (estados SVG)
  */
+
+import { APP_NAME } from '../config/app.js';
 
 const DUCK_STATES = {
   welcome: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -111,7 +113,7 @@ export function renderDuckCompanion(options = {}) {
   const sizeClass = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : '';
 
   return `
-    <div class="duck-companion ${sizeClass} ${state === 'celebrating' ? 'celebrating' : ''} ${className}" role="img" aria-label="Mascote patinho">
+    <div class="duck-companion ${sizeClass} ${state === 'celebrating' ? 'celebrating' : ''} ${className}" role="img" aria-label="${APP_NAME}, mascote do app">
       ${duckState}
       ${duckMessage ? `<p class="duck-message">${duckMessage}</p>` : ''}
     </div>
