@@ -8,15 +8,20 @@
   /* Paleta base */
   --palette-peach: #ffb28f;
   --palette-peach-light: #ffccbd;
-  --palette-cream: #fffbde;
+  --palette-cream: #fffef5;
+  --palette-cream-soft: rgba(255, 254, 248, 0.98);
+  --palette-cream-muted: rgba(255, 254, 248, 0.72);
   --palette-pink: #ffadbb;
   --palette-lavender: #ffe3fc;
+  --palette-brown: #6b4a42;
+  --palette-brown-soft: rgba(107, 74, 66, 0.52);
+  --palette-brown-muted: rgba(107, 74, 66, 0.32);
 
   /* Superfícies — sem branco puro */
-  --color-background: #fffbde;
+  --color-background: #fffef8;
   --color-surface: #ffe3fc;
   --color-surface-secondary: #ffccbd;
-  --color-surface-cream: #fffbde;
+  --color-surface-cream: var(--palette-cream);
   --color-surface-peach: #ffb28f;
   --color-surface-rose: #ffadbb;
 
@@ -34,8 +39,8 @@
   --color-text-inverse: #4a3238;
 
   /* Bordas */
-  --color-border: rgba(255, 173, 187, 0.45);
-  --color-border-strong: rgba(255, 178, 143, 0.55);
+  --color-border: var(--palette-brown-muted);
+  --color-border-strong: var(--palette-brown-soft);
 
   /* Semânticas */
   --color-success: #7cb88a;
@@ -85,7 +90,18 @@
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
+  --radius-card: 1.375rem;
   --radius-full: 9999px;
+
+  /* Cards — estilo janela pastel (borda = pill do streak) */
+  --card-outline: var(--palette-brown-soft);
+  --card-outline-soft: var(--palette-brown-soft);
+  --card-body-bg: var(--palette-cream-soft);
+  --card-header-bg: #ffadbb;
+  --card-shadow-color: rgba(255, 204, 189, 0.95);
+  --card-shadow: 7px 7px 0 0 var(--card-shadow-color);
+  --card-shadow-hover: 9px 9px 0 0 rgba(255, 178, 143, 0.85);
+  --card-gap: var(--space-6);
 
   /* Sombras — tom rosado */
   --shadow-sm: 0 1px 4px rgba(255, 173, 187, 0.18);

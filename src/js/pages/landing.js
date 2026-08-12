@@ -1,8 +1,24 @@
 import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
+import { renderCard } from '../components/card.js';
+
+const FEATURES = [
+  { title: 'Calendário inteligente', icon: 'bi-calendar-heart', text: 'Visualize menstruação, previsões e janela fértil estimada em um calendário claro.' },
+  { title: 'Check-in diário', icon: 'bi-emoji-smile', text: 'Registre humor, sintomas e bem-estar em segundos. Só o que importa para você.' },
+  { title: 'Seus padrões', icon: 'bi-graph-up-arrow', text: 'Descubra tendências nos seus registros. Sem diagnóstico — apenas insights pessoais.' },
+  { title: 'Privacidade', icon: 'bi-shield-lock', text: 'Seus dados são seus. Proteção com autenticação e Row Level Security.' },
+  { title: 'Mobile first', icon: 'bi-phone', text: 'Feito para o celular, adaptado para desktop. Instale como app quando quiser.' },
+];
 
 export function renderLanding(container) {
+  const featureCards = FEATURES.map((f) =>
+    renderCard(f.title, `
+      <i class="bi ${f.icon} feature-card-icon" aria-hidden="true"></i>
+      <p class="text-muted mb-0">${f.text}</p>
+    `, { className: 'feature-card' })
+  ).join('');
+
   container.innerHTML = `
     <div class="landing-page gradient-bg floral-pattern">
       <header class="landing-nav">
@@ -28,31 +44,7 @@ export function renderLanding(container) {
       <section class="landing-section">
         <h2>Como funciona</h2>
         <div class="feature-grid">
-          <div class="card-bloom feature-card">
-            <i class="bi bi-calendar-heart" aria-hidden="true"></i>
-            <h3>Calendário inteligente</h3>
-            <p class="text-muted">Visualize menstruação, previsões e janela fértil estimada em um calendário claro.</p>
-          </div>
-          <div class="card-bloom feature-card">
-            <i class="bi bi-emoji-smile" aria-hidden="true"></i>
-            <h3>Check-in diário</h3>
-            <p class="text-muted">Registre humor, sintomas e bem-estar em segundos. Só o que importa para você.</p>
-          </div>
-          <div class="card-bloom feature-card">
-            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
-            <h3>Seus padrões</h3>
-            <p class="text-muted">Descubra tendências nos seus registros. Sem diagnóstico — apenas insights pessoais.</p>
-          </div>
-          <div class="card-bloom feature-card">
-            <i class="bi bi-shield-lock" aria-hidden="true"></i>
-            <h3>Privacidade</h3>
-            <p class="text-muted">Seus dados são seus. Proteção com autenticação e Row Level Security.</p>
-          </div>
-          <div class="card-bloom feature-card">
-            <i class="bi bi-phone" aria-hidden="true"></i>
-            <h3>Mobile first</h3>
-            <p class="text-muted">Feito para o celular, adaptado para desktop. Instale como app quando quiser.</p>
-          </div>
+          ${featureCards}
         </div>
       </section>
 

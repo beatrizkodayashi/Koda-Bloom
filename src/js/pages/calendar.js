@@ -17,6 +17,7 @@ import {
   addDays,
 } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
+import { renderCard } from '../components/card.js';
 
 let viewYear, viewMonth;
 
@@ -85,9 +86,9 @@ export async function renderCalendar(container) {
 
     let html = `
       <div class="calendar-header">
-        <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="prev-month" aria-label="Mês anterior"><i class="bi bi-chevron-left"></i></button>
-        <h2 class="h5 mb-0">${monthNames[viewMonth]} ${viewYear}</h2>
-        <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="next-month" aria-label="Próximo mês"><i class="bi bi-chevron-right"></i></button>
+        <button type="button" class="calendar-nav-btn" id="prev-month" aria-label="Mês anterior"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+        <h2 class="calendar-month-title">${monthNames[viewMonth]} ${viewYear}</h2>
+        <button type="button" class="calendar-nav-btn" id="next-month" aria-label="Próximo mês"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
       <div class="calendar-grid">
         ${['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map((d) => `<div class="calendar-weekday">${d}</div>`).join('')}
@@ -105,7 +106,7 @@ export async function renderCalendar(container) {
       const hasLog = logDateSet.has(dateStr);
       html += `<button type="button" class="calendar-day ${classes}" data-date="${dateStr}" aria-label="${d} de ${monthNames[viewMonth]}${hasLog ? ', com registro' : ''}">
         <span class="calendar-day-number">${d}</span>
-        ${hasLog ? '<i class="bi bi-heart-fill calendar-day-heart" aria-hidden="true"></i>' : ''}
+        <span class="calendar-day-heart-wrap" aria-hidden="true">${hasLog ? '<i class="bi bi-heart-fill calendar-day-heart"></i>' : ''}</span>
       </button>`;
     }
 
@@ -123,26 +124,27 @@ export async function renderCalendar(container) {
   }
 
   const content = `
-    <div class="streak-banner card-bloom">
-      <div class="streak-banner-icon" aria-hidden="true">
-        <i class="bi bi-heart-fill"></i>
+    <div class="page-header page-header--calendar">
+      <div class="page-header-copy">
+        <h1>Calendário</h1>
+        <p>Visualize seu ciclo, registros e estimativas.</p>
       </div>
-      <div class="streak-banner-text">
-        <p class="streak-banner-count">${streak}</p>
-        <p class="streak-banner-label">${formatStreakLabel(streak)}</p>
+      <div class="calendar-streak">
+        <div class="calendar-streak-icon" aria-hidden="true">
+          <i class="bi bi-heart-fill"></i>
+        </div>
+        <div class="calendar-streak-text">
+          <span class="calendar-streak-count">${streak}</span>
+          <span class="calendar-streak-label">${formatStreakLabel(streak)}</span>
+        </div>
+        <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm calendar-streak-action" id="btn-streak-register">
+          Registrar hoje
+        </button>
       </div>
-      <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm streak-banner-action" id="btn-streak-register">
-        Registrar hoje
-      </button>
     </div>
 
-    <div class="page-header">
-      <h1>Calendário</h1>
-      <p>Visualize seu ciclo, registros e estimativas.</p>
-    </div>
-
-    <div class="card-bloom calendar-card">${renderCalendarGrid()}</div>
-    <div id="day-detail" class="card-bloom mt-4" hidden></div>
+    ${renderCard('Seu mês', renderCalendarGrid(), { className: 'calendar-card' })}
+    <div id="day-detail" hidden></div>
   `;
 
   container.innerHTML = renderAppShell(content);
@@ -156,14 +158,14 @@ export async function renderCalendar(container) {
     container.querySelector('#prev-month')?.addEventListener('click', () => {
       viewMonth--;
       if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-      container.querySelector('.calendar-card').innerHTML = renderCalendarGrid();
+      container.querySelector('.calendar-card .card-bloom-body').innerHTML = renderCalendarGrid();
       bindCalendarEvents();
     });
 
     container.querySelector('#next-month')?.addEventListener('click', () => {
       viewMonth++;
       if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-      container.querySelector('.calendar-card').innerHTML = renderCalendarGrid();
+      container.querySelector('.calendar-card .card-bloom-body').innerHTML = renderCalendarGrid();
       bindCalendarEvents();
     });
 
@@ -175,11 +177,11 @@ export async function renderCalendar(container) {
         const log = dailyLogs.find((l) => l.log_date === date);
         const detail = container.querySelector('#day-detail');
         detail.hidden = false;
-        detail.innerHTML = `
-          <h3 class="h6">${new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
-          ${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` — humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
-          <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm mt-2" data-goto="${date}">Registrar neste dia</button>
-        `;
+        detail.innerHTML = renderCard(
+          new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }),
+          `${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` — humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
+          <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm mt-2" data-goto="${date}">Registrar neste dia</button>`
+        );
         detail.querySelector('[data-goto]')?.addEventListener('click', () => {
           sessionStorage.setItem('bloom_log_date', date);
           navigate(ROUTES.REGISTRAR);

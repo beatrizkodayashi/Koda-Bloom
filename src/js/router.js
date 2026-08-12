@@ -2,6 +2,9 @@
  * Roteador client-side com History API
  */
 
+import { renderRouteSkeleton } from './components/skeleton.js';
+import { scrollToTop } from './utils/scroll.js';
+
 const routes = new Map();
 let currentCleanup = null;
 
@@ -51,13 +54,14 @@ export async function renderRoute(path = location.pathname) {
     return;
   }
 
-  app.innerHTML = '<div class="loading-screen"><div class="spinner-bloom"></div><p>Carregando...</p></div>';
+  app.innerHTML = renderRouteSkeleton(path);
 
   try {
     const result = await matched.handler(app, path);
     if (typeof result === 'function') {
       currentCleanup = result;
     }
+    scrollToTop();
   } catch (err) {
     console.error(err);
     app.innerHTML = `<div class="empty-state"><h3>Algo deu errado</h3><p>${err.message}</p></div>`;

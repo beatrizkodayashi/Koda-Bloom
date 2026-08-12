@@ -128,7 +128,7 @@ export async function renderOnboarding(container) {
   function render() {
     container.innerHTML = `
       <div class="auth-page">
-        <div class="auth-card card-bloom" style="max-width: 480px;">
+        <div class="auth-card card-bloom card-bloom--plain onboarding-card" style="max-width: 480px;">
           <div class="onboarding-progress">${renderProgress()}</div>
           <div id="step-content">${renderStepContent()}</div>
           <div class="onboarding-actions">

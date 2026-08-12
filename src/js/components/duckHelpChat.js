@@ -1,5 +1,6 @@
 import { navigate } from '../router.js';
 import { renderDuckCompanion } from './duckCompanion.js';
+import { scrollElement } from '../utils/scroll.js';
 import {
   getWelcomeMessage,
   getSuggestedQuestions,
@@ -42,7 +43,7 @@ function appendMessage(role, html, options = {}) {
   }
 
   messagesEl.appendChild(bubble);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  scrollElement(messagesEl);
 }
 
 function renderSuggestions() {

@@ -11,6 +11,7 @@ import {
 } from '../services/cycleCalculator.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderDuckCompanion, duckStateForPhase, generateDailySummary } from '../components/duckCompanion.js';
+import { renderCard } from '../components/card.js';
 import { formatDaysUntil, greetingName, phaseLabel } from '../utils/formatters.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
@@ -56,26 +57,21 @@ export async function renderDashboard(container) {
 
     ${renderDuckCompanion({ state: duckState, message: summary, size: 'md' })}
 
-    ${cycleDay ? `
-      <div class="card-bloom card-bloom-soft mt-4">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${phaseLabel(phase)}</span>
-            <h2 class="mt-2 mb-1">Dia ${cycleDay} do seu ciclo</h2>
-            ${daysUntil != null ? `<p class="text-muted mb-0">Próximo período estimado ${formatDaysUntil(daysUntil)}.</p>` : ''}
-          </div>
-        </div>
+    <div class="card-stack mt-5">
+      ${cycleDay ? renderCard('Seu ciclo hoje', `
+        <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${phaseLabel(phase)}</span>
+        <h2 class="mt-3 mb-2">Dia ${cycleDay} do seu ciclo</h2>
+        ${daysUntil != null ? `<p class="text-muted mb-0">Próximo período estimado ${formatDaysUntil(daysUntil)}.</p>` : ''}
         ${!enoughData ? '<p class="text-muted mt-3 mb-0"><small>Ainda precisamos de mais registros para melhorar suas estimativas.</small></p>' : ''}
-      </div>
-    ` : `
-      <div class="empty-state card-bloom mt-4">
-        <h3>Primeiro registro</h3>
-        <p>Vamos registrar seu ciclo para começar as estimativas.</p>
-        <button type="button" class="btn-bloom btn-bloom-primary" id="btn-first-log">Registrar menstruação</button>
-      </div>
-    `}
+      `, { className: 'card-bloom-soft' }) : renderCard('Primeiro registro', `
+        <div class="empty-state py-2">
+          <p class="text-muted">Vamos registrar seu ciclo para começar as estimativas.</p>
+          <button type="button" class="btn-bloom btn-bloom-primary mt-3" id="btn-first-log">Registrar menstruação</button>
+        </div>
+      `)}
+    </div>
 
-    <div class="d-flex gap-3 mt-4">
+    <div class="d-flex gap-3 mt-5">
       <button type="button" class="btn-bloom btn-bloom-primary flex-fill" id="btn-checkin">
         <i class="bi bi-plus-circle" aria-hidden="true"></i> Check-in de hoje
       </button>

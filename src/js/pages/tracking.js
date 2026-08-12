@@ -8,6 +8,7 @@ import {
 import { upsertPeriodEntry } from '../services/cycleService.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
+import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
@@ -42,7 +43,7 @@ export async function renderTracking(container) {
 
   function renderChips(items, selected, name) {
     return items.map((item) =>
-      `<button type="button" class="chip${selected === item.value ? ' selected' : ''}" data-group="${name}" data-value="${item.value}">${item.icon || ''} ${item.label}</button>`
+      `<button type="button" class="chip${selected === item.value ? ' selected' : ''}" data-group="${name}" data-value="${item.value}">${item.label}</button>`
     ).join('');
   }
 
@@ -60,64 +61,49 @@ export async function renderTracking(container) {
 
     ${renderDuckCompanion({ state: 'happy', message: 'Registre só o que quiser — sem pressão.', size: 'sm' })}
 
-    <form id="tracking-form" class="mt-4">
-      <div class="card-bloom mb-4">
-        <h3 class="h6">Menstruação</h3>
-        <label class="d-flex align-items-center gap-2 mt-2">
-          <input type="checkbox" id="period-start" /> Início de menstruação hoje
+    <form id="tracking-form" class="card-stack mt-5">
+      ${renderCard('Menstruação', `
+        <label class="card-bloom-check" for="period-start">
+          <input type="checkbox" id="period-start" class="bloom-checkbox-input" />
+          <span class="bloom-checkbox" aria-hidden="true">
+            <i class="bi bi-check-lg bloom-checkbox-icon"></i>
+          </span>
+          <span class="card-bloom-check-label">Início de menstruação hoje</span>
         </label>
-        <div class="d-flex flex-wrap gap-2 mt-3" id="flow-chips">
+        <div class="chip-grid" id="flow-chips">
           ${renderChips(FLOWS, flow, 'flow')}
         </div>
-      </div>
+      `)}
 
-      ${prefs.track_mood ? `
-        <div class="card-bloom mb-4">
-          <h3 class="h6">Humor</h3>
-          <div class="d-flex flex-wrap gap-2 mt-2" id="mood-chips">${renderChips(MOODS, selectedMood, 'mood')}</div>
+      ${prefs.track_mood ? renderCard('Humor', `
+        <div class="chip-grid" id="mood-chips">${renderChips(MOODS, selectedMood, 'mood')}</div>
+      `) : ''}
+
+      ${prefs.track_symptoms ? renderCard('Sintomas', `
+        <div class="chip-grid" id="symptom-chips">
+          ${SYMPTOMS.map((s) =>
+            `<button type="button" class="chip${selectedSymptoms.has(s.value) ? ' selected' : ''}" data-group="symptom" data-value="${s.value}">${s.label}</button>`
+          ).join('')}
         </div>
-      ` : ''}
+      `) : ''}
 
-      ${prefs.track_symptoms ? `
-        <div class="card-bloom mb-4">
-          <h3 class="h6">Sintomas</h3>
-          <div class="d-flex flex-wrap gap-2 mt-2" id="symptom-chips">
-            ${SYMPTOMS.map((s) =>
-              `<button type="button" class="chip${selectedSymptoms.has(s.value) ? ' selected' : ''}" data-group="symptom" data-value="${s.value}">${s.label}</button>`
-            ).join('')}
-          </div>
-        </div>
-      ` : ''}
+      ${prefs.track_pain ? renderCard('Dor (0–10)', `
+        <div class="scale-input" id="pain-scale">${renderScale('pain', painLevel)}</div>
+      `) : ''}
 
-      ${prefs.track_pain ? `
-        <div class="card-bloom mb-4">
-          <h3 class="h6">Dor (0–10)</h3>
-          <div class="scale-input mt-2" id="pain-scale">${renderScale('pain', painLevel)}</div>
-        </div>
-      ` : ''}
+      ${prefs.track_energy ? renderCard('Energia (0–10)', `
+        <div class="scale-input" id="energy-scale">${renderScale('energy', energyLevel)}</div>
+      `) : ''}
 
-      ${prefs.track_energy ? `
-        <div class="card-bloom mb-4">
-          <h3 class="h6">Energia (0–10)</h3>
-          <div class="scale-input mt-2" id="energy-scale">${renderScale('energy', energyLevel)}</div>
-        </div>
-      ` : ''}
+      ${prefs.track_sleep ? renderCard('Sono', `
+        <div class="chip-grid" id="sleep-chips">${renderChips(SLEEP_OPTIONS, sleepQuality, 'sleep')}</div>
+      `) : ''}
 
-      ${prefs.track_sleep ? `
-        <div class="card-bloom mb-4">
-          <h3 class="h6">Sono</h3>
-          <div class="d-flex flex-wrap gap-2 mt-2" id="sleep-chips">${renderChips(SLEEP_OPTIONS, sleepQuality, 'sleep')}</div>
-        </div>
-      ` : ''}
+      ${prefs.track_notes ? renderCard('Notas', `
+        <textarea id="notes" rows="4" class="form-control bloom-textarea" placeholder="Algo que queira lembrar..." maxlength="2000">${notes}</textarea>
+      `) : ''}
 
-      ${prefs.track_notes ? `
-        <div class="card-bloom mb-4">
-          <h3 class="h6">Notas</h3>
-          <textarea id="notes" rows="3" class="form-control mt-2" placeholder="Algo que queira lembrar..." maxlength="2000">${notes}</textarea>
-        </div>
-      ` : ''}
-
-      <button type="submit" class="btn-bloom btn-bloom-primary w-100">Salvar registro</button>
+      <button type="submit" class="btn-bloom btn-bloom-primary w-100 mt-2">Salvar registro</button>
     </form>
   `;
 

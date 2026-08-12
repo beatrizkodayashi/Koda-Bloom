@@ -12,14 +12,14 @@ function normalizeDailyLog(log) {
 }
 
 export const MOODS = [
-  { value: 'feliz', label: 'Feliz', icon: '😊' },
-  { value: 'tranquila', label: 'Tranquila', icon: '😌' },
-  { value: 'sensivel', label: 'Sensível', icon: '🥺' },
-  { value: 'triste', label: 'Triste', icon: '😢' },
-  { value: 'irritada', label: 'Irritada', icon: '😤' },
-  { value: 'ansiosa', label: 'Ansiosa', icon: '😰' },
-  { value: 'cansada', label: 'Cansada', icon: '😴' },
-  { value: 'energetica', label: 'Energética', icon: '⚡' },
+  { value: 'feliz', label: 'Feliz' },
+  { value: 'tranquila', label: 'Tranquila' },
+  { value: 'sensivel', label: 'Sensível' },
+  { value: 'triste', label: 'Triste' },
+  { value: 'irritada', label: 'Irritada' },
+  { value: 'ansiosa', label: 'Ansiosa' },
+  { value: 'cansada', label: 'Cansada' },
+  { value: 'energetica', label: 'Energética' },
 ];
 
 export const SYMPTOMS = [

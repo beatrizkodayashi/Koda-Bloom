@@ -8,7 +8,7 @@ import { renderDuckCompanion } from '../components/duckCompanion.js';
 function renderAuthLayout(title, subtitle, formHtml, linksHtml) {
   return `
     <div class="auth-page gradient-bg floral-pattern">
-      <div class="auth-card card-bloom">
+      <div class="auth-card card-bloom card-bloom--plain">
         ${renderDuckCompanion({ state: 'welcome', size: 'sm' })}
         <h1>${title}</h1>
         <p class="subtitle">${subtitle}</p>

@@ -6,6 +6,7 @@ import { upsertProfile } from '../services/cycleService.js';
 import { savePreferences, getPreferences, getDefaultPreferences } from '../services/dailyLogService.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
+import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { isAuthConfigured } from '../services/authService.js';
 
@@ -42,41 +43,40 @@ export async function renderProfile(container) {
 
     ${renderDuckCompanion({ state: 'happy', size: 'sm' })}
 
-    <div class="card-bloom mt-4">
-      <h3 class="h6">Conta</h3>
-      <p class="text-muted mb-1"><small>E-mail</small></p>
-      <p>${user?.email || '—'}</p>
-      <div class="form-bloom mt-3">
-        <label for="display_name">Nome de exibição</label>
-        <input type="text" id="display_name" value="${profile?.display_name || ''}" maxlength="50" />
-      </div>
-      <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-3" id="btn-save-profile">Salvar perfil</button>
+    <div class="card-stack mt-5">
+      ${renderCard('Conta', `
+        <p class="text-muted mb-1"><small>E-mail</small></p>
+        <p class="mb-0">${user?.email || '—'}</p>
+        <div class="form-bloom mt-4">
+          <label for="display_name">Nome de exibição</label>
+          <input type="text" id="display_name" value="${profile?.display_name || ''}" maxlength="50" />
+        </div>
+        <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-save-profile">Salvar perfil</button>
+      `)}
+
+      ${renderCard('Categorias do check-in', `
+        <p class="text-muted mb-0"><small>Escolha o que aparece no registro diário.</small></p>
+        <div class="chip-grid" id="pref-chips">
+          ${prefItems.map(([key, label]) =>
+            `<button type="button" class="chip${prefs[key] ? ' selected' : ''}" data-key="${key}">${label}</button>`
+          ).join('')}
+        </div>
+        <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-save-prefs">Salvar preferências</button>
+      `)}
+
+      ${renderCard('Ciclo', `
+        <div class="form-bloom">
+          <label for="avg_cycle">Duração média do ciclo (dias)</label>
+          <input type="number" id="avg_cycle" value="${profile?.average_cycle_length || 28}" min="21" max="45" />
+        </div>
+        <div class="form-bloom mt-4">
+          <label for="avg_period">Duração média da menstruação (dias)</label>
+          <input type="number" id="avg_period" value="${profile?.average_period_length || 5}" min="1" max="10" />
+        </div>
+      `)}
     </div>
 
-    <div class="card-bloom mt-4">
-      <h3 class="h6">Categorias do check-in</h3>
-      <p class="text-muted"><small>Escolha o que aparece no registro diário.</small></p>
-      <div class="d-flex flex-wrap gap-2 mt-3" id="pref-chips">
-        ${prefItems.map(([key, label]) =>
-          `<button type="button" class="chip${prefs[key] ? ' selected' : ''}" data-key="${key}">${label}</button>`
-        ).join('')}
-      </div>
-      <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-3" id="btn-save-prefs">Salvar preferências</button>
-    </div>
-
-    <div class="card-bloom mt-4">
-      <h3 class="h6">Ciclo</h3>
-      <div class="form-bloom">
-        <label for="avg_cycle">Duração média do ciclo (dias)</label>
-        <input type="number" id="avg_cycle" value="${profile?.average_cycle_length || 28}" min="21" max="45" />
-      </div>
-      <div class="form-bloom mt-3">
-        <label for="avg_period">Duração média da menstruação (dias)</label>
-        <input type="number" id="avg_period" value="${profile?.average_period_length || 5}" min="1" max="10" />
-      </div>
-    </div>
-
-    <p class="health-disclaimer mt-4">${HEALTH_DISCLAIMER}</p>
+    <p class="health-disclaimer mt-5">${HEALTH_DISCLAIMER}</p>
 
     <button type="button" class="btn-bloom btn-bloom-ghost w-100 mt-4" id="btn-logout">
       <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Sair
