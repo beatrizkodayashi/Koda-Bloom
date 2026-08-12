@@ -112,6 +112,8 @@ export function renderSignup(container) {
     { message: 'Vamos começar com calma?' }
   );
 
+  mountPasswordToggles(container);
+
   container.querySelector('#link-login')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.LOGIN); });
   container.querySelector('#link-home')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.LANDING); });
 
