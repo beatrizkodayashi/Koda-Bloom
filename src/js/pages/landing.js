@@ -55,7 +55,7 @@ export function renderLanding(container) {
         <h2>${APP_NAME} te acompanha</h2>
         <p class="text-center text-muted mb-4">${APP_NAME} celebra seus registros e te dá dicas gentis, com carinho e leveza.</p>
         <div class="duck-companion">
-          <img src="/pato_na_arvore.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--highlight" width="240" height="240" decoding="async" />
+          <img src="/pato_acenando.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--highlight" width="240" height="240" decoding="async" />
           <p class="mascot-caption">Você está florescendo nesta fase do ciclo!</p>
         </div>
       </section>
