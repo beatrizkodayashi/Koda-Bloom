@@ -41,17 +41,12 @@
   transform: scale(0.98);
 }
 
-.duck-help-fab-duck .duck-companion {
-  gap: 0;
-}
-
-.duck-help-fab-duck .duck-companion svg {
-  width: 52px;
-  height: 52px;
-}
-
-.duck-help-fab-duck .duck-message {
-  display: none;
+.duck-help-fab-icon {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
 }
 
 .duck-help-fab-badge {
