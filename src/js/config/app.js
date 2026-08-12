@@ -22,6 +22,7 @@ export const ROUTES = {
   REGISTRAR: '/app/registrar',
   INSIGHTS: '/app/insights',
   PERFIL: '/app/perfil',
+  CUIDADO: '/app/cuidado',
 };
 
 export const NAV_ITEMS = [

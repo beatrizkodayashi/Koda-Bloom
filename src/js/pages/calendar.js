@@ -6,7 +6,10 @@ import { getDailyLogs } from '../services/dailyLogService.js';
 import {
   estimateFertileWindow,
   predictNextPeriod,
+  hasEnoughDataForPrediction,
 } from '../services/cycleCalculator.js';
+import { buildPredictionWithConfidence } from '../services/bloomIntelligenceService.js';
+import { renderPredictionConfidenceCard } from '../components/bloomIntelligence.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { calculateStreak } from '../utils/streak.js';
 import {
@@ -49,6 +52,9 @@ export async function renderCalendar(container) {
 
   const avgCycle = profile?.average_cycle_length || 28;
   const avgPeriod = profile?.average_period_length || 5;
+  const periodStarts = periodEntries.map((e) => e.start_date);
+  const prediction = buildPredictionWithConfidence(profile, periodStarts, today);
+  const enoughData = hasEnoughDataForPrediction(periodStarts);
 
   function getDayClasses(dateStr) {
     const classes = [];
@@ -139,6 +145,8 @@ export async function renderCalendar(container) {
         ${renderStreakCard({ streak })}
       </div>
     </div>
+
+    ${prediction && enoughData ? renderPredictionConfidenceCard(prediction) : ''}
 
     ${renderCard('Seu mês', renderCalendarGrid(), { className: 'calendar-card' })}
     <div id="day-detail" hidden></div>

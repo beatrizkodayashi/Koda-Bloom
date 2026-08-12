@@ -6,10 +6,12 @@ import {
   getDailyLog, saveDailyLog, getPreferences, getDefaultPreferences,
 } from '../services/dailyLogService.js';
 import { upsertPeriodEntry } from '../services/cycleService.js';
+import { buildSmartFollowUp } from '../services/bloomIntelligenceService.js';
+import { renderSmartFollowUpBanner } from '../components/bloomIntelligence.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
-import { todayString } from '../utils/dates.js';
+import { todayString, addDays } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
 
 export async function renderTracking(container) {
@@ -18,18 +20,24 @@ export async function renderTracking(container) {
   sessionStorage.removeItem('bloom_log_date');
 
   let existingLog = null;
+  let yesterdayLog = null;
   let prefs = getDefaultPreferences();
 
   if (isAuthConfigured() && user) {
     try {
-      [existingLog, prefs] = await Promise.all([
+      [existingLog, yesterdayLog, prefs] = await Promise.all([
         getDailyLog(user.id, logDate),
+        getDailyLog(user.id, addDays(logDate, -1)),
         getPreferences(user.id).then((p) => p || getDefaultPreferences()),
       ]);
     } catch (err) {
       console.error(err);
     }
   }
+
+  const followUp = buildSmartFollowUp(yesterdayLog, existingLog);
+  const focusNotes = sessionStorage.getItem('bloom_focus_notes') === '1';
+  sessionStorage.removeItem('bloom_focus_notes');
 
   const selectedSymptoms = new Set((existingLog?.daily_symptoms || []).map((s) => s.symptom));
   let selectedMood = existingLog?.mood || null;
@@ -64,6 +72,8 @@ export async function renderTracking(container) {
         <p class="mascot-caption">Registre só o que quiser, sem pressão.</p>
       </div>
     </section>
+
+    ${renderSmartFollowUpBanner(followUp)}
 
     <form id="tracking-form" class="card-stack">
       ${renderCard('Menstruação', `
@@ -104,7 +114,7 @@ export async function renderTracking(container) {
       `) : ''}
 
       ${prefs.track_notes ? renderCard('Notas', `
-        <textarea id="notes" rows="4" class="form-control bloom-textarea" placeholder="Algo que queira lembrar..." maxlength="2000">${notes}</textarea>
+        <textarea id="notes" rows="4" class="form-control bloom-textarea${focusNotes ? ' bloom-textarea--focus' : ''}" placeholder="Algo que queira lembrar..." maxlength="2000">${notes}</textarea>
       `) : ''}
 
       <button type="submit" class="btn-bloom btn-bloom-primary w-100 mt-2">Salvar registro</button>
@@ -113,6 +123,26 @@ export async function renderTracking(container) {
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
+
+  if (focusNotes) {
+    container.querySelector('#notes')?.focus();
+  }
+
+  container.querySelector('#smart-followup')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-followup]');
+    if (!btn) return;
+    const banner = container.querySelector('#smart-followup');
+    if (btn.dataset.followup === 'yes') {
+      banner?.remove();
+      showToast('Que alívio! 💗', 'success');
+      return;
+    }
+    selectedSymptoms.add('colica');
+    container.querySelectorAll('#symptom-chips .chip[data-value="colica"]').forEach((c) => c.classList.add('selected'));
+    container.querySelector('#pain-scale')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    banner?.remove();
+    showToast('Registre a intensidade abaixo, no seu tempo.', 'success');
+  });
 
   container.querySelectorAll('.chip[data-group]').forEach((chip) => {
     chip.addEventListener('click', () => {

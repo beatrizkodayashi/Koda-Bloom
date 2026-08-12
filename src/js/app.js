@@ -16,6 +16,7 @@ import { renderCalendar } from './pages/calendar.js';
 import { renderTracking } from './pages/tracking.js';
 import { renderInsights } from './pages/insights.js';
 import { renderProfile } from './pages/profile.js';
+import { renderCareMode } from './pages/careMode.js';
 
 async function requireAuth(container, renderFn) {
   const { user } = getState();
@@ -50,6 +51,7 @@ function registerRoutes() {
   registerRoute(ROUTES.REGISTRAR, (c) => requireAuth(c, renderTracking));
   registerRoute(ROUTES.INSIGHTS, (c) => requireAuth(c, renderInsights));
   registerRoute(ROUTES.PERFIL, (c) => requireAuth(c, renderProfile));
+  registerRoute(ROUTES.CUIDADO, (c) => requireAuth(c, renderCareMode));
 
   registerRoute('*', () => navigate(ROUTES.LANDING, true));
 }
