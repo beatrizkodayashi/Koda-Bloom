@@ -6,11 +6,26 @@ import { isValidEmail, isValidPassword } from '../utils/validators.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { renderPasswordField, mountPasswordToggles } from '../components/passwordField.js';
 
-function renderAuthLayout(title, subtitle, formHtml, linksHtml, duckOptions = {}) {
+function renderAuthMascot({ message, mascot = 'duck' } = {}) {
+  if (mascot === 'laptop') {
+    return `
+      <div class="duck-companion auth-mascot">
+        <img src="/pato_laptop.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--auth" width="160" height="160" decoding="async" />
+        ${message ? `<p class="mascot-caption">${message}</p>` : ''}
+      </div>
+    `;
+  }
+
+  return renderDuckCompanion({ state: 'welcome', size: 'sm', message });
+}
+
+function renderAuthLayout(title, subtitle, formHtml, linksHtml, authOptions = {}) {
+  const { message, mascot = 'duck' } = authOptions;
+
   return `
     <div class="auth-page gradient-bg floral-pattern">
       <div class="auth-card card-bloom card-bloom--plain">
-        ${renderDuckCompanion({ state: 'welcome', size: 'sm', ...duckOptions })}
+        ${renderAuthMascot({ message, mascot })}
         <h1>${title}</h1>
         <p class="subtitle">${subtitle}</p>
         ${formHtml}
@@ -42,7 +57,7 @@ export function renderLogin(container) {
       <span>Não tem conta? <a href="${ROUTES.SIGNUP}" id="link-signup">Cadastre-se</a></span><br>
       <a href="${ROUTES.LANDING}" id="link-home">← Voltar</a>
     </div>`,
-    { message: 'Oi! Que bom ter você de volta.' }
+    { message: 'Oi! Que bom ter você de volta.', mascot: 'laptop' }
   );
 
   mountPasswordToggles(container);
@@ -109,7 +124,7 @@ export function renderSignup(container) {
       <span>Já tem conta? <a href="${ROUTES.LOGIN}" id="link-login">Entrar</a></span><br>
       <a href="${ROUTES.LANDING}" id="link-home">← Voltar</a>
     </div>`,
-    { message: 'Vamos começar com calma?' }
+    { message: 'Vamos começar com calma?', mascot: 'laptop' }
   );
 
   mountPasswordToggles(container);

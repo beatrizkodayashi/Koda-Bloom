@@ -689,6 +689,10 @@
   width: min(160px, 45vw);
 }
 
+.bloom-mascot-img--auth {
+  width: min(160px, 55vw);
+}
+
 .landing-hero-mascot {
   justify-self: center;
 }
