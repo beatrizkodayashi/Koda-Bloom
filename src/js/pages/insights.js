@@ -1,4 +1,4 @@
-import { ROUTES } from '../config/app.js';
+import { APP_NAME, ROUTES } from '../config/app.js';
 import { getState } from '../state/store.js';
 import { getCycleStarts } from '../services/cycleService.js';
 import { getDailyLogs } from '../services/dailyLogService.js';
@@ -37,14 +37,18 @@ export async function renderInsights(container) {
   const currentPhase = insights.phase;
 
   const content = `
-    <div class="page-header">
-      <h1>Insights</h1>
-      <p>Entenda seus padrões com base nos seus registros.</p>
-    </div>
+    <section class="page-mascot-section">
+      <div class="page-header">
+        <h1>Insights</h1>
+        <p>Entenda seus padrões com base nos seus registros.</p>
+      </div>
 
-    ${renderDuckCompanion({ state: 'thinking', size: 'sm' })}
+      <div class="duck-companion">
+        <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
+      </div>
+    </section>
 
-    <div class="card-stack mt-5">
+    <div class="card-stack">
       ${renderCard('Meu ciclo', `
         <div class="cycle-timeline">
           ${timelinePhases.map((phase) => `
