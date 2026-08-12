@@ -486,20 +486,24 @@
 }
 
 .page-mascot-section--compact .page-header {
-  margin-bottom: 0;
+  margin-bottom: var(--space-4);
 }
 
 .page-mascot-section--compact .page-header h1 {
-  margin-bottom: 0.125rem;
+  margin-bottom: var(--space-2);
 }
 
 .page-mascot-section--compact .duck-companion {
-  gap: var(--space-1);
-  margin-bottom: var(--space-3);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .page-mascot-section--compact .bloom-mascot-img--wide {
-  margin-top: -1.25rem;
+  margin-top: -0.25rem;
+}
+
+.page-mascot-section--compact + form.card-stack {
+  margin-top: var(--space-3);
 }
 
 .page-mascot-section--insights .page-header {
