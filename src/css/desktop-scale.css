@@ -1,0 +1,28 @@
+/**
+ * Escala visual leve — apenas desktop (≥1024px).
+ * Mobile e tablet permanecem inalterados.
+ */
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 106.25%; /* 17px — aumento sutil (~6%) */
+  }
+
+  :root {
+    --sidebar-width: 17rem;
+  }
+
+  .app-content {
+    max-width: 860px;
+  }
+}
+
+@media (min-width: 1440px) {
+  html {
+    font-size: 108.75%; /* ~17.4px em telas grandes */
+  }
+
+  .app-content {
+    max-width: 900px;
+  }
+}
