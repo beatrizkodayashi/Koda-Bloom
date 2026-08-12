@@ -176,14 +176,21 @@ CREATE TRIGGER bloom_onboarding_progress_updated_at
 -- Auto-create profile on signup
 -- ============================================================
 CREATE OR REPLACE FUNCTION bloom_handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
-  INSERT INTO bloom_profiles (user_id) VALUES (NEW.id);
-  INSERT INTO bloom_user_preferences (user_id) VALUES (NEW.id);
-  INSERT INTO bloom_garden_progress (user_id) VALUES (NEW.id);
+  INSERT INTO public.bloom_profiles (user_id) VALUES (NEW.id);
+  INSERT INTO public.bloom_user_preferences (user_id) VALUES (NEW.id);
+  INSERT INTO public.bloom_garden_progress (user_id) VALUES (NEW.id);
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
+
+GRANT EXECUTE ON FUNCTION bloom_handle_new_user() TO supabase_auth_admin;
+REVOKE EXECUTE ON FUNCTION bloom_handle_new_user() FROM PUBLIC;
 
 DROP TRIGGER IF EXISTS bloom_on_auth_user_created ON auth.users;
 CREATE TRIGGER bloom_on_auth_user_created
