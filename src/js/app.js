@@ -6,6 +6,7 @@ import { setState, getState } from './state/store.js';
 import { getSession, onAuthStateChange, isAuthConfigured } from './services/authService.js';
 import { getProfile } from './services/cycleService.js';
 import { initToast } from './components/toast.js';
+import { initDuckHelpChat } from './components/duckHelpChat.js';
 
 import { renderLanding } from './pages/landing.js';
 import { renderLogin, renderSignup, renderResetPassword } from './pages/auth.js';
@@ -72,6 +73,7 @@ async function initAuth() {
 
 async function bootstrap() {
   initToast();
+  initDuckHelpChat();
   registerRoutes();
   initRouter();
   await initAuth();

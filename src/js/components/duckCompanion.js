@@ -106,7 +106,7 @@ export function getDuckState() {
 export function renderDuckCompanion(options = {}) {
   const { state = currentState, message, size = 'md', className = '' } = options;
   const duckState = DUCK_STATES[state] || DUCK_STATES.welcome;
-  const duckMessage = message ?? DUCK_MESSAGES[state] ?? '';
+  const duckMessage = message !== undefined ? message : (DUCK_MESSAGES[state] ?? '');
 
   const sizeClass = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : '';
 
