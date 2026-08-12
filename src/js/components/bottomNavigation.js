@@ -1,15 +1,28 @@
-import { APP_NAME, NAV_ITEMS } from '../config/app.js';
+import { NAV_ITEMS } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderBrandLogo } from './brandLogo.js';
+
+const CARD_DOTS =
+  '<span class="card-bloom-dots" aria-hidden="true"><span></span><span></span><span></span></span>';
 
 function isActive(path) {
   return location.pathname === path || location.pathname.startsWith(path + '/');
 }
 
 export function renderBottomNavigation() {
+  const wrap = document.createElement('div');
+  wrap.className = 'bottom-nav-wrap';
+
   const nav = document.createElement('nav');
-  nav.className = 'bottom-nav';
+  nav.className = 'bottom-nav card-bloom nav-card';
   nav.setAttribute('aria-label', 'Navegação principal');
+
+  const header = document.createElement('div');
+  header.className = 'card-bloom-header nav-card-header';
+  header.innerHTML = `<span class="card-bloom-title">Menu</span>${CARD_DOTS}`;
+
+  const body = document.createElement('div');
+  body.className = 'card-bloom-body nav-card-body';
 
   NAV_ITEMS.forEach((item) => {
     const btn = document.createElement('button');
@@ -25,10 +38,13 @@ export function renderBottomNavigation() {
     }
 
     btn.addEventListener('click', () => navigate(item.path));
-    nav.appendChild(btn);
+    body.appendChild(btn);
   });
 
-  return nav;
+  nav.appendChild(header);
+  nav.appendChild(body);
+  wrap.appendChild(nav);
+  return wrap;
 }
 
 export function renderSidebar() {
@@ -36,24 +52,33 @@ export function renderSidebar() {
   aside.className = 'sidebar';
   aside.setAttribute('aria-label', 'Menu lateral');
 
-  const brand = document.createElement('div');
-  brand.className = 'sidebar-brand';
-  brand.innerHTML = renderBrandLogo('bloom-logo--sidebar');
-  aside.appendChild(brand);
+  const card = document.createElement('div');
+  card.className = 'sidebar-card card-bloom';
+
+  const header = document.createElement('div');
+  header.className = 'card-bloom-header sidebar-card-header';
+  header.innerHTML = renderBrandLogo('bloom-logo--sidebar') + CARD_DOTS;
+
+  const body = document.createElement('div');
+  body.className = 'card-bloom-body sidebar-card-body';
 
   const navEl = document.createElement('nav');
   navEl.className = 'sidebar-nav';
+  navEl.setAttribute('aria-label', 'Navegação principal');
 
   NAV_ITEMS.forEach((item) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `sidebar-item${isActive(item.path) ? ' active' : ''}`;
-    btn.innerHTML = `<i class="bi ${item.icon}" aria-hidden="true"></i> ${item.label}`;
+    btn.innerHTML = `<i class="bi ${item.icon}" aria-hidden="true"></i><span>${item.label}</span>`;
     btn.addEventListener('click', () => navigate(item.path));
     navEl.appendChild(btn);
   });
 
-  aside.appendChild(navEl);
+  body.appendChild(navEl);
+  card.appendChild(header);
+  card.appendChild(body);
+  aside.appendChild(card);
   return aside;
 }
 
