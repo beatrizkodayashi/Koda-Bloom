@@ -5,11 +5,11 @@ import { showToast } from '../components/toast.js';
 import { isValidEmail, isValidPassword } from '../utils/validators.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 
-function renderAuthLayout(title, subtitle, formHtml, linksHtml) {
+function renderAuthLayout(title, subtitle, formHtml, linksHtml, duckOptions = {}) {
   return `
     <div class="auth-page gradient-bg floral-pattern">
       <div class="auth-card card-bloom card-bloom--plain">
-        ${renderDuckCompanion({ state: 'welcome', size: 'sm' })}
+        ${renderDuckCompanion({ state: 'welcome', size: 'sm', ...duckOptions })}
         <h1>${title}</h1>
         <p class="subtitle">${subtitle}</p>
         ${formHtml}
@@ -39,7 +39,8 @@ export function renderLogin(container) {
       <a href="${ROUTES.RESET_PASSWORD}" id="link-reset">Esqueci minha senha</a><br>
       <span>Não tem conta? <a href="${ROUTES.SIGNUP}" id="link-signup">Cadastre-se</a></span><br>
       <a href="${ROUTES.LANDING}" id="link-home">← Voltar</a>
-    </div>`
+    </div>`,
+    { message: 'Oi! Que bom ter você de volta.' }
   );
 
   container.querySelector('#link-reset')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.RESET_PASSWORD); });
@@ -99,7 +100,8 @@ export function renderSignup(container) {
     `<div class="auth-links">
       <span>Já tem conta? <a href="${ROUTES.LOGIN}" id="link-login">Entrar</a></span><br>
       <a href="${ROUTES.LANDING}" id="link-home">← Voltar</a>
-    </div>`
+    </div>`,
+    { message: 'Vamos começar com calma?' }
   );
 
   container.querySelector('#link-login')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.LOGIN); });
@@ -167,7 +169,8 @@ export function renderResetPassword(container) {
     </form>`,
     `<div class="auth-links">
       <a href="${ROUTES.LOGIN}" id="link-login">← Voltar ao login</a>
-    </div>`
+    </div>`,
+    { message: 'Te ajudo a recuperar o acesso.' }
   );
 
   container.querySelector('#link-login')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.LOGIN); });

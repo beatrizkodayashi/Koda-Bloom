@@ -450,6 +450,31 @@
   color: var(--color-text-muted);
 }
 
+.auth-card .duck-companion {
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.auth-card .mascot-caption,
+.auth-card .duck-message {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-4);
+  line-height: var(--line-height-normal);
+  border-radius: var(--radius-lg);
+}
+
+@media (min-width: 1024px) {
+  .auth-card .mascot-caption,
+  .auth-card .duck-message {
+    max-width: 100%;
+    padding: var(--space-2) var(--space-4);
+  }
+}
+
 /* Page headers */
 .page-header {
   margin-bottom: var(--space-8);
