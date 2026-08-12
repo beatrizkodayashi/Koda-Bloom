@@ -1,0 +1,7 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+@import './variables.css';
+@import './base.css';
+@import './components.css';
+@import './layout.css';
