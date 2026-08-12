@@ -28,7 +28,7 @@ function formatAnswerHtml(text) {
 }
 
 function renderChatAvatar() {
-  return '<img src="/favicon.png" alt="" class="duck-help-message-icon" width="40" height="40" decoding="async" />';
+  return '<img src="/favicon.png" alt="" class="duck-help-message-icon" width="28" height="28" decoding="async" />';
 }
 
 function appendMessage(role, html) {
