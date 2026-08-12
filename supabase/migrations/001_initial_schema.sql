@@ -1,11 +1,10 @@
 -- Bloom: schema inicial
 -- Execute no SQL Editor do Supabase (ver docs/SUPABASE.md)
+-- Todas as tabelas usam prefixo bloom_ (banco compartilhado com outros projetos)
 
--- Extensão para UUID
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Função para atualizar updated_at automaticamente
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE OR REPLACE FUNCTION bloom_update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();
@@ -16,7 +15,7 @@ $$ LANGUAGE plpgsql;
 -- ============================================================
 -- PROFILES
 -- ============================================================
-CREATE TABLE IF NOT EXISTS profiles (
+CREATE TABLE IF NOT EXISTS bloom_profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name TEXT,
@@ -28,16 +27,16 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_bloom_profiles_user_id ON bloom_profiles(user_id);
 
-CREATE TRIGGER profiles_updated_at
-  BEFORE UPDATE ON profiles
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_profiles_updated_at
+  BEFORE UPDATE ON bloom_profiles
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- USER PREFERENCES
 -- ============================================================
-CREATE TABLE IF NOT EXISTS user_preferences (
+CREATE TABLE IF NOT EXISTS bloom_user_preferences (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   track_mood BOOLEAN DEFAULT TRUE,
@@ -55,14 +54,14 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TRIGGER user_preferences_updated_at
-  BEFORE UPDATE ON user_preferences
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_user_preferences_updated_at
+  BEFORE UPDATE ON bloom_user_preferences
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- CYCLES
 -- ============================================================
-CREATE TABLE IF NOT EXISTS cycles (
+CREATE TABLE IF NOT EXISTS bloom_cycles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   start_date DATE NOT NULL,
@@ -72,16 +71,16 @@ CREATE TABLE IF NOT EXISTS cycles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_cycles_user_start ON cycles(user_id, start_date DESC);
+CREATE INDEX IF NOT EXISTS idx_bloom_cycles_user_start ON bloom_cycles(user_id, start_date DESC);
 
-CREATE TRIGGER cycles_updated_at
-  BEFORE UPDATE ON cycles
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_cycles_updated_at
+  BEFORE UPDATE ON bloom_cycles
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- PERIOD ENTRIES
 -- ============================================================
-CREATE TABLE IF NOT EXISTS period_entries (
+CREATE TABLE IF NOT EXISTS bloom_period_entries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   start_date DATE NOT NULL,
@@ -91,16 +90,16 @@ CREATE TABLE IF NOT EXISTS period_entries (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_period_entries_user_start ON period_entries(user_id, start_date DESC);
+CREATE INDEX IF NOT EXISTS idx_bloom_period_entries_user_start ON bloom_period_entries(user_id, start_date DESC);
 
-CREATE TRIGGER period_entries_updated_at
-  BEFORE UPDATE ON period_entries
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_period_entries_updated_at
+  BEFORE UPDATE ON bloom_period_entries
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- DAILY LOGS
 -- ============================================================
-CREATE TABLE IF NOT EXISTS daily_logs (
+CREATE TABLE IF NOT EXISTS bloom_daily_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   log_date DATE NOT NULL,
@@ -118,18 +117,18 @@ CREATE TABLE IF NOT EXISTS daily_logs (
   UNIQUE(user_id, log_date)
 );
 
-CREATE INDEX IF NOT EXISTS idx_daily_logs_user_date ON daily_logs(user_id, log_date DESC);
+CREATE INDEX IF NOT EXISTS idx_bloom_daily_logs_user_date ON bloom_daily_logs(user_id, log_date DESC);
 
-CREATE TRIGGER daily_logs_updated_at
-  BEFORE UPDATE ON daily_logs
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_daily_logs_updated_at
+  BEFORE UPDATE ON bloom_daily_logs
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- DAILY SYMPTOMS
 -- ============================================================
-CREATE TABLE IF NOT EXISTS daily_symptoms (
+CREATE TABLE IF NOT EXISTS bloom_daily_symptoms (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  daily_log_id UUID NOT NULL REFERENCES daily_logs(id) ON DELETE CASCADE,
+  daily_log_id UUID NOT NULL REFERENCES bloom_daily_logs(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   symptom TEXT NOT NULL CHECK (symptom IN (
     'colica','dor_cabeca','acne','inchaco','sensibilidade_seios',
@@ -139,12 +138,12 @@ CREATE TABLE IF NOT EXISTS daily_symptoms (
   UNIQUE(daily_log_id, symptom)
 );
 
-CREATE INDEX IF NOT EXISTS idx_daily_symptoms_log ON daily_symptoms(daily_log_id);
+CREATE INDEX IF NOT EXISTS idx_bloom_daily_symptoms_log ON bloom_daily_symptoms(daily_log_id);
 
 -- ============================================================
 -- GARDEN PROGRESS
 -- ============================================================
-CREATE TABLE IF NOT EXISTS garden_progress (
+CREATE TABLE IF NOT EXISTS bloom_garden_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   flowers_unlocked INTEGER DEFAULT 0 CHECK (flowers_unlocked BETWEEN 0 AND 8),
@@ -153,14 +152,14 @@ CREATE TABLE IF NOT EXISTS garden_progress (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TRIGGER garden_progress_updated_at
-  BEFORE UPDATE ON garden_progress
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_garden_progress_updated_at
+  BEFORE UPDATE ON bloom_garden_progress
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- ONBOARDING PROGRESS
 -- ============================================================
-CREATE TABLE IF NOT EXISTS onboarding_progress (
+CREATE TABLE IF NOT EXISTS bloom_onboarding_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   current_step INTEGER DEFAULT 0,
@@ -169,24 +168,24 @@ CREATE TABLE IF NOT EXISTS onboarding_progress (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TRIGGER onboarding_progress_updated_at
-  BEFORE UPDATE ON onboarding_progress
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER bloom_onboarding_progress_updated_at
+  BEFORE UPDATE ON bloom_onboarding_progress
+  FOR EACH ROW EXECUTE FUNCTION bloom_update_updated_at();
 
 -- ============================================================
 -- Auto-create profile on signup
 -- ============================================================
-CREATE OR REPLACE FUNCTION handle_new_user()
+CREATE OR REPLACE FUNCTION bloom_handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (user_id) VALUES (NEW.id);
-  INSERT INTO user_preferences (user_id) VALUES (NEW.id);
-  INSERT INTO garden_progress (user_id) VALUES (NEW.id);
+  INSERT INTO bloom_profiles (user_id) VALUES (NEW.id);
+  INSERT INTO bloom_user_preferences (user_id) VALUES (NEW.id);
+  INSERT INTO bloom_garden_progress (user_id) VALUES (NEW.id);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
+DROP TRIGGER IF EXISTS bloom_on_auth_user_created ON auth.users;
+CREATE TRIGGER bloom_on_auth_user_created
   AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+  FOR EACH ROW EXECUTE FUNCTION bloom_handle_new_user();

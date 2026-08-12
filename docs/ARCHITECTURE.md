@@ -150,16 +150,18 @@ Cada serviço encapsula chamadas ao Supabase e lógica de domínio:
 
 Todas as tabelas com dados de usuário possuem `user_id UUID REFERENCES auth.users(id)` e RLS ativo.
 
-Entidades principais:
+Entidades principais (prefixo `bloom_`):
 
-- `profiles` — dados do perfil e onboarding
-- `user_preferences` — categorias visíveis, lembretes
-- `cycles` — ciclos menstruais
-- `period_entries` — registros de menstruação (início/fim/fluxo)
-- `daily_logs` — check-in diário (humor, dor, sono, etc.)
-- `daily_symptoms` — sintomas do dia (relação N:N)
-- `garden_progress` — flores desbloqueadas
-- `onboarding_progress` — etapa atual do onboarding
+- `bloom_profiles` — dados do perfil e onboarding
+- `bloom_user_preferences` — categorias visíveis, lembretes
+- `bloom_cycles` — ciclos menstruais
+- `bloom_period_entries` — registros de menstruação (início/fim/fluxo)
+- `bloom_daily_logs` — check-in diário (humor, dor, sono, etc.)
+- `bloom_daily_symptoms` — sintomas do dia (relação N:N)
+- `bloom_garden_progress` — flores desbloqueadas
+- `bloom_onboarding_progress` — etapa atual do onboarding
+
+Nomes centralizados em `src/js/config/tables.js`.
 
 Detalhes completos em `supabase/migrations/`.
 

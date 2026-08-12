@@ -1,11 +1,12 @@
 import { getSupabaseOrThrow } from '../config/supabase.js';
+import { TABLES } from '../config/tables.js';
 
 const FLOWERS = ['🌸', '🌷', '🌺', '🌼', '🪷', '💮', '🌻', '🌹'];
 
 export async function getGardenProgress(userId) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('garden_progress')
+    .from(TABLES.GARDEN_PROGRESS)
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();
@@ -20,7 +21,7 @@ export async function updateGardenOnLog(userId) {
   const flowersUnlocked = Math.min(Math.floor(totalLogs / 3), FLOWERS.length);
 
   const { data, error } = await supabase
-    .from('garden_progress')
+    .from(TABLES.GARDEN_PROGRESS)
     .upsert(
       {
         user_id: userId,

@@ -10,9 +10,13 @@ Supabase é um backend open-source que oferece:
 - **Authentication** — login por e-mail/senha
 - **Row Level Security (RLS)** — cada usuária só acessa seus próprios dados
 
-## Por que usamos?
+## Convenção de nomes (banco compartilhado)
 
-Seus dados de saúde menstrual são sensíveis. O RLS garante que **mesmo que alguém tente acessar a API diretamente**, só consegue ver/editar os próprios registros.
+Todas as tabelas, funções e triggers deste projeto usam o prefixo **`bloom_`**, pois o banco PostgreSQL é compartilhado com outros projetos.
+
+Exemplos: `bloom_profiles`, `bloom_daily_logs`, `bloom_handle_new_user()`.
+
+No JavaScript, use sempre as constantes de `src/js/config/tables.js` — nunca hardcode o nome da tabela.
 
 ---
 
@@ -47,7 +51,7 @@ Seus dados de saúde menstrual são sensíveis. O RLS garante que **mesmo que al
 4. Clique em **Run** (ou Ctrl+Enter)
 5. Deve aparecer "Success. No rows returned"
 
-**O que isso faz:** cria todas as tabelas (profiles, daily_logs, period_entries, etc.) e um trigger que cria perfil automaticamente quando alguém se cadastra.
+**O que isso faz:** cria todas as tabelas (`bloom_profiles`, `bloom_daily_logs`, `bloom_period_entries`, etc.) e um trigger que cria perfil automaticamente quando alguém se cadastra.
 
 ### 3.3 Executar policies RLS
 
@@ -100,7 +104,7 @@ VITE_SUPABASE_ANON_KEY=eyJ...sua-chave-anon
 2. Acesse `http://localhost:5173`
 3. Crie uma conta
 4. No Supabase → **Authentication** → **Users** — deve aparecer o novo usuário
-5. No **Table Editor** → `profiles` — deve ter um registro com seu `user_id`
+5. No **Table Editor** → `bloom_profiles` — deve ter um registro com seu `user_id`
 
 ## Passo 8: Entender RLS
 

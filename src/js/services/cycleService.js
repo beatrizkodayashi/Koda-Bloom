@@ -1,9 +1,10 @@
 import { getSupabaseOrThrow } from '../config/supabase.js';
+import { TABLES } from '../config/tables.js';
 
 export async function getProfile(userId) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('profiles')
+    .from(TABLES.PROFILES)
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();
@@ -14,7 +15,7 @@ export async function getProfile(userId) {
 export async function upsertProfile(userId, profileData) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('profiles')
+    .from(TABLES.PROFILES)
     .upsert({ user_id: userId, ...profileData, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
     .select()
     .single();
@@ -25,7 +26,7 @@ export async function upsertProfile(userId, profileData) {
 export async function getCycles(userId) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('cycles')
+    .from(TABLES.CYCLES)
     .select('*')
     .eq('user_id', userId)
     .order('start_date', { ascending: false });
@@ -36,7 +37,7 @@ export async function getCycles(userId) {
 export async function createCycle(userId, cycleData) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('cycles')
+    .from(TABLES.CYCLES)
     .insert({ user_id: userId, ...cycleData })
     .select()
     .single();
@@ -47,7 +48,7 @@ export async function createCycle(userId, cycleData) {
 export async function getPeriodEntries(userId) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('period_entries')
+    .from(TABLES.PERIOD_ENTRIES)
     .select('*')
     .eq('user_id', userId)
     .order('start_date', { ascending: false });
@@ -59,7 +60,7 @@ export async function upsertPeriodEntry(userId, entry) {
   const supabase = getSupabaseOrThrow();
   const payload = { user_id: userId, ...entry, updated_at: new Date().toISOString() };
   const { data, error } = await supabase
-    .from('period_entries')
+    .from(TABLES.PERIOD_ENTRIES)
     .upsert(payload, { onConflict: 'id' })
     .select()
     .single();
@@ -81,7 +82,7 @@ export async function getCycleStarts(userId) {
 export async function saveOnboardingProgress(userId, step, data = {}) {
   const supabase = getSupabaseOrThrow();
   const { data: result, error } = await supabase
-    .from('onboarding_progress')
+    .from(TABLES.ONBOARDING_PROGRESS)
     .upsert(
       { user_id: userId, current_step: step, step_data: data, updated_at: new Date().toISOString() },
       { onConflict: 'user_id' }
@@ -95,7 +96,7 @@ export async function saveOnboardingProgress(userId, step, data = {}) {
 export async function getOnboardingProgress(userId) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('onboarding_progress')
+    .from(TABLES.ONBOARDING_PROGRESS)
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();

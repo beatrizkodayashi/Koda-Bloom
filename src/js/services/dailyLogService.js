@@ -1,4 +1,15 @@
 import { getSupabaseOrThrow } from '../config/supabase.js';
+import { TABLES, RELATIONS } from '../config/tables.js';
+
+const LOG_WITH_SYMPTOMS = `*, ${RELATIONS.DAILY_SYMPTOMS}(symptom)`;
+
+function normalizeDailyLog(log) {
+  if (!log) return log;
+  return {
+    ...log,
+    daily_symptoms: log[RELATIONS.DAILY_SYMPTOMS] || [],
+  };
+}
 
 export const MOODS = [
   { value: 'feliz', label: 'Feliz', icon: '😊' },
@@ -55,20 +66,20 @@ export const ACTIVITY_OPTIONS = [
 export async function getDailyLog(userId, logDate) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('daily_logs')
-    .select('*, daily_symptoms(symptom)')
+    .from(TABLES.DAILY_LOGS)
+    .select(LOG_WITH_SYMPTOMS)
     .eq('user_id', userId)
     .eq('log_date', logDate)
     .maybeSingle();
   if (error) throw error;
-  return data;
+  return normalizeDailyLog(data);
 }
 
 export async function getDailyLogs(userId, fromDate, toDate) {
   const supabase = getSupabaseOrThrow();
   let query = supabase
-    .from('daily_logs')
-    .select('*, daily_symptoms(symptom)')
+    .from(TABLES.DAILY_LOGS)
+    .select(LOG_WITH_SYMPTOMS)
     .eq('user_id', userId)
     .order('log_date', { ascending: false });
 
@@ -77,14 +88,14 @@ export async function getDailyLogs(userId, fromDate, toDate) {
 
   const { data, error } = await query;
   if (error) throw error;
-  return data || [];
+  return (data || []).map(normalizeDailyLog);
 }
 
 export async function saveDailyLog(userId, logDate, logData, symptoms = []) {
   const supabase = getSupabaseOrThrow();
 
   const { data: log, error: logError } = await supabase
-    .from('daily_logs')
+    .from(TABLES.DAILY_LOGS)
     .upsert(
       { user_id: userId, log_date: logDate, ...logData, updated_at: new Date().toISOString() },
       { onConflict: 'user_id,log_date' }
@@ -93,10 +104,10 @@ export async function saveDailyLog(userId, logDate, logData, symptoms = []) {
     .single();
   if (logError) throw logError;
 
-  await supabase.from('daily_symptoms').delete().eq('daily_log_id', log.id);
+  await supabase.from(TABLES.DAILY_SYMPTOMS).delete().eq('daily_log_id', log.id);
 
   if (symptoms.length) {
-    const { error: symError } = await supabase.from('daily_symptoms').insert(
+    const { error: symError } = await supabase.from(TABLES.DAILY_SYMPTOMS).insert(
       symptoms.map((symptom) => ({ daily_log_id: log.id, user_id: userId, symptom }))
     );
     if (symError) throw symError;
@@ -108,7 +119,7 @@ export async function saveDailyLog(userId, logDate, logData, symptoms = []) {
 export async function getPreferences(userId) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('user_preferences')
+    .from(TABLES.USER_PREFERENCES)
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();
@@ -119,7 +130,7 @@ export async function getPreferences(userId) {
 export async function savePreferences(userId, prefs) {
   const supabase = getSupabaseOrThrow();
   const { data, error } = await supabase
-    .from('user_preferences')
+    .from(TABLES.USER_PREFERENCES)
     .upsert({ user_id: userId, ...prefs, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
     .select()
     .single();
