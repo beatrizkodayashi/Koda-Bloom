@@ -53,7 +53,7 @@ export async function renderTracking(container) {
   }
 
   const content = `
-    <section class="page-mascot-section">
+    <section class="page-mascot-section page-mascot-section--compact">
       <div class="page-header">
         <h1>Registrar</h1>
         <p>${new Date(logDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>

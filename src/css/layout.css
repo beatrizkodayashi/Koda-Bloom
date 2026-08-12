@@ -480,6 +480,23 @@
   margin-top: 0;
 }
 
+.page-mascot-section--compact .page-header {
+  margin-bottom: 0;
+}
+
+.page-mascot-section--compact .page-header h1 {
+  margin-bottom: 0.125rem;
+}
+
+.page-mascot-section--compact .duck-companion {
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.page-mascot-section--compact .bloom-mascot-img--wide {
+  margin-top: -1.25rem;
+}
+
 .page-header--calendar {
   display: flex;
   align-items: center;
