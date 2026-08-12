@@ -143,7 +143,7 @@ function buildUi() {
   root.className = 'duck-help-root';
   root.innerHTML = `
     <button type="button" class="duck-help-fab" aria-label="Abrir ajuda do ${APP_NAME}" aria-expanded="false" aria-controls="duck-help-panel">
-      <img src="/favicon.png" alt="" class="duck-help-fab-icon" width="52" height="52" decoding="async" />
+      <img src="/favicon.png" alt="" class="duck-help-fab-icon" width="38" height="38" decoding="async" />
       <span class="duck-help-fab-badge" aria-hidden="true">?</span>
     </button>
 

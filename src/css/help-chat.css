@@ -16,12 +16,12 @@
 .duck-help-fab {
   pointer-events: auto;
   position: relative;
-  width: 4rem;
-  height: 4rem;
+  width: 3.25rem;
+  height: 3.25rem;
   border: 2px solid var(--card-outline-soft);
   border-radius: 50%;
   background: linear-gradient(145deg, var(--palette-lavender) 0%, var(--palette-pink) 100%);
-  box-shadow: 4px 4px 0 rgba(255, 204, 189, 0.55);
+  box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.55);
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -42,23 +42,25 @@
 }
 
 .duck-help-fab-icon {
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.375rem;
+  height: 2.375rem;
   object-fit: contain;
+  object-position: center;
   display: block;
+  margin: 0;
   pointer-events: none;
 }
 
 .duck-help-fab-badge {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 0.9375rem;
-  height: 0.9375rem;
+  bottom: 1px;
+  right: 1px;
+  width: 0.8125rem;
+  height: 0.8125rem;
   border-radius: 50%;
   background: var(--palette-peach);
   color: var(--color-text);
-  font-size: 0.5625rem;
+  font-size: 0.5rem;
   font-weight: 700;
   display: flex;
   align-items: center;
