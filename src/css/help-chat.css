@@ -4,11 +4,12 @@
   position: fixed;
   z-index: 9999;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-end;
   gap: var(--space-3);
   pointer-events: none;
-  max-width: min(calc(100vw - var(--space-8)), 380px);
+  max-width: calc(100vw - var(--space-8));
 }
 
 .duck-help-root:not(.duck-help-root--positioned) {
@@ -18,10 +19,6 @@
 
 .duck-help-root--positioned {
   right: auto;
-}
-
-.duck-help-root--flip {
-  flex-direction: column-reverse;
 }
 
 .duck-help-fab {
@@ -109,11 +106,11 @@
 @keyframes duck-help-in {
   from {
     opacity: 0;
-    transform: translateY(-8px) scale(0.98);
+    transform: translateX(-8px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
   }
 }
 
@@ -268,7 +265,7 @@
   }
 
   .duck-help-panel {
-    width: min(calc(100vw - var(--space-6)), 380px);
+    width: min(calc(100vw - var(--space-6) - 3.75rem), 380px);
     max-height: min(60dvh, 480px);
   }
 }
