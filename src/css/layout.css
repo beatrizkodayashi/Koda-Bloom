@@ -182,7 +182,7 @@
   }
 
   .sidebar-card-header .bloom-logo--sidebar {
-    max-height: 7.75rem;
+    max-height: 5.25rem;
     max-width: 100%;
     width: auto;
     margin: 0;
@@ -278,11 +278,11 @@
 }
 
 .bloom-logo--nav {
-  max-height: 3.5rem;
+  max-height: 3rem;
 }
 
 .bloom-logo--sidebar {
-  max-height: 7.75rem;
+  max-height: 5.25rem;
   width: auto;
 }
 
@@ -476,7 +476,7 @@
 }
 
 .page-mascot-section .duck-companion {
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-bottom: var(--space-4);
 }
 
@@ -500,6 +500,19 @@
 
 .page-mascot-section--compact .bloom-mascot-img--wide {
   margin-top: -1.25rem;
+}
+
+.page-mascot-section--insights .page-header {
+  margin-bottom: var(--space-4);
+}
+
+.page-mascot-section--insights .duck-companion {
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.page-mascot-section--insights + .card-stack {
+  margin-top: var(--space-2);
 }
 
 .page-header--calendar {
@@ -614,19 +627,31 @@
 }
 
 .bloom-mascot-img--hero {
-  width: min(300px, 88vw);
+  width: min(265px, 82vw);
+}
+
+.bloom-mascot-img--insights {
+  width: min(275px, 80vw);
 }
 
 .landing-hero-mascot {
   justify-self: center;
 }
 
+.mascot-caption,
 .duck-message {
   text-align: center;
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  max-width: 280px;
+  font-weight: 600;
+  color: var(--color-text);
+  max-width: 320px;
   line-height: var(--line-height-relaxed);
+  margin: 0;
+  padding: var(--space-3) var(--space-5);
+  background: linear-gradient(135deg, rgba(255, 227, 252, 0.9) 0%, rgba(255, 204, 189, 0.45) 100%);
+  border: 2px solid var(--card-outline-soft);
+  border-radius: var(--radius-full);
+  box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.5);
 }
 
 .duck-companion.celebrating svg {

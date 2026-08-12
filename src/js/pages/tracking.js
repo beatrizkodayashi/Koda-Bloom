@@ -61,7 +61,7 @@ export async function renderTracking(container) {
 
       <div class="duck-companion">
         <img src="/pato_nas_flores.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--wide" width="260" height="260" decoding="async" />
-        <p class="duck-message">Registre só o que quiser , sem pressão.</p>
+        <p class="mascot-caption">Registre só o que quiser, sem pressão.</p>
       </div>
     </section>
 

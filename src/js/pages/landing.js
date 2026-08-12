@@ -41,7 +41,7 @@ export function renderLanding(container) {
         </div>
         <div class="duck-companion landing-hero-mascot">
           <img src="/pato_acenando.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--hero" width="280" height="280" decoding="async" />
-          <p class="duck-message">Oi! Que bom ter você aqui. Vamos conhecer seu ciclo juntas?</p>
+          <p class="mascot-caption">Oi! Que bom ter você aqui. Vamos conhecer seu ciclo comigo?</p>
         </div>
       </section>
 

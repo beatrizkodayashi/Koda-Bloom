@@ -37,14 +37,15 @@ export async function renderInsights(container) {
   const currentPhase = insights.phase;
 
   const content = `
-    <section class="page-mascot-section">
+    <section class="page-mascot-section page-mascot-section--insights">
       <div class="page-header">
         <h1>Insights</h1>
         <p>Entenda seus padrões com base nos seus registros.</p>
       </div>
 
       <div class="duck-companion">
-        <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
+        <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--insights" width="275" height="275" decoding="async" />
+        <p class="mascot-caption">Vamos olhar juntos o que seus registros contam, com calma e carinho.</p>
       </div>
     </section>
 

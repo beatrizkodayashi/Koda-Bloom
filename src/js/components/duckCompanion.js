@@ -115,7 +115,7 @@ export function renderDuckCompanion(options = {}) {
   return `
     <div class="duck-companion ${sizeClass} ${state === 'celebrating' ? 'celebrating' : ''} ${className}" role="img" aria-label="${APP_NAME}, mascote do app">
       ${duckState}
-      ${duckMessage ? `<p class="duck-message">${duckMessage}</p>` : ''}
+      ${duckMessage ? `<p class="mascot-caption">${duckMessage}</p>` : ''}
     </div>
   `;
 }

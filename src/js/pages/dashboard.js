@@ -57,7 +57,7 @@ export async function renderDashboard(container) {
 
       <div class="duck-companion">
         <img src="/pato_comemorando.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
-        <p class="duck-message">${summary}</p>
+        <p class="mascot-caption">${summary}</p>
       </div>
     </section>
 

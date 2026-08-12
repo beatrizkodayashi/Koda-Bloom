@@ -51,19 +51,19 @@
 
 .duck-help-fab-badge {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 1.25rem;
-  height: 1.25rem;
+  bottom: 0;
+  right: 0;
+  width: 0.9375rem;
+  height: 0.9375rem;
   border-radius: 50%;
   background: var(--palette-peach);
   color: var(--color-text);
-  font-size: 0.7rem;
+  font-size: 0.5625rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--card-outline-soft);
+  border: 1.5px solid var(--card-outline-soft);
 }
 
 .duck-help-panel {
