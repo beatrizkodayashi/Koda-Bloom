@@ -616,56 +616,6 @@
   white-space: nowrap;
 }
 
-@media (max-width: 640px) {
-  .calendar-hero {
-    gap: var(--space-4);
-  }
-
-  .bloom-mascot-img--calendar-hero {
-    width: min(108px, 26vw);
-  }
-
-  .calendar-streak-card {
-    padding: var(--space-3);
-    gap: var(--space-2);
-  }
-
-  .calendar-streak-card-main {
-    gap: var(--space-2);
-  }
-
-  .calendar-streak-card-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1rem;
-  }
-
-  .calendar-streak-card-count {
-    font-size: var(--font-size-xl);
-  }
-
-  .calendar-streak-card-label {
-    font-size: var(--font-size-xs);
-  }
-}
-
-@media (max-width: 380px) {
-  .calendar-hero {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .calendar-streak-card {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .calendar-streak-card-action {
-    width: 100%;
-    white-space: normal;
-  }
-}
-
 /* Duck companion */
 .duck-companion {
   display: flex;
@@ -1005,6 +955,151 @@
 @media (max-width: 480px) {
   .calendar-grid-footer .calendar-legend {
     gap: var(--space-2);
+  }
+}
+
+@media (max-width: 767px) {
+  .page-header--calendar {
+    margin-bottom: var(--space-5);
+  }
+
+  .page-header--calendar .page-header-copy {
+    margin-bottom: var(--space-4);
+  }
+
+  .calendar-hero {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    justify-content: stretch;
+    gap: var(--space-3);
+  }
+
+  .bloom-mascot-img--calendar-hero {
+    width: min(92px, 22vw);
+  }
+
+  .calendar-streak-card {
+    width: 100%;
+    max-width: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .calendar-streak-card-main {
+    gap: var(--space-2);
+  }
+
+  .calendar-streak-card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  .calendar-streak-card-count {
+    font-size: var(--font-size-xl);
+  }
+
+  .calendar-streak-card-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .calendar-streak-card-action {
+    width: 100%;
+    white-space: normal;
+  }
+
+  .calendar-card .card-bloom-body {
+    padding: var(--space-3);
+  }
+
+  .calendar-header {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .calendar-month-title {
+    font-size: var(--font-size-base);
+  }
+
+  .calendar-nav-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1rem;
+  }
+
+  .calendar-grid {
+    gap: 0.3rem;
+  }
+
+  .calendar-weekday {
+    font-size: 0.625rem;
+    padding: var(--space-1) 0;
+    letter-spacing: 0.02em;
+  }
+
+  .calendar-day {
+    min-height: 0;
+    padding: 0.15rem 0.1rem 0.2rem;
+    font-size: 0.6875rem;
+    border-radius: var(--radius-md);
+    border-width: 1.5px;
+  }
+
+  .calendar-day.today {
+    border-width: 2px;
+  }
+
+  .calendar-day-heart {
+    font-size: 0.625rem;
+  }
+
+  .calendar-day:not(.other-month):hover,
+  .calendar-day.selected {
+    transform: none;
+  }
+
+  .calendar-grid-footer {
+    margin-top: var(--space-1);
+    padding-top: var(--space-3);
+  }
+
+  .calendar-grid-footer .calendar-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    font-size: 0.625rem;
+  }
+
+  .legend-item {
+    gap: 0.35rem;
+  }
+
+  .legend-dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .calendar-legend-heart {
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .calendar-hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .calendar-streak-card {
+    width: min(100%, 17.5rem);
+  }
+
+  .calendar-grid-footer .calendar-legend {
+    grid-template-columns: 1fr;
   }
 }
 
