@@ -554,7 +554,7 @@
 .duck-companion.lg svg { width: 160px; height: 160px; }
 
 .bloom-mascot-img {
-  width: 160px;
+  width: min(240px, 72vw);
   height: auto;
   max-width: 100%;
   object-fit: contain;
