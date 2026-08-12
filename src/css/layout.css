@@ -613,6 +613,14 @@
   width: min(280px, 85vw);
 }
 
+.bloom-mascot-img--hero {
+  width: min(300px, 88vw);
+}
+
+.landing-hero-mascot {
+  justify-self: center;
+}
+
 .duck-message {
   text-align: center;
   font-size: var(--font-size-sm);

@@ -39,7 +39,10 @@ export function renderLanding(container) {
             <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-lg" id="btn-hero-login">Já tenho conta</button>
           </div>
         </div>
-        <div>${renderDuckCompanion({ state: 'welcome', size: 'lg' })}</div>
+        <div class="duck-companion landing-hero-mascot">
+          <img src="/pato_acenando.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--hero" width="280" height="280" decoding="async" />
+          <p class="duck-message">Oi! Que bom ter você aqui. Vamos conhecer seu ciclo juntas?</p>
+        </div>
       </section>
 
       <section class="landing-section">
