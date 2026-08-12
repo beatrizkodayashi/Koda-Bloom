@@ -2,7 +2,6 @@ import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderBrandLogo } from '../components/brandLogo.js';
 import { renderCard } from '../components/card.js';
-import { renderDuckCompanion } from '../components/duckCompanion.js';
 
 const FEATURES = [
   { title: 'Calendário inteligente', icon: 'bi-calendar-heart', text: 'Visualize menstruação, previsões e janela fértil estimada em um calendário claro.' },
@@ -55,7 +54,10 @@ export function renderLanding(container) {
       <section class="landing-section landing-section-highlight">
         <h2>${APP_NAME} te acompanha</h2>
         <p class="text-center text-muted mb-4">${APP_NAME} celebra seus registros e te dá dicas gentis, com carinho e leveza.</p>
-        <div class="d-flex justify-content-center">${renderDuckCompanion({ state: 'flower', size: 'lg' })}</div>
+        <div class="duck-companion">
+          <img src="/pato_na_arvore.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--highlight" width="240" height="240" decoding="async" />
+          <p class="mascot-caption">Você está florescendo nesta fase do ciclo!</p>
+        </div>
       </section>
 
       <section class="landing-section text-center">

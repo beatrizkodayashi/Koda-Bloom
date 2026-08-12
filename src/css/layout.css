@@ -698,6 +698,10 @@
   width: min(265px, 82vw);
 }
 
+.bloom-mascot-img--highlight {
+  width: min(240px, 68vw);
+}
+
 .bloom-mascot-img--insights {
   width: min(275px, 80vw);
 }
