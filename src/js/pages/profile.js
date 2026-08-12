@@ -11,7 +11,15 @@ import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { isAuthConfigured } from '../services/authService.js';
 import { isDiscreteMode, setDiscreteMode, discreteNotificationPreview } from '../utils/discreteMode.js';
+import {
+  getCareModeStatus,
+  deactivateHydrationReminder,
+  deactivateRestMode,
+  renderRestModeBanner,
+  mountRestModeBanner,
+} from '../services/careModeService.js';
 import { formatStreakLabel } from '../utils/streak.js';
+import { renderIcon } from '../components/icons.js';
 
 const PREF_ITEMS = [
   ['track_mood', 'Humor'],
@@ -93,7 +101,7 @@ function renderBadgesCard(summary) {
     <div class="profile-badges" role="list">
       ${summary.badges.map((badge) => `
         <div class="profile-badge${badge.unlocked ? ' profile-badge--unlocked' : ''}" role="listitem" title="${badge.hint}">
-          <span class="profile-badge-icon" aria-hidden="true">${badge.icon}</span>
+          <span class="profile-badge-icon">${renderIcon(badge.icon, 'bloom-icon bloom-icon--md')}</span>
           <span class="profile-badge-label">${badge.label}</span>
         </div>
       `).join('')}
@@ -105,7 +113,7 @@ function renderSignatureCard(summary) {
   if (summary.signatureMood) {
     return renderCard('Sua assinatura emocional', `
       <div class="profile-signature">
-        <span class="profile-signature-emoji" aria-hidden="true">${summary.signatureMood.emoji}</span>
+        <span class="profile-signature-icon">${renderIcon(summary.signatureMood.moodIcon, 'bloom-icon bloom-icon--xl')}</span>
         <div>
           <p class="profile-signature-mood mb-1">${summary.signatureMood.label}</p>
           <p class="text-muted mb-0"><small>Apareceu ${summary.signatureMood.count} vez${summary.signatureMood.count > 1 ? 'es' : ''} nos seus registros recentes.</small></p>
@@ -116,6 +124,29 @@ function renderSignatureCard(summary) {
 
   return renderCard('Sua assinatura emocional', `
     <p class="text-muted mb-0">Registre seu humor no check-in diário e eu mostro aqui o que mais aparece nos seus dias.</p>
+  `, { className: 'card-bloom-soft' });
+}
+
+function renderCareStatusCard() {
+  const status = getCareModeStatus();
+
+  if (!status.restActive && !status.hydrationActive) {
+    return renderCard('Modo cuidado', `
+      <p class="text-muted mb-0">Para dias difíceis — registro rápido, respiração e lembretes gentis.</p>
+      <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-go-care">Abrir modo cuidado</button>
+    `, { className: 'card-bloom-soft' });
+  }
+
+  return renderCard('Modo cuidado hoje', `
+    <ul class="care-status-list mb-0">
+      ${status.restActive ? '<li>Modo descanso — app simplificado</li>' : ''}
+      ${status.hydrationActive ? '<li>Lembrete de hidratação — a cada 2 horas</li>' : ''}
+      ${status.discreteActive ? '<li>Modo discreto — termos sensíveis ocultos</li>' : ''}
+    </ul>
+    <div class="care-status-actions mt-4">
+      ${status.restActive ? '<button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="btn-profile-rest-off">Desativar descanso</button>' : ''}
+      ${status.hydrationActive ? '<button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="btn-profile-water-off">Desativar hidratação</button>' : ''}
+    </div>
   `, { className: 'card-bloom-soft' });
 }
 
@@ -143,6 +174,7 @@ export async function renderProfile(container) {
   const headerName = summary.name === 'você' ? 'Perfil' : summary.name;
 
   const content = `
+    ${renderRestModeBanner()}
     <section class="page-mascot-section page-mascot-section--profile">
       <div class="page-header">
         <h1>Olá, ${headerName}!</h1>
@@ -177,6 +209,8 @@ export async function renderProfile(container) {
         </button>
       </div>
 
+      ${renderCareStatusCard()}
+
       ${renderCard('Modo discreto', `
         <p class="text-muted mb-0"><small>Esconde termos sensíveis na tela. Ideal para privacidade no dia a dia.</small></p>
         <label class="card-bloom-check mt-4" for="discrete-mode">
@@ -184,7 +218,7 @@ export async function renderProfile(container) {
           <span class="bloom-checkbox" aria-hidden="true">
             <i class="bi bi-check-lg bloom-checkbox-icon"></i>
           </span>
-          <span class="card-bloom-check-label">🫥 Ativar modo discreto</span>
+          <span class="card-bloom-check-label">${renderIcon('discrete', 'bloom-icon bloom-icon--sm')} Ativar modo discreto</span>
         </label>
         <p class="text-muted mt-3 mb-0"><small>Exemplo: ${discreteNotificationPreview(isDiscreteMode())}</small></p>
       `, { className: 'card-bloom-soft' })}
@@ -241,6 +275,7 @@ export async function renderProfile(container) {
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
+  mountRestModeBanner(container, () => renderProfile(container));
 
   const localPrefs = { ...prefs };
   let cycleRegular = profile?.cycle_regular !== false;
@@ -262,6 +297,17 @@ export async function renderProfile(container) {
   });
 
   container.querySelector('#btn-profile-streak')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
+  container.querySelector('#btn-go-care')?.addEventListener('click', () => navigate(ROUTES.CUIDADO));
+  container.querySelector('#btn-profile-rest-off')?.addEventListener('click', () => {
+    deactivateRestMode();
+    showToast('Modo descanso desativado.', 'success');
+    renderProfile(container);
+  });
+  container.querySelector('#btn-profile-water-off')?.addEventListener('click', () => {
+    deactivateHydrationReminder();
+    showToast('Lembrete de hidratação desativado.', 'success');
+    renderProfile(container);
+  });
   container.querySelector('#btn-go-insights')?.addEventListener('click', () => navigate(ROUTES.INSIGHTS));
   container.querySelector('#btn-go-calendar')?.addEventListener('click', () => navigate(ROUTES.CALENDARIO));
 

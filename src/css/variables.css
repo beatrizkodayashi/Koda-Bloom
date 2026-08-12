@@ -12,14 +12,14 @@
   --palette-cream-soft: #fffbde;
   --palette-cream-muted: #fff6e0;
   --palette-pink: #ffadbb;
-  --palette-lavender: #ffe3fc;
+  --palette-lavender: #fff4e8;
   --palette-brown: #6b4a42;
   --palette-brown-soft: rgba(107, 74, 66, 0.52);
   --palette-brown-muted: rgba(107, 74, 66, 0.32);
 
   /* Superfícies , sem branco puro */
   --color-background: #fff9eb;
-  --color-surface: #ffe3fc;
+  --color-surface: #fff9eb;
   --color-surface-secondary: #ffccbd;
   --color-surface-cream: var(--palette-cream);
   --color-surface-peach: #ffb28f;
@@ -27,7 +27,7 @@
 
   /* Marca */
   --color-primary: #ffadbb;
-  --color-primary-light: #ffe3fc;
+  --color-primary-light: #fff4e8;
   --color-primary-dark: #e88fa0;
   --color-accent: #ffb28f;
   --color-accent-heart: #e85d7a;
@@ -48,15 +48,15 @@
   --color-warning: #ffb28f;
   --color-warning-soft: #ffccbd;
   --color-error: #d9536f;
-  --color-error-soft: #ffe3fc;
-  --color-info: #c4a8d4;
-  --color-info-soft: #ffe3fc;
+  --color-error-soft: #fff0f2;
+  --color-info: #d4a8a8;
+  --color-info-soft: #fff4e8;
 
   /* Fases do ciclo , derivadas da paleta */
   --color-phase-menstruation: #ffadbb;
   --color-phase-follicular: #ffccbd;
   --color-phase-ovulation: #ffb28f;
-  --color-phase-luteal: #ffe3fc;
+  --color-phase-luteal: #fff0e8;
 
   /* Tipografia */
   --font-family: 'Quicksand', system-ui, -apple-system, sans-serif;

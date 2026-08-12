@@ -25,6 +25,7 @@ import { formatDaysUntil, greetingName, phaseLabel } from '../utils/formatters.j
 import { maskPhaseLabel, maskPeriodText } from '../utils/discreteMode.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
+import { isRestModeActive, renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
 
 export async function renderDashboard(container) {
   const { user, profile } = getState();
@@ -71,7 +72,11 @@ export async function renderDashboard(container) {
       )
     : '';
 
+  const restMode = isRestModeActive();
+
   const content = `
+    ${renderRestModeBanner()}
+
     <section class="page-mascot-section">
       <div class="page-header">
         <h1>Olá, ${greetingName(profile?.display_name)}!</h1>
@@ -97,8 +102,8 @@ export async function renderDashboard(container) {
         </div>
       `)}
 
-      ${prediction && enoughData ? renderPredictionConfidenceCard(prediction) : ''}
-      ${renderPersonalizedTips(tips)}
+      ${prediction && enoughData && !restMode ? renderPredictionConfidenceCard(prediction) : ''}
+      ${restMode ? '' : renderPersonalizedTips(tips)}
     </div>
 
     ${renderCareModeButton()}
@@ -117,6 +122,7 @@ export async function renderDashboard(container) {
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
+  mountRestModeBanner(container, () => renderDashboard(container));
 
   container.querySelector('#btn-checkin')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
   container.querySelector('#btn-calendar')?.addEventListener('click', () => navigate(ROUTES.CALENDARIO));

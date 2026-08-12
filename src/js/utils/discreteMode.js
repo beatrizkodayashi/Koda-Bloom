@@ -15,14 +15,14 @@ export function maskPeriodText(text, discreteText = 'O pato tem uma novidade par
 
 export function maskPredictionHeadline(headline) {
   if (!isDiscreteMode()) return headline;
-  return '🩷 O pato tem uma novidade para você';
+  return 'O pato tem uma novidade para você';
 }
 
 export function discreteNotificationPreview(enabled) {
   if (enabled) {
-    return '💗 "O pato tem uma novidade para você."';
+    return '"O pato tem uma novidade para você."';
   }
-  return '🔴 "Sua menstruação começa amanhã."';
+  return '"Sua menstruação começa amanhã."';
 }
 
 export function maskPhaseLabel(label) {

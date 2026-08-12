@@ -166,7 +166,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
       observations.push({
         id: `symptom_${value}`,
         category: 'symptoms',
-        icon: '🦆💭',
+        icon: 'duck-thought',
         title: 'O pato percebeu uma coisa...',
         body: `Nos últimos ${checked} ciclos, você registrou ${label.toLowerCase()} 1–2 dias antes da menstruação.`,
         priority: hits / checked,
@@ -193,7 +193,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
     observations.push({
       id: 'mood_luteal',
       category: 'mood',
-      icon: '🦆💭',
+      icon: 'duck-thought',
       title: 'O pato percebeu uma coisa...',
       body: 'Seu humor tende a ficar mais sensível na fase lútea, nos ciclos que você registrou.',
       priority: 0.7,
@@ -221,7 +221,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
     observations.push({
       id: 'energy_pre',
       category: 'energy',
-      icon: '🦆💭',
+      icon: 'duck-thought',
       title: 'O pato percebeu uma coisa...',
       body: 'Sua energia costuma cair 1–2 dias antes da menstruação começar.',
       priority: 0.65,
@@ -248,7 +248,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
     observations.push({
       id: 'sleep_pre',
       category: 'sleep',
-      icon: '🦆💭',
+      icon: 'duck-thought',
       title: 'O pato percebeu uma coisa...',
       body: 'Seu sono tende a piorar nos dias que antecedem a menstruação.',
       priority: 0.6,
@@ -261,7 +261,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
       observations.push({
         id: 'cycle_stable',
         category: 'cycle',
-        icon: '🦆💭',
+        icon: 'duck-thought',
         title: 'O pato percebeu uma coisa...',
         body: `Sua duração de ciclo é bem estável — em média ${formatDays(stats.average)}, com pouca variação.`,
         priority: 0.5,
@@ -283,7 +283,7 @@ export function detectAnomaly(profile, periodStarts, referenceDate = todayString
 
   if (currentDay > avgCycle + 5) {
     return {
-      icon: '⚠️',
+      icon: 'warning',
       title: 'Seu pato percebeu uma mudança',
       body: `Seu ciclo atual está ${diffFromAvg} dias mais longo que sua média dos últimos ciclos (${formatDays(avgCycle)}).`,
       disclaimer:
@@ -293,7 +293,7 @@ export function detectAnomaly(profile, periodStarts, referenceDate = todayString
 
   if (periodStarts.length >= 4 && stats.variation >= 8) {
     return {
-      icon: '⚠️',
+      icon: 'warning',
       title: 'Seu pato percebeu uma mudança',
       body: `Seus ciclos recentes variaram bastante (de ${stats.min} a ${stats.max} dias). Vale acompanhar nos próximos meses.`,
       disclaimer:
@@ -417,7 +417,7 @@ export function buildPersonalizedTips(profile, periodStarts, dailyLogs, referenc
   if (colicaCount >= 3) {
     tips.push({
       id: 'colica_kit',
-      icon: '🤕',
+      icon: 'pain',
       text: 'Você registra cólica com frequência. Quer montar seu kit cólica no perfil?',
     });
   }
@@ -426,7 +426,7 @@ export function buildPersonalizedTips(profile, periodStarts, dailyLogs, referenc
   if (teaNotes >= 2) {
     tips.push({
       id: 'tea_selfcare',
-      icon: '🍵',
+      icon: 'tea',
       text: 'Vi que chá aparece nos seus registros. Quer colocar chá no seu momento de autocuidado?',
     });
   }
@@ -444,7 +444,7 @@ export function buildPersonalizedTips(profile, periodStarts, dailyLogs, referenc
   if (badSleepPre >= 2 && daysUntil != null && daysUntil <= 3 && daysUntil >= 0) {
     tips.push({
       id: 'rest_mode',
-      icon: '🌙',
+      icon: 'moon',
       text: `Faltam ${daysUntil || 'poucos'} dia(s) para sua menstruação estimada. Quer ativar seu modo descanso?`,
       action: 'care_mode',
     });
@@ -453,7 +453,7 @@ export function buildPersonalizedTips(profile, periodStarts, dailyLogs, referenc
   if (cycleDay && cycleDay <= avgPeriod) {
     tips.push({
       id: 'period_care',
-      icon: '🩷',
+      icon: 'heart-soft',
       text: 'Dias de menstruação pedem gentileza. Hoje vale ir no seu ritmo.',
     });
   }
@@ -491,12 +491,12 @@ export function buildSmartFollowUp(yesterdayLog, todayLog) {
 
 export function buildSymptomBodyMap(logs) {
   const zones = [
-    { id: 'head', label: 'Cabeça', symptoms: ['dor_cabeca'], icon: '🧠' },
-    { id: 'chest', label: 'Seios', symptoms: ['sensibilidade_seios'], icon: '💗' },
-    { id: 'belly', label: 'Barriga', symptoms: ['colica', 'inchaco', 'nausea'], icon: '🫃' },
-    { id: 'back', label: 'Lombar', symptoms: ['dor_lombar'], icon: '🦴' },
-    { id: 'skin', label: 'Pele', symptoms: ['acne'], icon: '✨' },
-    { id: 'general', label: 'Geral', symptoms: ['fadiga', 'desejo_comida'], icon: '🌸' },
+    { id: 'head', label: 'Cabeça', symptoms: ['dor_cabeca'], icon: 'brain' },
+    { id: 'chest', label: 'Seios', symptoms: ['sensibilidade_seios'], icon: 'chest' },
+    { id: 'belly', label: 'Barriga', symptoms: ['colica', 'inchaco', 'nausea'], icon: 'belly' },
+    { id: 'back', label: 'Lombar', symptoms: ['dor_lombar'], icon: 'spine' },
+    { id: 'skin', label: 'Pele', symptoms: ['acne'], icon: 'sparkles' },
+    { id: 'general', label: 'Geral', symptoms: ['fadiga', 'desejo_comida'], icon: 'flower' },
   ];
 
   const recentLogs = logs.slice(0, 35);

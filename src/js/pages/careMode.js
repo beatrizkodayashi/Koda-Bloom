@@ -2,12 +2,25 @@ import { ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderCareModePage } from '../components/bloomIntelligence.js';
 import { showToast } from '../components/toast.js';
+import {
+  activateHydrationReminder,
+  deactivateHydrationReminder,
+  activateRestMode,
+  deactivateRestMode,
+  getCareModeStatus,
+  isHydrationReminderActive,
+  isRestModeActive,
+} from '../services/careModeService.js';
+import { isDiscreteMode, setDiscreteMode } from '../utils/discreteMode.js';
 
 let breatheTimer = null;
 
-export async function renderCareMode(container) {
-  container.innerHTML = renderCareModePage();
+function paintCarePage(container) {
+  container.innerHTML = renderCareModePage(getCareModeStatus());
+  bindCareEvents(container);
+}
 
+function bindCareEvents(container) {
   container.querySelector('#care-exit')?.addEventListener('click', () => {
     stopBreathing();
     navigate(ROUTES.HOJE);
@@ -23,11 +36,39 @@ export async function renderCareMode(container) {
   });
 
   container.querySelector('#care-water')?.addEventListener('click', () => {
-    showToast('💧 Um copo d\'água agora já ajuda. Sem pressa.', 'success');
+    if (isHydrationReminderActive()) {
+      deactivateHydrationReminder();
+      showToast('Lembrete de hidratação desativado.', 'success');
+    } else {
+      activateHydrationReminder();
+      showToast('Te lembro de beber água hoje — a cada 2 horas, sem pressa.', 'success');
+    }
+    paintCarePage(container);
   });
 
   container.querySelector('#care-rest')?.addEventListener('click', () => {
-    showToast('🛌 Modo descanso ativado. Hoje vale ir devagar.', 'success');
+    if (isRestModeActive()) {
+      deactivateRestMode();
+      showToast('Modo descanso desativado.', 'success');
+    } else {
+      const withDiscrete = container.querySelector('#care-rest-discrete')?.checked ?? true;
+      activateRestMode({ withDiscrete });
+      showToast(
+        withDiscrete
+          ? 'Modo descanso ativo — app simplificado e modo discreto ligado.'
+          : 'Modo descanso ativo — app simplificado até amanhã.',
+        'success'
+      );
+    }
+    paintCarePage(container);
+  });
+
+  container.querySelector('#care-discrete-toggle')?.addEventListener('change', (e) => {
+    setDiscreteMode(e.target.checked);
+    showToast(
+      e.target.checked ? 'Modo discreto ativado.' : 'Modo discreto desativado.',
+      'success'
+    );
   });
 
   container.querySelector('#care-breathe')?.addEventListener('click', () => {
@@ -40,7 +81,10 @@ export async function renderCareMode(container) {
     stopBreathing();
     container.querySelector('#care-breathe-panel').hidden = true;
   });
+}
 
+export async function renderCareMode(container) {
+  paintCarePage(container);
   return () => stopBreathing();
 }
 

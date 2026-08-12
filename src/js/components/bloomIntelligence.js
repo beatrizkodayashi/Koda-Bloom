@@ -1,12 +1,17 @@
 import { renderCard } from './card.js';
 import { APP_NAME } from '../config/app.js';
+import { renderIcon } from './icons.js';
+
+function retroItem(iconId, text) {
+  return `<li class="cycle-retro-item">${renderIcon(iconId, 'bloom-icon bloom-icon--sm')}<span>${text}</span></li>`;
+}
 
 export function renderPredictionConfidenceCard(prediction) {
   if (!prediction) return '';
 
   return renderCard('Próxima menstruação', `
     <div class="bloom-prediction">
-      <p class="bloom-prediction-headline">🩷 ${prediction.headline}</p>
+      <p class="bloom-prediction-headline">${renderIcon('heart-soft', 'bloom-icon bloom-icon--sm')} ${prediction.headline}</p>
       <p class="text-muted mb-3"><small>${prediction.formattedDate}</small></p>
       <div class="bloom-confidence-bar" role="progressbar" aria-valuenow="${prediction.percent}" aria-valuemin="0" aria-valuemax="100" aria-label="Confiança da previsão">
         <span class="bloom-confidence-fill" style="width: ${prediction.percent}%"></span>
@@ -31,7 +36,7 @@ export function renderDuckObservationsCard(observations) {
     <div class="duck-observations">
       ${observations.map((obs) => `
         <article class="duck-observation duck-observation--${obs.category}">
-          <p class="duck-observation-icon" aria-hidden="true">${obs.icon}</p>
+          <div class="duck-observation-icon">${renderIcon(obs.icon, 'bloom-icon bloom-icon--md')}</div>
           <div>
             <p class="duck-observation-title">${obs.title}</p>
             <p class="duck-observation-body mb-0">${obs.body}</p>
@@ -47,7 +52,7 @@ export function renderAnomalyAlert(anomaly) {
 
   return `
     <div class="bloom-anomaly-alert" role="alert">
-      <p class="bloom-anomaly-icon" aria-hidden="true">${anomaly.icon}</p>
+      <div class="bloom-anomaly-icon">${renderIcon(anomaly.icon, 'bloom-icon bloom-icon--md')}</div>
       <div>
         <p class="bloom-anomaly-title">${anomaly.title}</p>
         <p class="bloom-anomaly-body">${anomaly.body}</p>
@@ -82,7 +87,7 @@ export function renderCycleComparisonCard(comparison) {
       </table>
     </div>
     <div class="cycle-comparison-duck">
-      <span aria-hidden="true">🦆</span>
+      ${renderIcon('duck', 'bloom-icon bloom-icon--sm')}
       <p class="mb-0">${comparison.duckReaction}</p>
     </div>
   `);
@@ -91,17 +96,18 @@ export function renderCycleComparisonCard(comparison) {
 export function renderCycleRetrospectiveCard(retro) {
   if (!retro) return '';
 
-  return renderCard(`✨ Seu ciclo #${retro.cycleNumber}`, `
+  return renderCard(`Seu ciclo #${retro.cycleNumber}`, `
+    <p class="cycle-retro-title">${renderIcon('sparkles', 'bloom-icon bloom-icon--sm')} Retrospectiva do ciclo</p>
     <p class="text-muted mb-3"><small>${retro.startLabel} → ${retro.endLabel}</small></p>
     <ul class="cycle-retro-list mb-0">
-      <li>🩸 ${retro.periodLen} dias de menstruação</li>
-      <li>🌙 ${retro.duration} dias de ciclo</li>
-      <li>💗 Humor predominante: ${retro.mood}</li>
-      <li>⚡ Energia média: ${retro.avgEnergy}/10</li>
-      <li>🤕 Sintoma mais registrado: ${retro.topSymptom}</li>
+      ${retroItem('period', `${retro.periodLen} dias de menstruação`)}
+      ${retroItem('moon', `${retro.duration} dias de ciclo`)}
+      ${retroItem('heart', `Humor predominante: ${retro.mood}`)}
+      ${retroItem('energy', `Energia média: ${retro.avgEnergy}/10`)}
+      ${retroItem('pain', `Sintoma mais registrado: ${retro.topSymptom}`)}
     </ul>
     <div class="cycle-retro-duck mt-4">
-      <span aria-hidden="true">🦆</span>
+      ${renderIcon('duck', 'bloom-icon bloom-icon--sm')}
       <p class="mb-0"><strong>"${retro.duckVerdict}"</strong></p>
     </div>
   `, { className: 'card-bloom-soft' });
@@ -165,13 +171,15 @@ export function renderSymptomBodyMap(bodyMap) {
   }
 
   return renderCard('Onde você sentiu sintomas?', `
-    <p class="text-muted mb-0"><small>Com base nos seus registros recentes.</small></p>
-    <div class="symptom-body-map mt-4">
-      ${bodyMap.map((zone) => `
-        <div class="symptom-body-zone${zone.active ? ' symptom-body-zone--active' : ''}" style="--zone-intensity: ${Math.min(zone.intensity, 5)}">
-          <span class="symptom-body-zone-icon" aria-hidden="true">${zone.icon}</span>
-          <span class="symptom-body-zone-label">${zone.label}</span>
-          ${zone.active ? `<span class="symptom-body-zone-count">${zone.intensity}×</span>` : ''}
+    <p class="text-muted mb-0 text-center"><small>Com base nos seus registros recentes.</small></p>
+    <div class="row row-cols-2 row-cols-sm-3 g-3 mt-4 mx-0 justify-content-center symptom-body-map">
+      ${active.map((zone) => `
+        <div class="col">
+          <div class="symptom-body-zone symptom-body-zone--active" style="--zone-intensity: ${Math.min(zone.intensity, 5)}">
+            <span class="symptom-body-zone-icon">${renderIcon(zone.icon, 'bloom-icon bloom-icon--md')}</span>
+            <span class="symptom-body-zone-label">${zone.label}</span>
+            <span class="symptom-body-zone-count">${zone.intensity}×</span>
+          </div>
         </div>
       `).join('')}
     </div>
@@ -185,7 +193,7 @@ export function renderPersonalizedTips(tips) {
     <div class="bloom-tips">
       ${tips.map((tip) => `
         <div class="bloom-tip${tip.action ? ' bloom-tip--action' : ''}" data-tip-action="${tip.action || ''}">
-          <span class="bloom-tip-icon" aria-hidden="true">${tip.icon}</span>
+          <span class="bloom-tip-icon">${renderIcon(tip.icon, 'bloom-icon bloom-icon--sm')}</span>
           <p class="mb-0">${tip.text}</p>
         </div>
       `).join('')}
@@ -198,7 +206,7 @@ export function renderSmartFollowUpBanner(followUp) {
 
   return `
     <div class="smart-followup-banner" id="smart-followup">
-      <p class="smart-followup-duck" aria-hidden="true">🦆</p>
+      <div class="smart-followup-duck">${renderIcon('duck', 'bloom-icon bloom-icon--md')}</div>
       <div class="smart-followup-copy">
         <p class="smart-followup-question mb-2">${followUp.question}</p>
         <div class="smart-followup-actions">
@@ -213,50 +221,74 @@ export function renderSmartFollowUpBanner(followUp) {
 export function renderCareModeButton() {
   return `
     <button type="button" class="btn-bloom btn-bloom-care w-100 mt-4" id="btn-care-mode">
-      <span aria-hidden="true">🥺</span> Hoje não tô bem
+      ${renderIcon('care-sad', 'bloom-icon bloom-icon--sm')} Hoje não tô bem
     </button>
   `;
 }
 
-export function renderCareModePage() {
+export function renderCareModePage(status = {}) {
+  const {
+    restActive = false,
+    hydrationActive = false,
+    discreteActive = false,
+  } = status;
+
+  const actions = [
+    { id: 'care-quick-log', icon: 'note', label: 'Registrar sintomas rapidamente' },
+    { id: 'care-breathe', icon: 'wind', label: 'Respiração guiada' },
+    { id: 'care-water', icon: 'water', label: hydrationActive ? 'Hidratação ativa (toque para desligar)' : 'Lembrete de hidratação' },
+    { id: 'care-rest', icon: 'bed', label: restActive ? 'Modo descanso ativo (toque para desligar)' : 'Modo descanso' },
+    { id: 'care-journal', icon: 'book', label: 'Diário emocional' },
+  ];
+
   return `
     <div class="care-mode-page gradient-bg floral-pattern">
-      <section class="care-mode-hero">
-        <img src="/pato_padrao.png" alt="${APP_NAME}" class="bloom-mascot-img care-mode-mascot" width="180" height="180" decoding="async" />
-        <h1>Hoje não tô bem</h1>
-        <p>Tudo bem não estar bem. Vamos com calma — só o que você precisar agora.</p>
-      </section>
+      <div class="care-mode-inner">
+        <section class="care-mode-hero">
+          <div class="care-mode-mascot-wrap">
+            <img src="/pato_padrao.png" alt="${APP_NAME}" class="bloom-mascot-img care-mode-mascot" width="140" height="140" decoding="async" />
+          </div>
+          <h1>Hoje não tô bem</h1>
+          <p class="care-mode-intro">Escolha só uma coisa por agora.</p>
+          <p class="care-mode-subtitle">Tudo bem não estar bem. Vamos com calma — só o que você precisar hoje.</p>
+        </section>
 
-      <div class="card-stack care-mode-actions">
-        <button type="button" class="care-mode-action" id="care-quick-log">
-          <span aria-hidden="true">📝</span>
-          <span>Registrar sintomas rapidamente</span>
-        </button>
-        <button type="button" class="care-mode-action" id="care-breathe">
-          <span aria-hidden="true">🌬️</span>
-          <span>Respiração guiada</span>
-        </button>
-        <button type="button" class="care-mode-action" id="care-water">
-          <span aria-hidden="true">💧</span>
-          <span>Lembrete de hidratação</span>
-        </button>
-        <button type="button" class="care-mode-action" id="care-rest">
-          <span aria-hidden="true">🛌</span>
-          <span>Modo descanso</span>
-        </button>
-        <button type="button" class="care-mode-action" id="care-journal">
-          <span aria-hidden="true">📖</span>
-          <span>Diário emocional</span>
-        </button>
+        <div class="care-mode-actions">
+          ${actions.map((action) => `
+            <button type="button" class="care-mode-action${(action.id === 'care-rest' && restActive) || (action.id === 'care-water' && hydrationActive) ? ' care-mode-action--active' : ''}" id="${action.id}">
+              ${renderIcon(action.icon, 'bloom-icon bloom-icon--sm')}
+              <span>${action.label}</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="care-mode-options">
+          ${!restActive ? `
+            <label class="care-mode-option card-bloom-check" for="care-rest-discrete">
+              <input type="checkbox" id="care-rest-discrete" class="bloom-checkbox-input" checked />
+              <span class="bloom-checkbox" aria-hidden="true">
+                <i class="bi bi-check-lg bloom-checkbox-icon"></i>
+              </span>
+              <span class="card-bloom-check-label">Usar modo discreto ao ativar o descanso</span>
+            </label>
+          ` : ''}
+          <label class="care-mode-option card-bloom-check" for="care-discrete-toggle">
+            <input type="checkbox" id="care-discrete-toggle" class="bloom-checkbox-input"${discreteActive ? ' checked' : ''} />
+            <span class="bloom-checkbox" aria-hidden="true">
+              <i class="bi bi-check-lg bloom-checkbox-icon"></i>
+            </span>
+            <span class="card-bloom-check-label">${renderIcon('discrete', 'bloom-icon bloom-icon--sm')} Esconder termos sensíveis no app</span>
+          </label>
+        </div>
+
+        <div id="care-breathe-panel" class="care-breathe-panel" hidden>
+          <p class="care-breathe-phase" id="care-breathe-text">Inspire…</p>
+          <div class="care-breathe-circle" id="care-breathe-circle"></div>
+          <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="care-breathe-stop">Parar</button>
+        </div>
+
+        <button type="button" class="btn-bloom btn-bloom-ghost care-mode-exit" id="care-exit">Voltar</button>
       </div>
-
-      <div id="care-breathe-panel" class="care-breathe-panel" hidden>
-        <p class="care-breathe-phase" id="care-breathe-text">Inspire…</p>
-        <div class="care-breathe-circle" id="care-breathe-circle"></div>
-        <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="care-breathe-stop">Parar</button>
-      </div>
-
-      <button type="button" class="btn-bloom btn-bloom-ghost w-100 mt-5" id="care-exit">Voltar</button>
     </div>
   `;
 }

@@ -40,7 +40,7 @@
 }
 
 .btn-bloom-secondary {
-  background: var(--palette-lavender);
+  background: var(--palette-cream-muted);
   color: var(--color-text);
   border: 2px solid var(--color-border-strong);
 }
@@ -52,12 +52,12 @@
 }
 
 .btn-bloom-ghost {
-  background: rgba(255, 227, 252, 0.4);
+  background: rgba(255, 251, 222, 0.55);
   color: var(--color-text-muted);
 }
 
 .btn-bloom-ghost:hover:not(:disabled) {
-  background: var(--palette-lavender);
+  background: var(--palette-peach-light);
   color: var(--color-text);
 }
 
@@ -152,7 +152,7 @@
 }
 
 .card-bloom-soft {
-  background: rgba(255, 227, 252, 0.55);
+  background: rgba(255, 251, 222, 0.72);
 }
 
 .card-bloom-soft .card-bloom-header {
@@ -191,7 +191,7 @@
   gap: var(--space-3);
   margin-top: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  background: rgba(255, 227, 252, 0.45);
+  background: rgba(255, 251, 222, 0.65);
   border: 2px solid var(--card-outline-soft);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
@@ -204,7 +204,7 @@
 }
 
 .card-bloom-check:hover {
-  background: rgba(255, 227, 252, 0.65);
+  background: rgba(255, 251, 222, 0.65);
   border-color: var(--palette-pink);
 }
 
@@ -329,6 +329,47 @@
   font-size: var(--font-size-xl);
 }
 
+/* Bloom inline SVG icons */
+.bloom-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.bloom-icon svg {
+  width: 1.25em;
+  height: 1.25em;
+  display: block;
+}
+
+.bloom-icon--sm svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.bloom-icon--md svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.bloom-icon--lg svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.bloom-icon--xl svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.card-bloom-check-label .bloom-icon {
+  margin-right: var(--space-1);
+}
+
+
 .feature-card .card-bloom-body {
   text-align: center;
 }
@@ -372,7 +413,7 @@
   outline: none;
   border-color: var(--palette-pink);
   box-shadow: 0 0 0 3px rgba(255, 173, 187, 0.35);
-  background: var(--palette-lavender);
+  background: var(--palette-cream-muted);
 }
 
 .form-bloom input.is-invalid,
@@ -414,7 +455,7 @@
 
 .password-field-toggle:hover {
   color: var(--color-accent-heart);
-  background: rgba(255, 227, 252, 0.55);
+  background: rgba(255, 251, 222, 0.55);
 }
 
 .password-field-toggle:focus-visible {
@@ -457,7 +498,7 @@
 
 .chip:hover {
   border-color: var(--palette-pink);
-  background: var(--palette-lavender);
+  background: var(--palette-cream-muted);
   transform: translateY(-1px);
   box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.6);
 }
@@ -497,7 +538,7 @@
 .badge-phase-menstruation { background: rgba(255, 173, 187, 0.55); color: #a8435a; }
 .badge-phase-follicular { background: rgba(255, 204, 189, 0.65); color: #8f5a48; }
 .badge-phase-ovulation { background: rgba(255, 178, 143, 0.55); color: #9a5038; }
-.badge-phase-luteal { background: rgba(255, 227, 252, 0.9); color: #8f6b72; }
+.badge-phase-luteal { background: rgba(255, 251, 222, 0.9); color: #8f6b72; }
 
 /* Toast */
 .toast-container {

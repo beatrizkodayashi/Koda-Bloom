@@ -80,7 +80,7 @@
   max-height: min(70dvh, 560px);
   display: flex;
   flex-direction: column;
-  background: rgba(255, 227, 252, 0.98);
+  background: rgba(255, 251, 222, 0.98);
   backdrop-filter: blur(12px);
   border: 2px solid var(--card-outline-soft);
   border-radius: var(--radius-card);
@@ -106,7 +106,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   padding: var(--space-4);
-  background: linear-gradient(135deg, rgba(255, 173, 187, 0.55) 0%, rgba(255, 227, 252, 0.85) 100%);
+  background: linear-gradient(135deg, rgba(255, 173, 187, 0.55) 0%, rgba(255, 251, 222, 0.85) 100%);
   border-bottom: 2px solid var(--card-outline-soft);
 }
 

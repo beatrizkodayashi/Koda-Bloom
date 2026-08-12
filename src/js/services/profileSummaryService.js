@@ -4,17 +4,6 @@ import { calculateStreak } from '../utils/streak.js';
 import { hasEnoughDataForPrediction } from './cycleCalculator.js';
 import { buildInsights } from './insightsService.js';
 
-const MOOD_EMOJI = {
-  feliz: '😊',
-  tranquila: '😌',
-  sensivel: '🥺',
-  triste: '😢',
-  irritada: '😤',
-  ansiosa: '😰',
-  cansada: '😴',
-  energetica: '⚡',
-};
-
 const CONFIDENCE_LABELS = {
   insufficient: 'Ainda aprendendo',
   low: 'Em evolução',
@@ -50,42 +39,42 @@ function buildBadges({ totalCheckins, streak, periodStarts, moodCounts, knowScor
   return [
     {
       id: 'first_log',
-      icon: '🌱',
+      icon: 'seedling',
       label: 'Primeiro registro',
       hint: 'Faça seu primeiro check-in',
       unlocked: totalCheckins >= 1,
     },
     {
       id: 'streak_3',
-      icon: '🔥',
+      icon: 'fire',
       label: 'Em sequência',
       hint: 'Registre 3 dias seguidos',
       unlocked: streak >= 3,
     },
     {
       id: 'cycles_3',
-      icon: '📅',
+      icon: 'calendar',
       label: 'Cartógrafa',
       hint: 'Registre 3 ciclos menstruais',
       unlocked: periodStarts.length >= 3,
     },
     {
       id: 'mood_tracker',
-      icon: '💭',
+      icon: 'thought',
       label: 'Introspectiva',
       hint: 'Registre seu humor 5 vezes',
       unlocked: moodEntries >= 5,
     },
     {
       id: 'data_rich',
-      icon: '✨',
+      icon: 'sparkles',
       label: 'Perfil rico',
       hint: 'Chegue a 70% no mapa do Bloom',
       unlocked: knowScore >= 70,
     },
     {
       id: 'predictions',
-      icon: '🎯',
+      icon: 'target',
       label: 'Previsões afiadas',
       hint: 'Registre ciclos suficientes para estimativas',
       unlocked: enoughData,
@@ -164,7 +153,7 @@ export function buildProfileSummary(profile, user, periodStarts, dailyLogs, pref
         value: topMood[0],
         label: moodLabel(topMood[0]),
         count: topMood[1],
-        emoji: MOOD_EMOJI[topMood[0]] || '💗',
+        moodIcon: topMood[0],
       }
     : null;
 

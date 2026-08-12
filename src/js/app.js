@@ -7,6 +7,7 @@ import { getSession, onAuthStateChange, isAuthConfigured } from './services/auth
 import { getProfile } from './services/cycleService.js';
 import { initToast } from './components/toast.js';
 import { initDuckHelpChat } from './components/duckHelpChat.js';
+import { initCareModeEffects } from './services/careModeService.js';
 
 import { renderLanding } from './pages/landing.js';
 import { renderLogin, renderSignup, renderResetPassword } from './pages/auth.js';
@@ -60,26 +61,47 @@ async function initAuth() {
   setState({ isLoading: true });
 
   if (isAuthConfigured()) {
-    const session = await getSession();
-    if (session?.user) {
-      setState({ user: session.user });
-    }
+    try {
+      const session = await getSession();
+      if (session?.user) {
+        setState({ user: session.user });
+      }
 
-    onAuthStateChange((_event, session) => {
-      setState({ user: session?.user ?? null });
-    });
+      onAuthStateChange((_event, session) => {
+        setState({ user: session?.user ?? null });
+      });
+    } catch (err) {
+      console.error('Falha ao iniciar autenticação:', err);
+      setState({ error: err.message });
+    }
   }
 
   setState({ isLoading: false });
 }
 
 async function bootstrap() {
-  initToast();
-  initDuckHelpChat();
-  registerRoutes();
-  initRouter();
-  await initAuth();
-  await renderRoute();
+  const app = document.getElementById('app');
+
+  try {
+    initToast();
+    initCareModeEffects();
+    initDuckHelpChat();
+    registerRoutes();
+    initRouter();
+    await initAuth();
+    await renderRoute();
+  } catch (err) {
+    console.error(err);
+    if (app) {
+      app.innerHTML = `
+        <div class="empty-state p-5 text-center">
+          <h3>Não foi possível iniciar o Bloom</h3>
+          <p class="text-muted">${err.message || 'Erro desconhecido'}</p>
+          <button type="button" class="btn-bloom btn-bloom-primary mt-3" onclick="location.reload()">Recarregar</button>
+        </div>
+      `;
+    }
+  }
 }
 
 bootstrap();

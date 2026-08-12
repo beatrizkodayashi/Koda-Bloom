@@ -134,7 +134,7 @@ export async function renderTracking(container) {
     const banner = container.querySelector('#smart-followup');
     if (btn.dataset.followup === 'yes') {
       banner?.remove();
-      showToast('Que alívio! 💗', 'success');
+      showToast('Que alívio!', 'success');
       return;
     }
     selectedSymptoms.add('colica');

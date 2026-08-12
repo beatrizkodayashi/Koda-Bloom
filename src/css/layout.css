@@ -228,7 +228,7 @@
   }
 
   .sidebar-item:hover {
-    background: rgba(255, 227, 252, 0.75);
+    background: rgba(255, 251, 222, 0.75);
     border-color: var(--card-outline);
     transform: translateY(-1px);
   }
@@ -259,7 +259,7 @@
   padding: var(--space-4) var(--space-6);
   max-width: var(--max-width-content);
   margin: var(--space-4) auto 0;
-  background: rgba(255, 227, 252, 0.6);
+  background: rgba(255, 251, 222, 0.6);
   border-radius: var(--radius-2xl);
   border: 1px solid var(--color-border);
 }
@@ -336,7 +336,7 @@
 }
 
 .landing-section-highlight {
-  background: rgba(255, 227, 252, 0.7);
+  background: rgba(255, 251, 222, 0.7);
   border-radius: var(--radius-card);
   border: 2px solid var(--card-outline-soft);
   box-shadow: var(--card-shadow);
@@ -410,7 +410,7 @@
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   border-top: 1px solid var(--color-border);
-  background: rgba(255, 227, 252, 0.5);
+  background: rgba(255, 251, 222, 0.5);
 }
 
 /* Auth pages */
@@ -585,7 +585,7 @@
   background: linear-gradient(
     135deg,
     rgba(255, 173, 187, 0.55) 0%,
-    rgba(255, 227, 252, 0.85) 50%,
+    rgba(255, 251, 222, 0.85) 50%,
     rgba(255, 178, 143, 0.4) 100%
   );
   border: 2px solid var(--card-outline-soft);
@@ -707,7 +707,7 @@
   line-height: var(--line-height-relaxed);
   margin: 0;
   padding: var(--space-3) var(--space-5);
-  background: linear-gradient(135deg, rgba(255, 227, 252, 0.9) 0%, rgba(255, 204, 189, 0.45) 100%);
+  background: linear-gradient(135deg, rgba(255, 251, 222, 0.9) 0%, rgba(255, 204, 189, 0.45) 100%);
   border: 2px solid var(--card-outline-soft);
   border-radius: var(--radius-full);
   box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.5);
@@ -920,7 +920,7 @@
 
 .calendar-day.today {
   border: 3px solid var(--color-accent-heart);
-  background: rgba(255, 227, 252, 0.82);
+  background: rgba(255, 251, 222, 0.82);
   box-shadow: none;
 }
 
@@ -946,7 +946,7 @@
 }
 
 .calendar-day.period { background: rgba(255, 173, 187, 0.65); }
-.calendar-day.predicted-period { background: rgba(255, 227, 252, 0.85); border: 1px dashed var(--palette-pink); }
+.calendar-day.predicted-period { background: rgba(255, 251, 222, 0.85); border: 1px dashed var(--palette-pink); }
 .calendar-day.fertile { background: rgba(255, 204, 189, 0.55); }
 .calendar-day.ovulation { background: rgba(255, 178, 143, 0.55); }
 
@@ -1145,7 +1145,7 @@
 }
 
 .legend-dot-period { background: rgba(255, 173, 187, 0.75); }
-.legend-dot-predicted { background: rgba(255, 227, 252, 0.9); border: 1px dashed var(--palette-pink); }
+.legend-dot-predicted { background: rgba(255, 251, 222, 0.9); border: 1px dashed var(--palette-pink); }
 .legend-dot-fertile { background: rgba(255, 204, 189, 0.75); }
 .legend-dot-ovulation { background: rgba(255, 178, 143, 0.75); }
 
@@ -1154,7 +1154,7 @@
   background: linear-gradient(
     135deg,
     rgba(255, 173, 187, 0.55) 0%,
-    rgba(255, 227, 252, 0.85) 50%,
+    rgba(255, 251, 222, 0.85) 50%,
     rgba(255, 178, 143, 0.4) 100%
   );
 }
@@ -1355,9 +1355,9 @@
   gap: var(--space-4);
 }
 
-.profile-signature-emoji {
-  font-size: 2.5rem;
-  line-height: 1;
+.profile-signature-icon {
+  line-height: 0;
+  flex-shrink: 0;
 }
 
 .profile-signature-mood {
@@ -1396,8 +1396,7 @@
 }
 
 .profile-badge-icon {
-  font-size: 1.5rem;
-  line-height: 1;
+  line-height: 0;
 }
 
 .profile-badge-label {

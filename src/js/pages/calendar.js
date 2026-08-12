@@ -22,6 +22,7 @@ import {
 import { isAuthConfigured } from '../services/authService.js';
 import { renderCard } from '../components/card.js';
 import { renderStreakCard } from '../components/streakCard.js';
+import { renderRestModeBanner, mountRestModeBanner, isRestModeActive } from '../services/careModeService.js';
 
 let viewYear, viewMonth;
 
@@ -133,6 +134,7 @@ export async function renderCalendar(container) {
   }
 
   const content = `
+    ${renderRestModeBanner()}
     <div class="page-header page-header--calendar">
       <div class="page-header-copy">
         <h1>Calendário</h1>
@@ -146,7 +148,7 @@ export async function renderCalendar(container) {
       </div>
     </div>
 
-    ${prediction && enoughData ? renderPredictionConfidenceCard(prediction) : ''}
+    ${prediction && enoughData && !isRestModeActive() ? renderPredictionConfidenceCard(prediction) : ''}
 
     ${renderCard('Seu mês', renderCalendarGrid(), { className: 'calendar-card' })}
     <div id="day-detail" hidden></div>
@@ -154,6 +156,7 @@ export async function renderCalendar(container) {
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
+  mountRestModeBanner(container, () => renderCalendar(container));
 
   container.querySelector('#btn-streak-register')?.addEventListener('click', () => {
     navigate(ROUTES.REGISTRAR);

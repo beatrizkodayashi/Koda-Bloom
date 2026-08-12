@@ -1,6 +1,11 @@
 import { NAV_ITEMS } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderBrandLogo } from './brandLogo.js';
+import { filterNavItemsForRestMode } from '../services/careModeService.js';
+
+function getNavItems() {
+  return filterNavItemsForRestMode(NAV_ITEMS);
+}
 
 function isActive(path) {
   return location.pathname === path || location.pathname.startsWith(path + '/');
@@ -17,7 +22,7 @@ export function renderBottomNavigation() {
   const body = document.createElement('div');
   body.className = 'card-bloom-body nav-card-body';
 
-  NAV_ITEMS.forEach((item) => {
+  getNavItems().forEach((item) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `bottom-nav-item${item.highlight ? ' highlight' : ''}${isActive(item.path) ? ' active' : ''}`;
@@ -58,7 +63,7 @@ export function renderSidebar() {
   navEl.className = 'sidebar-nav';
   navEl.setAttribute('aria-label', 'Navegação principal');
 
-  NAV_ITEMS.forEach((item) => {
+  getNavItems().forEach((item) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `sidebar-item${isActive(item.path) ? ' active' : ''}`;
