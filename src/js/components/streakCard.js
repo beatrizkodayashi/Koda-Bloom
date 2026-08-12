@@ -7,7 +7,7 @@ export function renderStreakCard({
 } = {}) {
   return `
     <div class="calendar-streak-card" role="region" aria-label="Sequência de registros">
-      <div class="calendar-streak-card-body">
+      <div class="calendar-streak-card-main">
         <div class="calendar-streak-card-icon" aria-hidden="true">
           <i class="bi bi-heart-fill"></i>
         </div>

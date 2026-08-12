@@ -525,37 +525,30 @@
 
 .calendar-hero {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
   gap: var(--space-4);
-  align-items: stretch;
+  align-items: center;
 }
 
 .calendar-hero-mascot {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 9.5rem;
-  padding: var(--space-3);
-  background: rgba(255, 227, 252, 0.35);
-  border: 2px solid var(--card-outline-soft);
-  border-radius: var(--radius-card);
-  box-shadow: 4px 4px 0 rgba(255, 204, 189, 0.45);
 }
 
 .bloom-mascot-img--calendar-hero {
-  width: min(150px, 90%);
+  width: min(150px, 28vw);
   height: auto;
 }
 
 .calendar-streak-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  min-height: 9.5rem;
-  padding: var(--space-4);
-  text-align: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  min-height: 7.5rem;
+  padding: var(--space-4) var(--space-5);
   background: linear-gradient(
     135deg,
     rgba(255, 173, 187, 0.55) 0%,
@@ -567,15 +560,17 @@
   box-shadow: 4px 4px 0 rgba(255, 204, 189, 0.55);
 }
 
-.calendar-streak-card-body {
+.calendar-streak-card-main {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
+  flex: 1;
+  min-width: 0;
 }
 
 .calendar-streak-card-icon {
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: 50%;
   background: var(--palette-cream-soft);
   border: 2px solid var(--card-outline-soft);
@@ -583,7 +578,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-accent-heart);
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
   box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.6);
 }
@@ -592,13 +587,12 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.125rem;
+  gap: var(--space-1);
   min-width: 0;
-  text-align: left;
 }
 
 .calendar-streak-card-count {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-3xl);
   font-weight: 700;
   line-height: 1;
   color: var(--color-text);
@@ -611,23 +605,30 @@
 }
 
 .calendar-streak-card-action {
-  width: 100%;
-  max-width: 11rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .calendar-hero {
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-3);
   }
 
-  .calendar-hero-mascot,
-  .calendar-streak-card {
-    min-height: 8.5rem;
-    padding: var(--space-3);
+  .bloom-mascot-img--calendar-hero {
+    width: min(120px, 100%);
   }
 
-  .bloom-mascot-img--calendar-hero {
-    width: min(115px, 88%);
+  .calendar-streak-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    min-height: 0;
+  }
+
+  .calendar-streak-card-main {
+    gap: var(--space-3);
   }
 
   .calendar-streak-card-icon {
@@ -637,11 +638,16 @@
   }
 
   .calendar-streak-card-count {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-2xl);
   }
 
   .calendar-streak-card-label {
     font-size: var(--font-size-xs);
+  }
+
+  .calendar-streak-card-action {
+    width: 100%;
+    white-space: normal;
   }
 }
 
