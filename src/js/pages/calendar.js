@@ -1,4 +1,4 @@
-import { ROUTES } from '../config/app.js';
+import { ROUTES, APP_NAME } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getPeriodEntries } from '../services/cycleService.js';
@@ -110,14 +110,19 @@ export async function renderCalendar(container) {
       </button>`;
     }
 
-    html += '</div>';
     html += `
-      <div class="calendar-legend">
-        <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
-        <span class="legend-item"><span class="legend-dot legend-dot-period"></span> Menstruação</span>
-        <span class="legend-item"><span class="legend-dot legend-dot-predicted"></span> Previsão</span>
-        <span class="legend-item"><span class="legend-dot legend-dot-fertile"></span> Janela fértil</span>
-        <span class="legend-item"><span class="legend-dot legend-dot-ovulation"></span> Ovulação est.</span>
+        <div class="calendar-grid-footer">
+          <div class="calendar-legend">
+            <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-period"></span> Menstruação</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-predicted"></span> Previsão</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-fertile"></span> Janela fértil</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-ovulation"></span> Ovulação est.</span>
+          </div>
+          <div class="calendar-footer-mascot">
+            <img src="/pato_calendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar" width="160" height="160" decoding="async" />
+          </div>
+        </div>
       </div>
     `;
     return html;
