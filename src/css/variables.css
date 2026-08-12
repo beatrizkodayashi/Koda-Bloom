@@ -105,10 +105,10 @@
 
   /* Fundo — bolinhas pastel */
   --polka-bg: var(--palette-pink);
-  --polka-dot: var(--palette-cream);
+  --polka-dot: var(--palette-peach);
   --polka-spacing: 1.75rem;
   --polka-dot-size: 0.22rem;
-  --polka-fade-max: 0.6;
+  --polka-fade-max: 0.3;
 
   /* Sombras — tom rosado */
   --shadow-sm: 0 1px 4px rgba(255, 173, 187, 0.18);
