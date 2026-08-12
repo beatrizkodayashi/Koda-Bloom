@@ -654,6 +654,14 @@
   box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.5);
 }
 
+@media (min-width: 1024px) {
+  .mascot-caption,
+  .duck-message {
+    max-width: 480px;
+    padding: var(--space-3) var(--space-8);
+  }
+}
+
 .duck-companion.celebrating svg {
   animation: duck-bounce 0.6s ease;
 }
