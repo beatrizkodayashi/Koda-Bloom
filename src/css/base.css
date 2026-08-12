@@ -17,6 +17,12 @@ body {
   line-height: var(--line-height-normal);
   color: var(--color-text);
   background-color: var(--color-background);
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(255, 227, 252, 0.9) 0%, transparent 45%),
+    radial-gradient(circle at 100% 20%, rgba(255, 204, 189, 0.65) 0%, transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(255, 173, 187, 0.35) 0%, transparent 50%),
+    linear-gradient(180deg, var(--palette-cream) 0%, #fff5ef 50%, var(--palette-lavender) 100%);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
 }
@@ -64,17 +70,14 @@ a:hover {
 }
 
 .gradient-bg {
-  background: linear-gradient(
-    165deg,
-    var(--color-background) 0%,
-    var(--color-surface-secondary) 50%,
-    #fef0f4 100%
-  );
+  background: transparent;
 }
 
 .floral-pattern {
-  background-image: radial-gradient(circle at 20% 80%, rgba(255, 194, 212, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(168, 213, 186, 0.1) 0%, transparent 50%);
+  background-image:
+    radial-gradient(circle at 15% 85%, rgba(255, 173, 187, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(255, 227, 252, 0.5) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(255, 178, 143, 0.15) 0%, transparent 55%);
 }
 
 .health-disclaimer {
@@ -82,9 +85,9 @@ a:hover {
   color: var(--color-text-muted);
   line-height: var(--line-height-relaxed);
   padding: var(--space-3);
-  background: var(--color-surface-secondary);
+  background: rgba(255, 227, 252, 0.75);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-primary-light);
+  border-left: 3px solid var(--palette-peach);
 }
 
 .skeleton {

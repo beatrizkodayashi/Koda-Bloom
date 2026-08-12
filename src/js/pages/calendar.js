@@ -113,10 +113,10 @@ export async function renderCalendar(container) {
     html += `
       <div class="calendar-legend">
         <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
-        <span class="legend-item"><span class="legend-dot" style="background: rgba(232,135,155,0.5)"></span> Menstruação</span>
-        <span class="legend-item"><span class="legend-dot" style="background: rgba(232,135,155,0.2); border: 1px dashed var(--color-primary-light)"></span> Previsão</span>
-        <span class="legend-item"><span class="legend-dot" style="background: rgba(168,213,186,0.4)"></span> Janela fértil</span>
-        <span class="legend-item"><span class="legend-dot" style="background: rgba(255,217,61,0.5)"></span> Ovulação est.</span>
+        <span class="legend-item"><span class="legend-dot legend-dot-period"></span> Menstruação</span>
+        <span class="legend-item"><span class="legend-dot legend-dot-predicted"></span> Previsão</span>
+        <span class="legend-item"><span class="legend-dot legend-dot-fertile"></span> Janela fértil</span>
+        <span class="legend-item"><span class="legend-dot legend-dot-ovulation"></span> Ovulação est.</span>
       </div>
     `;
     return html;
