@@ -124,6 +124,7 @@ Se os IDs não batem, a query retorna vazio. A segurança está no banco, não n
 | Problema | Solução |
 |----------|---------|
 | "Invalid API key" | Verifique URL e anon key no `.env` |
-| Cadastro funciona mas perfil vazio | Reexecute `001_initial_schema.sql` (trigger `handle_new_user`) |
+| **"Database error saving new user"** | Execute `003_fix_signup_trigger.sql` no SQL Editor |
+| Cadastro funciona mas perfil vazio | Reexecute trigger em `001_initial_schema.sql` |
 | "new row violates row-level security" | Reexecute `002_rls_policies.sql` |
 | E-mail de confirmação não chega | Verifique spam; ou desabilite confirmação em Auth → Settings |
