@@ -2,9 +2,6 @@ import { NAV_ITEMS } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderBrandLogo } from './brandLogo.js';
 
-const CARD_DOTS =
-  '<span class="card-bloom-dots" aria-hidden="true"><span></span><span></span><span></span></span>';
-
 function isActive(path) {
   return location.pathname === path || location.pathname.startsWith(path + '/');
 }
@@ -16,10 +13,6 @@ export function renderBottomNavigation() {
   const nav = document.createElement('nav');
   nav.className = 'bottom-nav card-bloom nav-card';
   nav.setAttribute('aria-label', 'Navegação principal');
-
-  const header = document.createElement('div');
-  header.className = 'card-bloom-header nav-card-header';
-  header.innerHTML = `<span class="card-bloom-title">Menu</span>${CARD_DOTS}`;
 
   const body = document.createElement('div');
   body.className = 'card-bloom-body nav-card-body';
@@ -41,7 +34,6 @@ export function renderBottomNavigation() {
     body.appendChild(btn);
   });
 
-  nav.appendChild(header);
   nav.appendChild(body);
   wrap.appendChild(nav);
   return wrap;
