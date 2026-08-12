@@ -166,14 +166,14 @@
   .sidebar-card-header {
     justify-content: center;
     align-items: center;
-    padding: var(--space-6) var(--space-4);
-    min-height: 8.5rem;
+    padding: var(--space-2) var(--space-3);
+    min-height: unset;
     background: #d9738a;
   }
 
   .sidebar-card-header .bloom-logo--sidebar {
-    max-height: 6.25rem;
-    max-width: calc(100% - var(--space-2));
+    max-height: 7.75rem;
+    max-width: calc(100% - var(--space-1));
     width: auto;
     margin: 0 auto;
   }
@@ -271,7 +271,7 @@
 }
 
 .bloom-logo--sidebar {
-  max-height: 6.25rem;
+  max-height: 7.75rem;
   width: auto;
 }
 
