@@ -1,5 +1,6 @@
 import { APP_NAME, NAV_ITEMS } from '../config/app.js';
 import { navigate } from '../router.js';
+import { renderBrandLogo } from './brandLogo.js';
 
 function isActive(path) {
   return location.pathname === path || location.pathname.startsWith(path + '/');
@@ -37,7 +38,7 @@ export function renderSidebar() {
 
   const brand = document.createElement('div');
   brand.className = 'sidebar-brand';
-  brand.innerHTML = `<i class="bi bi-flower1" aria-hidden="true"></i> ${APP_NAME}`;
+  brand.innerHTML = renderBrandLogo('bloom-logo--sidebar');
   aside.appendChild(brand);
 
   const navEl = document.createElement('nav');

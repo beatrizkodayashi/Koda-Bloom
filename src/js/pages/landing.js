@@ -1,7 +1,8 @@
 import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
-import { renderDuckCompanion } from '../components/duckCompanion.js';
+import { renderBrandLogo } from '../components/brandLogo.js';
 import { renderCard } from '../components/card.js';
+import { renderDuckCompanion } from '../components/duckCompanion.js';
 
 const FEATURES = [
   { title: 'Calendário inteligente', icon: 'bi-calendar-heart', text: 'Visualize menstruação, previsões e janela fértil estimada em um calendário claro.' },
@@ -22,7 +23,7 @@ export function renderLanding(container) {
   container.innerHTML = `
     <div class="landing-page gradient-bg floral-pattern">
       <header class="landing-nav">
-        <span class="landing-brand"><i class="bi bi-flower1" aria-hidden="true"></i> ${APP_NAME}</span>
+        <span class="landing-brand">${renderBrandLogo('bloom-logo--nav')}</span>
         <div class="d-flex gap-2">
           <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="btn-login">Entrar</button>
           <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm" id="btn-signup">Começar</button>

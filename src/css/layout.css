@@ -137,13 +137,14 @@
   }
 
   .sidebar-brand {
-    font-size: var(--font-size-2xl);
-    font-weight: 700;
-    color: var(--color-accent-heart);
     margin-bottom: var(--space-8);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+  }
+
+  .sidebar-brand .bloom-logo--sidebar {
+    max-height: 3.25rem;
+    width: auto;
   }
 
   .sidebar-nav {
@@ -204,9 +205,24 @@
 }
 
 .landing-brand {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-accent-heart);
+  display: inline-flex;
+  align-items: center;
+}
+
+.bloom-logo {
+  display: block;
+  height: auto;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.bloom-logo--nav {
+  max-height: 2.75rem;
+}
+
+.bloom-logo--sidebar {
+  max-height: 3.25rem;
 }
 
 .landing-hero {
