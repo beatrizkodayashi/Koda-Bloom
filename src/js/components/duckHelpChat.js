@@ -9,10 +9,16 @@ import {
   getFallbackMessage,
 } from '../services/helpChatService.js';
 
+const HELP_CHAT_POSITION_KEY = 'bloom-help-chat-position';
+const DRAG_THRESHOLD_PX = 6;
+
 let root = null;
 let panel = null;
 let messagesEl = null;
+let fab = null;
 let isOpen = false;
+let isDragging = false;
+let suppressFabClick = false;
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -25,6 +31,149 @@ function formatAnswerHtml(text) {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\n/g, '<br>');
+}
+
+function loadSavedPosition() {
+  try {
+    const raw = localStorage.getItem(HELP_CHAT_POSITION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed?.x !== 'number' || typeof parsed?.y !== 'number') return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function savePosition(x, y) {
+  localStorage.setItem(HELP_CHAT_POSITION_KEY, JSON.stringify({ x, y }));
+}
+
+function getRootBounds(rootEl) {
+  return rootEl.getBoundingClientRect();
+}
+
+function clampPosition(x, y, rootEl) {
+  const rect = getRootBounds(rootEl);
+  const pad = 8;
+  const width = rect.width || rootEl.offsetWidth;
+  const height = rect.height || rootEl.offsetHeight;
+
+  return {
+    x: Math.min(Math.max(pad, x), window.innerWidth - width - pad),
+    y: Math.min(Math.max(pad, y), window.innerHeight - height - pad),
+  };
+}
+
+function applyPosition(rootEl, x, y) {
+  const next = clampPosition(x, y, rootEl);
+  rootEl.classList.add('duck-help-root--positioned');
+  rootEl.style.left = `${next.x}px`;
+  rootEl.style.top = `${next.y}px`;
+  rootEl.style.right = 'auto';
+  updatePanelFlip(rootEl);
+  return next;
+}
+
+function updatePanelFlip(rootEl) {
+  const rect = getRootBounds(rootEl);
+  const centerY = rect.top + rect.height / 2;
+  rootEl.classList.toggle('duck-help-root--flip', centerY > window.innerHeight * 0.55);
+}
+
+function restoreSavedPosition(rootEl) {
+  const saved = loadSavedPosition();
+  if (!saved) {
+    updatePanelFlip(rootEl);
+    return;
+  }
+
+  const next = applyPosition(rootEl, saved.x, saved.y);
+  savePosition(next.x, next.y);
+}
+
+function persistCurrentPosition(rootEl) {
+  const rect = getRootBounds(rootEl);
+  savePosition(rect.left, rect.top);
+}
+
+function initDrag(rootEl, handleEl) {
+  let pointerId = null;
+  let startX = 0;
+  let startY = 0;
+  let originX = 0;
+  let originY = 0;
+  let moved = false;
+
+  function finishDrag() {
+    if (!isDragging) return;
+
+    isDragging = false;
+    handleEl.classList.remove('duck-help-fab--dragging');
+
+    if (pointerId != null && handleEl.hasPointerCapture(pointerId)) {
+      handleEl.releasePointerCapture(pointerId);
+    }
+
+    pointerId = null;
+
+    if (moved) {
+      persistCurrentPosition(rootEl);
+      suppressFabClick = true;
+      window.setTimeout(() => {
+        suppressFabClick = false;
+      }, 0);
+    }
+
+    moved = false;
+  }
+
+  handleEl.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+
+    const rect = getRootBounds(rootEl);
+    if (!rootEl.classList.contains('duck-help-root--positioned')) {
+      applyPosition(rootEl, rect.left, rect.top);
+    }
+
+    isDragging = true;
+    moved = false;
+    pointerId = e.pointerId;
+    startX = e.clientX;
+    startY = e.clientY;
+    originX = rootEl.offsetLeft;
+    originY = rootEl.offsetTop;
+
+    handleEl.setPointerCapture(pointerId);
+    handleEl.classList.add('duck-help-fab--dragging');
+  });
+
+  handleEl.addEventListener('pointermove', (e) => {
+    if (!isDragging || e.pointerId !== pointerId) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (!moved && Math.hypot(dx, dy) < DRAG_THRESHOLD_PX) return;
+
+    moved = true;
+    e.preventDefault();
+    applyPosition(rootEl, originX + dx, originY + dy);
+  });
+
+  handleEl.addEventListener('pointerup', finishDrag);
+  handleEl.addEventListener('pointercancel', finishDrag);
+
+  window.addEventListener('resize', () => {
+    if (!rootEl.classList.contains('duck-help-root--positioned')) {
+      updatePanelFlip(rootEl);
+      return;
+    }
+
+    const rect = getRootBounds(rootEl);
+    const next = applyPosition(rootEl, rect.left, rect.top);
+    savePosition(next.x, next.y);
+  });
 }
 
 function renderChatAvatar() {
@@ -113,7 +262,8 @@ function openPanel() {
   isOpen = true;
   panel.hidden = false;
   panel.setAttribute('aria-hidden', 'false');
-  root?.querySelector('.duck-help-fab')?.setAttribute('aria-expanded', 'true');
+  fab?.setAttribute('aria-expanded', 'true');
+  if (root) updatePanelFlip(root);
 
   if (!panel.dataset.initialized) {
     appendMessage('duck', formatAnswerHtml(getWelcomeMessage()));
@@ -129,7 +279,8 @@ function closePanel() {
   isOpen = false;
   panel.hidden = true;
   panel.setAttribute('aria-hidden', 'true');
-  root?.querySelector('.duck-help-fab')?.setAttribute('aria-expanded', 'false');
+  fab?.setAttribute('aria-expanded', 'false');
+  if (root) updatePanelFlip(root);
 }
 
 function togglePanel() {
@@ -142,7 +293,7 @@ function buildUi() {
   root.id = 'duck-help-root';
   root.className = 'duck-help-root';
   root.innerHTML = `
-    <button type="button" class="duck-help-fab" aria-label="Abrir ajuda do ${APP_NAME}" aria-expanded="false" aria-controls="duck-help-panel">
+    <button type="button" class="duck-help-fab" aria-label="Abrir ajuda do ${APP_NAME}. Arraste para mover." aria-expanded="false" aria-controls="duck-help-panel">
       <img src="/favicon.png" alt="" class="duck-help-fab-icon" width="38" height="38" decoding="async" />
       <span class="duck-help-fab-badge" aria-hidden="true">?</span>
     </button>
@@ -176,8 +327,25 @@ function buildUi() {
 
   panel = root.querySelector('#duck-help-panel');
   messagesEl = root.querySelector('.duck-help-messages');
+  fab = root.querySelector('.duck-help-fab');
 
-  root.querySelector('.duck-help-fab')?.addEventListener('click', togglePanel);
+  restoreSavedPosition(root);
+  initDrag(root, fab);
+
+  requestAnimationFrame(() => {
+    if (root.classList.contains('duck-help-root--positioned')) {
+      const rect = getRootBounds(root);
+      const next = applyPosition(root, rect.left, rect.top);
+      savePosition(next.x, next.y);
+    } else {
+      updatePanelFlip(root);
+    }
+  });
+
+  fab?.addEventListener('click', () => {
+    if (suppressFabClick) return;
+    togglePanel();
+  });
   root.querySelector('.duck-help-close')?.addEventListener('click', closePanel);
 
   root.querySelector('#duck-help-form')?.addEventListener('submit', (e) => {
