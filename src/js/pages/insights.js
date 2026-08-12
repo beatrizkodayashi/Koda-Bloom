@@ -98,7 +98,7 @@ export async function renderInsights(container) {
       `) : renderCard('', `
         <div class="empty-state py-4">
           <div class="duck-companion">
-            <img src="/pato_padrao.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
+            <img src="/pato_padrao.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--empty" width="160" height="160" decoding="async" />
             <p class="mascot-caption">Registre mais ciclos para ver insights detalhados.</p>
           </div>
         </div>
