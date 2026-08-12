@@ -1,7 +1,7 @@
 import { APP_NAME, ROUTES } from '../config/app.js';
 
 /**
- * Base de conhecimento do chat de ajuda — respostas locais, sem IA externa.
+ * Base de conhecimento do chat de ajuda , respostas locais, sem IA externa.
  */
 
 export const FAQ_ITEMS = [
@@ -34,7 +34,7 @@ Se aparecer "Database error saving new user", execute o arquivo \`003_fix_signup
     id: 'subscription',
     label: 'O app tem assinatura?',
     keywords: ['assinatura', 'pagar', 'plano', 'premium', 'gratis', 'grátis', 'preco', 'preço', 'cobrança'],
-    answer: `No momento o Bloom é **gratuito** — não há planos pagos nem assinatura.
+    answer: `No momento o Bloom é **gratuito** , não há planos pagos nem assinatura.
 
 Você pode usar todas as funcionalidades do MVP sem custo: cadastro, calendário, check-in, insights e streak de registros.
 
@@ -46,13 +46,13 @@ Quando assinaturas existirem no futuro, avisaremos com transparência dentro do 
     keywords: ['erro', 'bug', 'nao funciona', 'não funciona', 'falha', '500', 'database error', 'rls', 'supabase'],
     answer: `Alguns erros comuns e o que fazer:
 
-**"Supabase não configurado"** — copie \`.env.example\` para \`.env\`, preencha URL e anon key, reinicie \`npm run dev\`.
+**"Supabase não configurado"** , copie \`.env.example\` para \`.env\`, preencha URL e anon key, reinicie \`npm run dev\`.
 
-**"Database error saving new user"** — execute \`003_fix_signup_trigger.sql\` no SQL Editor do Supabase.
+**"Database error saving new user"** , execute \`003_fix_signup_trigger.sql\` no SQL Editor do Supabase.
 
-**Erro ao salvar registro (RLS)** — confirme que rodou \`002_rls_policies.sql\`.
+**Erro ao salvar registro (RLS)** , confirme que rodou \`002_rls_policies.sql\`.
 
-**Página em branco após login** — complete o onboarding ou verifique o console do navegador (F12).
+**Página em branco após login** , complete o onboarding ou verifique o console do navegador (F12).
 
 Se persistir, anote a mensagem exata e a tela onde ocorreu.`,
   },
@@ -66,7 +66,7 @@ Se persistir, anote a mensagem exata e a tela onde ocorreu.`,
 - O contador aparece no topo da tela Calendário.
 - Se hoje ainda não registrou, a sequência de ontem continua válida até o fim do dia.
 
-Registre em **Registrar** — leva poucos segundos!`,
+Registre em **Registrar** , leva poucos segundos!`,
     action: { label: 'Fazer check-in', route: ROUTES.REGISTRAR },
   },
   {
@@ -89,7 +89,7 @@ Toque em um dia para ver detalhes ou registrar naquela data. Quanto mais você r
 
 - Cada conta só acessa **os próprios registros** (Row Level Security no Supabase).
 - No navegador usamos apenas a chave pública (anon), nunca a chave administrativa.
-- Não vendemos dados. O Bloom não substitui acompanhamento médico — use estimativas como referência pessoal.`,
+- Não vendemos dados. O Bloom não substitui acompanhamento médico , use estimativas como referência pessoal.`,
   },
   {
     id: 'reset-password',
@@ -103,7 +103,7 @@ Verifique spam. Em produção, a URL do app precisa estar nas **Redirect URLs** 
 ];
 
 const WELCOME_MESSAGE =
-  `Oi! Sou o ${APP_NAME}, seu assistente por aqui. Escolha uma sugestão abaixo ou descreva sua dúvida — login, assinatura, erros e mais.`;
+  `Oi! Sou o ${APP_NAME}, seu assistente por aqui. Escolha uma sugestão abaixo ou descreva sua dúvida , login, assinatura, erros e mais.`;
 
 const FALLBACK_MESSAGE =
   'Não encontrei uma resposta exata, mas posso ajudar com login, cadastro, assinatura, erros ou uso do calendário. Tente uma das sugestões abaixo.';

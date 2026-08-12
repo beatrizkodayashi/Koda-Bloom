@@ -1,6 +1,6 @@
-# Design System — Bloom
+# Design System , Bloom
 
-Identidade visual do aplicativo. Tema claro, rosa pastel, acolhedor e moderno — sem parecer infantil.
+Identidade visual do aplicativo. Tema claro, rosa pastel, acolhedor e moderno , sem parecer infantil.
 
 ## Cores
 
@@ -35,17 +35,17 @@ Escala de `--space-1` (4px) a `--space-16` (64px).
 
 ## Border radius
 
-- sm: 8px — inputs pequenos
-- md: 12px — inputs, calendar days
-- lg: 16px — cards internos
-- xl: 20px — cards principais
+- sm: 8px , inputs pequenos
+- md: 12px , inputs, calendar days
+- lg: 16px , cards internos
+- xl: 20px , cards principais
 - full: pill buttons
 
 ## Sombras
 
-- `--shadow-sm` — cards em repouso
-- `--shadow-md` — cards em hover
-- `--shadow-soft` — botões primários (tom rosa)
+- `--shadow-sm` , cards em repouso
+- `--shadow-md` , cards em hover
+- `--shadow-soft` , botões primários (tom rosa)
 
 ## Componentes
 

@@ -66,7 +66,7 @@ function renderStepContent() {
         <h2>Qual a duração aproximada do seu ciclo?</h2>
         <p class="text-muted">Contado do primeiro dia de uma menstruação ao primeiro dia da próxima. A média é cerca de 28 dias.</p>
         <div class="form-bloom mt-4">
-          <label for="cycle_length">Dias (21–45)</label>
+          <label for="cycle_length">Dias (21,45)</label>
           <input type="number" id="cycle_length" value="${formData.average_cycle_length}" min="21" max="45" />
         </div>`;
 
@@ -76,7 +76,7 @@ function renderStepContent() {
         <h2>Quantos dias dura sua menstruação?</h2>
         <p class="text-muted">Em média, entre 3 e 7 dias.</p>
         <div class="form-bloom mt-4">
-          <label for="period_length">Dias (1–10)</label>
+          <label for="period_length">Dias (1,10)</label>
           <input type="number" id="period_length" value="${formData.average_period_length}" min="1" max="10" />
         </div>`;
 
@@ -84,7 +84,7 @@ function renderStepContent() {
       return `
         ${renderDuckCompanion({ state: 'thinking', size: 'md' })}
         <h2>Seu ciclo costuma ser regular?</h2>
-        <p class="text-muted">Ciclos irregulares são normais — ajustamos as estimativas conforme você registra.</p>
+        <p class="text-muted">Ciclos irregulares são normais , ajustamos as estimativas conforme você registra.</p>
         <div class="d-flex gap-3 mt-4">
           <button type="button" class="chip${formData.cycle_regular ? ' selected' : ''}" data-value="true">Sim, regular</button>
           <button type="button" class="chip${!formData.cycle_regular ? ' selected' : ''}" data-value="false">Varia bastante</button>

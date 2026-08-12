@@ -7,7 +7,7 @@ import { renderDuckCompanion } from '../components/duckCompanion.js';
 const FEATURES = [
   { title: 'Calendário inteligente', icon: 'bi-calendar-heart', text: 'Visualize menstruação, previsões e janela fértil estimada em um calendário claro.' },
   { title: 'Check-in diário', icon: 'bi-emoji-smile', text: 'Registre humor, sintomas e bem-estar em segundos. Só o que importa para você.' },
-  { title: 'Seus padrões', icon: 'bi-graph-up-arrow', text: 'Descubra tendências nos seus registros. Sem diagnóstico — apenas insights pessoais.' },
+  { title: 'Seus padrões', icon: 'bi-graph-up-arrow', text: 'Descubra tendências nos seus registros. Sem diagnóstico , apenas insights pessoais.' },
   { title: 'Privacidade', icon: 'bi-shield-lock', text: 'Seus dados são seus. Proteção com autenticação e Row Level Security.' },
   { title: 'Mobile first', icon: 'bi-phone', text: 'Feito para o celular, adaptado para desktop. Instale como app quando quiser.' },
 ];
@@ -33,7 +33,7 @@ export function renderLanding(container) {
       <section class="landing-hero">
         <div class="landing-hero-content">
           <h1>Entenda seu ciclo.<br>Conheça melhor você.</h1>
-          <p>Acompanhe seu ciclo menstrual com carinho, privacidade e clareza. Estimativas baseadas nos seus registros — sem julgamentos, sem pressão.</p>
+          <p>Acompanhe seu ciclo menstrual com carinho, privacidade e clareza. Estimativas baseadas nos seus registros , sem julgamentos, sem pressão.</p>
           <div class="landing-hero-actions">
             <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-lg" id="btn-hero-start">Criar conta grátis</button>
             <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-lg" id="btn-hero-login">Já tenho conta</button>

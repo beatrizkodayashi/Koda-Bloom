@@ -1,4 +1,4 @@
-# Guia Deploy Vercel — Bloom
+# Guia Deploy Vercel , Bloom
 
 ## O que é a Vercel?
 

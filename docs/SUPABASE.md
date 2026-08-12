@@ -1,4 +1,4 @@
-# Guia Supabase — Bloom
+# Guia Supabase , Bloom
 
 Este guia explica passo a passo como configurar o Supabase do zero para o Bloom.
 
@@ -6,9 +6,9 @@ Este guia explica passo a passo como configurar o Supabase do zero para o Bloom.
 
 Supabase é um backend open-source que oferece:
 
-- **PostgreSQL** — banco de dados relacional
-- **Authentication** — login por e-mail/senha
-- **Row Level Security (RLS)** — cada usuária só acessa seus próprios dados
+- **PostgreSQL** , banco de dados relacional
+- **Authentication** , login por e-mail/senha
+- **Row Level Security (RLS)** , cada usuária só acessa seus próprios dados
 
 ## Convenção de nomes (banco compartilhado)
 
@@ -16,7 +16,7 @@ Todas as tabelas, funções e triggers deste projeto usam o prefixo **`bloom_`**
 
 Exemplos: `bloom_profiles`, `bloom_daily_logs`, `bloom_handle_new_user()`.
 
-No JavaScript, use sempre as constantes de `src/js/config/tables.js` — nunca hardcode o nome da tabela.
+No JavaScript, use sempre as constantes de `src/js/config/tables.js` , nunca hardcode o nome da tabela.
 
 ---
 
@@ -32,7 +32,7 @@ No JavaScript, use sempre as constantes de `src/js/config/tables.js` — nunca h
 2. Preencha:
    - **Name:** `bloom` (ou outro nome)
    - **Database Password:** crie uma senha forte e **guarde em local seguro**
-   - **Region:** escolha a mais próxima (ex: South America — São Paulo)
+   - **Region:** escolha a mais próxima (ex: South America , São Paulo)
 3. Clique em **Create new project**
 4. Aguarde ~2 minutos até o projeto ficar pronto
 
@@ -103,8 +103,8 @@ VITE_SUPABASE_ANON_KEY=eyJ...sua-chave-anon
 1. Rode o projeto: `npm run dev`
 2. Acesse `http://localhost:5173`
 3. Crie uma conta
-4. No Supabase → **Authentication** → **Users** — deve aparecer o novo usuário
-5. No **Table Editor** → `bloom_profiles` — deve ter um registro com seu `user_id`
+4. No Supabase → **Authentication** → **Users** , deve aparecer o novo usuário
+5. No **Table Editor** → `bloom_profiles` , deve ter um registro com seu `user_id`
 
 ## Passo 8: Entender RLS
 

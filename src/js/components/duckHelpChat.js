@@ -150,7 +150,7 @@ function buildUi() {
     <div id="duck-help-panel" class="duck-help-panel" hidden aria-hidden="true" role="dialog" aria-labelledby="duck-help-title">
       <header class="duck-help-header">
         <div>
-          <h2 id="duck-help-title" class="duck-help-title">${APP_NAME} — Ajuda</h2>
+          <h2 id="duck-help-title" class="duck-help-title">${APP_NAME} , Ajuda</h2>
           <p class="duck-help-subtitle">Tire dúvidas sobre login, assinatura e erros</p>
         </div>
         <button type="button" class="duck-help-close btn-bloom btn-bloom-ghost btn-bloom-sm" aria-label="Fechar ajuda">

@@ -44,7 +44,7 @@
   }
 }
 
-/* Bottom navigation — mobile (estilo card, só abaixo de 1024px) */
+/* Bottom navigation , mobile (estilo card, só abaixo de 1024px) */
 @media (max-width: 1023px) {
   .bottom-nav-wrap {
     position: fixed;
@@ -146,7 +146,7 @@
   }
 }
 
-/* Sidebar — desktop */
+/* Sidebar , desktop */
 .sidebar {
   display: none;
 }

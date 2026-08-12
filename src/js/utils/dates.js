@@ -1,5 +1,5 @@
 /**
- * Utilitários de data — centralizados para evitar bugs de timezone.
+ * Utilitários de data , centralizados para evitar bugs de timezone.
  * Datas de ciclo são sempre "dia calendário" (YYYY-MM-DD), sem horário.
  */
 

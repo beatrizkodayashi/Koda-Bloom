@@ -1,4 +1,4 @@
-# Arquitetura — Bloom
+# Arquitetura , Bloom
 
 ## Visão geral
 
@@ -139,12 +139,12 @@ export function subscribe(fn) { ... }
 
 Cada serviço encapsula chamadas ao Supabase e lógica de domínio:
 
-- **authService** — signUp, signIn, signOut, resetPassword, getSession
-- **cycleService** — CRUD ciclos e períodos
-- **dailyLogService** — check-ins diários
-- **cycleCalculator** — funções puras (sem Supabase)
-- **insightsService** — agregações locais
-- **gardenService** — progresso do jardim
+- **authService** , signUp, signIn, signOut, resetPassword, getSession
+- **cycleService** , CRUD ciclos e períodos
+- **dailyLogService** , check-ins diários
+- **cycleCalculator** , funções puras (sem Supabase)
+- **insightsService** , agregações locais
+- **gardenService** , progresso do jardim
 
 ## Banco de dados (resumo)
 
@@ -152,14 +152,14 @@ Todas as tabelas com dados de usuário possuem `user_id UUID REFERENCES auth.use
 
 Entidades principais (prefixo `bloom_`):
 
-- `bloom_profiles` — dados do perfil e onboarding
-- `bloom_user_preferences` — categorias visíveis, lembretes
-- `bloom_cycles` — ciclos menstruais
-- `bloom_period_entries` — registros de menstruação (início/fim/fluxo)
-- `bloom_daily_logs` — check-in diário (humor, dor, sono, etc.)
-- `bloom_daily_symptoms` — sintomas do dia (relação N:N)
-- `bloom_garden_progress` — flores desbloqueadas
-- `bloom_onboarding_progress` — etapa atual do onboarding
+- `bloom_profiles` , dados do perfil e onboarding
+- `bloom_user_preferences` , categorias visíveis, lembretes
+- `bloom_cycles` , ciclos menstruais
+- `bloom_period_entries` , registros de menstruação (início/fim/fluxo)
+- `bloom_daily_logs` , check-in diário (humor, dor, sono, etc.)
+- `bloom_daily_symptoms` , sintomas do dia (relação N:N)
+- `bloom_garden_progress` , flores desbloqueadas
+- `bloom_onboarding_progress` , etapa atual do onboarding
 
 Nomes centralizados em `src/js/config/tables.js`.
 
@@ -167,11 +167,11 @@ Detalhes completos em `supabase/migrations/`.
 
 ## Segurança
 
-1. **RLS** — toda leitura/escrita filtrada por `auth.uid() = user_id`
-2. **Frontend** — apenas `VITE_SUPABASE_ANON_KEY` (chave pública)
-3. **Nunca** — `service_role` no browser ou no Git
-4. **XSS** — `textContent` preferido; sanitizar HTML quando necessário
-5. **Validação** — frontend + constraints no PostgreSQL
+1. **RLS** , toda leitura/escrita filtrada por `auth.uid() = user_id`
+2. **Frontend** , apenas `VITE_SUPABASE_ANON_KEY` (chave pública)
+3. **Nunca** , `service_role` no browser ou no Git
+4. **XSS** , `textContent` preferido; sanitizar HTML quando necessário
+5. **Validação** , frontend + constraints no PostgreSQL
 
 ## Datas e timezone
 

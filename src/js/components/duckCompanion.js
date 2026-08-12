@@ -1,5 +1,5 @@
 /**
- * Duck Companion — mascote Bloom (estados SVG)
+ * Duck Companion , mascote Bloom (estados SVG)
  */
 
 import { APP_NAME } from '../config/app.js';
@@ -86,7 +86,7 @@ const DUCK_STATES = {
 
 const DUCK_MESSAGES = {
   welcome: 'Oi! Que bom ter você aqui. Vamos conhecer seu ciclo juntas?',
-  happy: 'Continue registrando — cada informação ajuda a entender melhor seu corpo.',
+  happy: 'Continue registrando , cada informação ajuda a entender melhor seu corpo.',
   sleeping: 'Descanse bem. Seu corpo também precisa de pausa.',
   period: 'Cuidado extra hoje. Hidrate-se e escute seu corpo.',
   flower: 'Você está florescendo nesta fase do ciclo!',
@@ -137,7 +137,7 @@ export function generateDailySummary({ cycleDay, phase, mood, symptoms = [], pai
   if (mood) msg += `Você registrou humor ${mood}. `;
   if (symptoms.length) msg += `Notou ${symptoms.slice(0, 2).join(' e ')}. `;
   if (painLevel && painLevel > 5) msg += 'Que tal pegar leve hoje?';
-  else if (phase === 'follicular') msg += 'Energia pode estar aumentando — aproveite!';
+  else if (phase === 'follicular') msg += 'Energia pode estar aumentando , aproveite!';
   else msg += 'Cuide-se com carinho.';
 
   return msg;

@@ -6,7 +6,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
 /**
- * Cliente Supabase — usa apenas a chave anon (pública).
+ * Cliente Supabase , usa apenas a chave anon (pública).
  * A proteção real dos dados vem das policies RLS no PostgreSQL.
  */
 export const supabase = isSupabaseConfigured

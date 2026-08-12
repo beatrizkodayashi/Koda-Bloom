@@ -1,5 +1,5 @@
 /**
- * Card com header estilo janela — referência visual Bloom.
+ * Card com header estilo janela , referência visual Bloom.
  */
 
 export function renderCard(title, bodyHtml, options = {}) {

@@ -179,7 +179,7 @@ export async function renderCalendar(container) {
         detail.hidden = false;
         detail.innerHTML = renderCard(
           new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }),
-          `${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` — humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
+          `${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` , humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
           <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm mt-2" data-goto="${date}">Registrar neste dia</button>`
         );
         detail.querySelector('[data-goto]')?.addEventListener('click', () => {

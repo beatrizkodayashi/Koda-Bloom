@@ -1,5 +1,5 @@
 /**
- * Smooth scroll — respeita prefers-reduced-motion.
+ * Smooth scroll , respeita prefers-reduced-motion.
  */
 
 export function prefersReducedMotion() {

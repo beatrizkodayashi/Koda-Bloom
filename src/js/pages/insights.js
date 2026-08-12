@@ -54,21 +54,21 @@ export async function renderInsights(container) {
             </div>
           `).join('')}
         </div>
-        ${insights.cycleDay ? `<p class="text-muted mt-3 mb-0"><small>Você está no dia ${insights.cycleDay} — ${phaseLabel(currentPhase)}.</small></p>` : ''}
+        ${insights.cycleDay ? `<p class="text-muted mt-3 mb-0"><small>Você está no dia ${insights.cycleDay} , ${phaseLabel(currentPhase)}.</small></p>` : ''}
       `)}
 
       <div class="feature-grid insights-stats">
         ${renderCard('Ciclo médio', `
-          <p class="stat-value">${insights.stats.average ? formatDays(insights.stats.average) : '—'}</p>
+          <p class="stat-value">${insights.stats.average ? formatDays(insights.stats.average) : '-'}</p>
         `, { className: 'card-bloom--compact' })}
         ${renderCard('Menstruação média', `
           <p class="stat-value">${formatDays(avgPeriod)}</p>
         `, { className: 'card-bloom--compact' })}
         ${renderCard('Variação', `
-          <p class="stat-value">${insights.stats.variation != null ? `±${insights.stats.variation} dias` : '—'}</p>
+          <p class="stat-value">${insights.stats.variation != null ? `±${insights.stats.variation} dias` : '-'}</p>
         `, { className: 'card-bloom--compact' })}
         ${renderCard('Cólica média', `
-          <p class="stat-value">${insights.avgPain ?? '—'}</p>
+          <p class="stat-value">${insights.avgPain ?? '-'}</p>
         `, { className: 'card-bloom--compact' })}
       </div>
 

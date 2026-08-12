@@ -1,4 +1,4 @@
-# Bloom — Roadmap de Desenvolvimento
+# Bloom , Roadmap de Desenvolvimento
 
 Aplicativo web de acompanhamento de ciclo menstrual. Nome provisório: **Bloom**.
 
@@ -41,7 +41,7 @@ App autenticada:
 
 ## Fases de implementação
 
-### Fase 1 — Setup e arquitetura ✅ em andamento
+### Fase 1 , Setup e arquitetura ✅ em andamento
 - [x] Análise do repositório
 - [x] ROADMAP.md e documentação de arquitetura
 - [ ] Vite + Bootstrap 5 + Bootstrap Icons
@@ -49,83 +49,83 @@ App autenticada:
 - [ ] `.env.example`, `.gitignore`
 - [ ] Config central (`APP_NAME`)
 
-### Fase 2 — Design system e estrutura responsiva
+### Fase 2 , Design system e estrutura responsiva
 - [ ] CSS variables (identidade rosa pastel)
 - [ ] Tipografia, spacing, radius, shadows
 - [ ] Componentes base (botões, cards, inputs, chips)
 - [ ] Bottom navigation (mobile) + sidebar (desktop)
 - [ ] Documento `docs/DESIGN_SYSTEM.md`
 
-### Fase 3 — Landing page
+### Fase 3 , Landing page
 - [ ] Hero com mascote e flores
 - [ ] Seções: como funciona, privacidade, CTA
 - [ ] SEO básico (title, description, OG)
 - [ ] Favicon
 
-### Fase 4 — Supabase e banco
+### Fase 4 , Supabase e banco
 - [ ] Schema SQL (`supabase/migrations/`)
 - [ ] RLS policies
 - [ ] Guia `docs/SUPABASE.md`
 - **Ação manual:** criar projeto Supabase e executar SQL
 
-### Fase 5 — Autenticação
+### Fase 5 , Autenticação
 - [ ] Telas login, cadastro, recuperar senha
 - [ ] Sessão persistente via Supabase Auth
 - **Ação manual:** configurar URLs de redirect no Supabase
 
-### Fase 6 — Onboarding
+### Fase 6 , Onboarding
 - [ ] Fluxo em etapas com mascote
 - [ ] Salvar progresso no banco
 
-### Fase 7 — Dashboard (Hoje)
+### Fase 7 , Dashboard (Hoje)
 - [ ] Saudação, dia do ciclo, fase, previsões
 - [ ] Resumo diário, dicas, jardim
 
-### Fase 8 — Registro menstrual
+### Fase 8 , Registro menstrual
 - [ ] Início, fim, fluxo
 - [ ] Edição de registros anteriores
 
-### Fase 9 — Check-in diário
+### Fase 9 , Check-in diário
 - [ ] Humor, sintomas, dor, sono, energia, etc.
 - [ ] Personalização de categorias
 
-### Fase 10 — Calendário
+### Fase 10 , Calendário
 - [ ] Calendário mensal próprio
 - [ ] Legenda, navegação, seleção de dia
 
-### Fase 11 — Algoritmo de ciclo
+### Fase 11 , Algoritmo de ciclo
 - [ ] `cycleCalculator.js` com funções puras
 - [ ] Testes Vitest
 
-### Fase 12 — Insights
+### Fase 12 , Insights
 - [ ] Estatísticas e gráficos leves (Chart.js)
 - [ ] "Seus Padrões" e "Meu ciclo" (timeline)
 
-### Fase 13 — Mascote (Duck Companion)
+### Fase 13 , Mascote (Duck Companion)
 - [ ] Componente centralizado com estados SVG
 - [ ] Resumo do dia via templates
 
-### Fase 14 — Meu Jardim
+### Fase 14 , Meu Jardim
 - [ ] Progresso visual positivo, sem punição
 
-### Fase 15 — Configurações / perfil
+### Fase 15 , Configurações / perfil
 - [ ] Preferências, logout, aviso de saúde
 
-### Fase 16 — PWA
+### Fase 16 , PWA
 - [ ] manifest.json, service worker básico
 
-### Fase 17 — Acessibilidade e responsividade
-- [ ] Testes em breakpoints 320–2560px
+### Fase 17 , Acessibilidade e responsividade
+- [ ] Testes em breakpoints 320,2560px
 - [ ] `prefers-reduced-motion`
 
-### Fase 18 — Segurança
+### Fase 18 , Segurança
 - [ ] Revisão XSS, sanitização, RLS
 
-### Fase 19 — Documentação
+### Fase 19 , Documentação
 - [ ] README completo
 - [ ] `docs/DEPLOY_VERCEL.md`
 
-### Fase 20 — Deploy
+### Fase 20 , Deploy
 - **Ação manual:** Vercel + variáveis de ambiente + redirect Supabase
 
 ## Quando você precisa agir

@@ -61,7 +61,7 @@ export async function renderTracking(container) {
 
       <div class="duck-companion">
         <img src="/pato_nas_flores.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--wide" width="260" height="260" decoding="async" />
-        <p class="duck-message">Registre só o que quiser — sem pressão.</p>
+        <p class="duck-message">Registre só o que quiser , sem pressão.</p>
       </div>
     </section>
 
@@ -91,11 +91,11 @@ export async function renderTracking(container) {
         </div>
       `) : ''}
 
-      ${prefs.track_pain ? renderCard('Dor (0–10)', `
+      ${prefs.track_pain ? renderCard('Dor (0,10)', `
         <div class="scale-input" id="pain-scale">${renderScale('pain', painLevel)}</div>
       `) : ''}
 
-      ${prefs.track_energy ? renderCard('Energia (0–10)', `
+      ${prefs.track_energy ? renderCard('Energia (0,10)', `
         <div class="scale-input" id="energy-scale">${renderScale('energy', energyLevel)}</div>
       `) : ''}
 

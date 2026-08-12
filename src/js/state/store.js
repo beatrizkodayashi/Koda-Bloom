@@ -1,5 +1,5 @@
 /**
- * Store simples pub/sub — gerenciamento de estado sem biblioteca externa.
+ * Store simples pub/sub , gerenciamento de estado sem biblioteca externa.
  */
 
 const initialState = {

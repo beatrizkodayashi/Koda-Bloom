@@ -1,4 +1,4 @@
-# Migrations Supabase — Bloom
+# Migrations Supabase , Bloom
 
 ## Prefixo `bloom_`
 
@@ -12,9 +12,9 @@ Novas migrations **devem** manter esse prefixo.
 
 ## Ordem de execução
 
-1. `001_initial_schema.sql` — tabelas e trigger de signup
-2. `002_rls_policies.sql` — Row Level Security
-3. `003_fix_signup_trigger.sql` — só se aparecer "Database error saving new user" (ou inclua na 001 atualizada)
+1. `001_initial_schema.sql` , tabelas e trigger de signup
+2. `002_rls_policies.sql` , Row Level Security
+3. `003_fix_signup_trigger.sql` , só se aparecer "Database error saving new user" (ou inclua na 001 atualizada)
 
 Execute no **SQL Editor** do Supabase (ver `docs/SUPABASE.md`).
 

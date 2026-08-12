@@ -1,11 +1,11 @@
 /**
- * Escala visual leve — apenas desktop (≥1024px).
+ * Escala visual leve , apenas desktop (≥1024px).
  * Mobile e tablet permanecem inalterados.
  */
 
 @media (min-width: 1024px) {
   html {
-    font-size: 106.25%; /* 17px — aumento sutil (~6%) */
+    font-size: 106.25%; /* 17px , aumento sutil (~6%) */
   }
 
   :root {

@@ -1,6 +1,6 @@
 /**
  * Nomes das tabelas no Supabase.
- * Prefixo bloom_ — banco compartilhado com outros projetos.
+ * Prefixo bloom_ , banco compartilhado com outros projetos.
  * Sempre use estas constantes em vez de strings hardcoded.
  */
 

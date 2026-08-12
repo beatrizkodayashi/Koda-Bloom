@@ -1,6 +1,6 @@
 # Bloom
 
-Aplicativo web de acompanhamento de ciclo menstrual — mobile first, privado e acolhedor.
+Aplicativo web de acompanhamento de ciclo menstrual , mobile first, privado e acolhedor.
 
 ## Tecnologias
 

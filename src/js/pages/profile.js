@@ -46,7 +46,7 @@ export async function renderProfile(container) {
     <div class="card-stack mt-5">
       ${renderCard('Conta', `
         <p class="text-muted mb-1"><small>E-mail</small></p>
-        <p class="mb-0">${user?.email || '—'}</p>
+        <p class="mb-0">${user?.email || '-'}</p>
         <div class="form-bloom mt-4">
           <label for="display_name">Nome de exibição</label>
           <input type="text" id="display_name" value="${profile?.display_name || ''}" maxlength="50" />
