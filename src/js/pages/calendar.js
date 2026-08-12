@@ -1,4 +1,4 @@
-import { ROUTES, APP_NAME } from '../config/app.js';
+import { ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getPeriodEntries } from '../services/cycleService.js';
@@ -118,9 +118,6 @@ export async function renderCalendar(container) {
             <span class="legend-item"><span class="legend-dot legend-dot-predicted"></span> Previsão</span>
             <span class="legend-item"><span class="legend-dot legend-dot-fertile"></span> Janela fértil</span>
             <span class="legend-item"><span class="legend-dot legend-dot-ovulation"></span> Ovulação est.</span>
-          </div>
-          <div class="calendar-footer-mascot">
-            <img src="/pato_calendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar" width="160" height="160" decoding="async" />
           </div>
         </div>
       </div>
