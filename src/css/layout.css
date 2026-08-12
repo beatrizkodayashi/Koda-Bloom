@@ -462,6 +462,24 @@
   font-size: var(--font-size-base);
 }
 
+.page-mascot-section .page-header {
+  margin-bottom: var(--space-3);
+}
+
+.page-mascot-section .page-header h1 {
+  margin-bottom: var(--space-1);
+}
+
+.page-mascot-section .duck-companion {
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.page-mascot-section + .card-stack,
+.page-mascot-section + form.card-stack {
+  margin-top: 0;
+}
+
 .page-header--calendar {
   display: flex;
   align-items: center;

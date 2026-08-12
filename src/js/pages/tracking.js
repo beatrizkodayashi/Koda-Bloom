@@ -53,17 +53,19 @@ export async function renderTracking(container) {
   }
 
   const content = `
-    <div class="page-header">
-      <h1>Registrar</h1>
-      <p>${new Date(logDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-    </div>
+    <section class="page-mascot-section">
+      <div class="page-header">
+        <h1>Registrar</h1>
+        <p>${new Date(logDate + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      </div>
 
-    <div class="duck-companion">
-      <img src="/pato_nas_flores.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--wide" width="260" height="260" decoding="async" />
-      <p class="duck-message">Registre só o que quiser — sem pressão.</p>
-    </div>
+      <div class="duck-companion">
+        <img src="/pato_nas_flores.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--wide" width="260" height="260" decoding="async" />
+        <p class="duck-message">Registre só o que quiser — sem pressão.</p>
+      </div>
+    </section>
 
-    <form id="tracking-form" class="card-stack mt-5">
+    <form id="tracking-form" class="card-stack">
       ${renderCard('Menstruação', `
         <label class="card-bloom-check" for="period-start">
           <input type="checkbox" id="period-start" class="bloom-checkbox-input" />

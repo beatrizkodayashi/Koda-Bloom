@@ -49,17 +49,19 @@ export async function renderDashboard(container) {
     : 'Vamos registrar seu primeiro ciclo?';
 
   const content = `
-    <div class="page-header">
-      <h1>Olá, ${greetingName(profile?.display_name)}!</h1>
-      <p>${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-    </div>
+    <section class="page-mascot-section">
+      <div class="page-header">
+        <h1>Olá, ${greetingName(profile?.display_name)}!</h1>
+        <p>${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      </div>
 
-    <div class="duck-companion">
-      <img src="/pato_comemorando.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
-      <p class="duck-message">${summary}</p>
-    </div>
+      <div class="duck-companion">
+        <img src="/pato_comemorando.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
+        <p class="duck-message">${summary}</p>
+      </div>
+    </section>
 
-    <div class="card-stack mt-5">
+    <div class="card-stack">
       ${cycleDay ? renderCard('Seu ciclo hoje', `
         <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${phaseLabel(phase)}</span>
         <h2 class="mt-3 mb-2">Dia ${cycleDay} do seu ciclo</h2>
