@@ -5,7 +5,6 @@ import { signOut } from '../services/authService.js';
 import { upsertProfile } from '../services/cycleService.js';
 import { savePreferences, getPreferences, getDefaultPreferences } from '../services/dailyLogService.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { isAuthConfigured } from '../services/authService.js';
@@ -36,14 +35,19 @@ export async function renderProfile(container) {
   ];
 
   const content = `
-    <div class="page-header">
-      <h1>Perfil</h1>
-      <p>Configurações e preferências.</p>
-    </div>
+    <section class="page-mascot-section page-mascot-section--profile">
+      <div class="page-header">
+        <h1>Perfil</h1>
+        <p>Configurações e preferências.</p>
+      </div>
 
-    ${renderDuckCompanion({ state: 'happy', size: 'sm' })}
+      <div class="duck-companion">
+        <img src="/pato_cheirando_rosa.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--profile" width="240" height="240" decoding="async" />
+        <p class="mascot-caption">Continue registrando , cada informação ajuda a entender melhor seu corpo.</p>
+      </div>
+    </section>
 
-    <div class="card-stack mt-5">
+    <div class="card-stack">
       ${renderCard('Conta', `
         <p class="text-muted mb-1"><small>E-mail</small></p>
         <p class="mb-0">${user?.email || '-'}</p>
