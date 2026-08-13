@@ -11,13 +11,7 @@ import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { isAuthConfigured } from '../services/authService.js';
 import { isDiscreteMode, setDiscreteMode, discreteNotificationPreview } from '../utils/discreteMode.js';
-import {
-  getCareModeStatus,
-  deactivateHydrationReminder,
-  deactivateRestMode,
-  renderRestModeBanner,
-  mountRestModeBanner,
-} from '../services/careModeService.js';
+import { renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
 import { formatStreakLabel } from '../utils/streak.js';
 import { renderIcon } from '../components/icons.js';
 
@@ -37,6 +31,35 @@ const PREF_ITEMS = [
 function formatMemberSince(dateStr) {
   if (!dateStr) return null;
   return new Date(dateStr).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+}
+
+function renderMyPatternPromoCard(summary) {
+  const ready = summary.cycleCount >= 2;
+  const hint = ready
+    ? 'Descobertas, números e o tom do pato — tudo sobre você.'
+    : `Registre mais ${Math.max(0, 2 - summary.cycleCount)} ciclo(s) para eu montar seu retrato completo.`;
+
+  return `
+    <button type="button" class="profile-pattern-card" id="btn-go-padrao">
+      <span class="profile-pattern-card-glow" aria-hidden="true"></span>
+      <span class="profile-pattern-card-inner">
+        <span class="profile-pattern-card-duck">
+          <img src="/pato_caderno.png" alt="" width="72" height="72" decoding="async" />
+        </span>
+        <span class="profile-pattern-card-copy">
+          <span class="profile-pattern-card-eyebrow">${renderIcon('sparkles', 'bloom-icon bloom-icon--sm')} Seu padrão</span>
+          <span class="profile-pattern-card-title">Meu padrão</span>
+          <span class="profile-pattern-card-text">${hint}</span>
+          <span class="profile-pattern-card-meta">
+            ${summary.cycleCount} ciclo${summary.cycleCount !== 1 ? 's' : ''} · ${summary.totalCheckins} check-in${summary.totalCheckins !== 1 ? 's' : ''}
+          </span>
+        </span>
+        <span class="profile-pattern-card-arrow" aria-hidden="true">
+          <i class="bi bi-arrow-right"></i>
+        </span>
+      </span>
+    </button>
+  `;
 }
 
 function renderProfileStats(summary) {
@@ -127,29 +150,6 @@ function renderSignatureCard(summary) {
   `, { className: 'card-bloom-soft' });
 }
 
-function renderCareStatusCard() {
-  const status = getCareModeStatus();
-
-  if (!status.restActive && !status.hydrationActive) {
-    return renderCard('Modo cuidado', `
-      <p class="text-muted mb-0">Para dias difíceis — registro rápido, respiração e lembretes gentis.</p>
-      <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-go-care">Abrir modo cuidado</button>
-    `, { className: 'card-bloom-soft' });
-  }
-
-  return renderCard('Modo cuidado hoje', `
-    <ul class="care-status-list mb-0">
-      ${status.restActive ? '<li>Modo descanso — app simplificado</li>' : ''}
-      ${status.hydrationActive ? '<li>Lembrete de hidratação — a cada 2 horas</li>' : ''}
-      ${status.discreteActive ? '<li>Modo discreto — termos sensíveis ocultos</li>' : ''}
-    </ul>
-    <div class="care-status-actions mt-4">
-      ${status.restActive ? '<button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="btn-profile-rest-off">Desativar descanso</button>' : ''}
-      ${status.hydrationActive ? '<button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="btn-profile-water-off">Desativar hidratação</button>' : ''}
-    </div>
-  `, { className: 'card-bloom-soft' });
-}
-
 export async function renderProfile(container) {
   const { user, profile } = getState();
 
@@ -200,16 +200,7 @@ export async function renderProfile(container) {
       ${renderSignatureCard(summary)}
       ${renderBadgesCard(summary)}
 
-      <div class="profile-quick-links">
-        <button type="button" class="btn-bloom btn-bloom-secondary flex-fill" id="btn-go-insights">
-          <i class="bi bi-graph-up" aria-hidden="true"></i> Ver insights
-        </button>
-        <button type="button" class="btn-bloom btn-bloom-secondary flex-fill" id="btn-go-calendar">
-          <i class="bi bi-calendar3" aria-hidden="true"></i> Calendário
-        </button>
-      </div>
-
-      ${renderCareStatusCard()}
+      ${renderMyPatternPromoCard(summary)}
 
       ${renderCard('Modo discreto', `
         <p class="text-muted mb-0"><small>Esconde termos sensíveis na tela. Ideal para privacidade no dia a dia.</small></p>
@@ -297,19 +288,7 @@ export async function renderProfile(container) {
   });
 
   container.querySelector('#btn-profile-streak')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
-  container.querySelector('#btn-go-care')?.addEventListener('click', () => navigate(ROUTES.CUIDADO));
-  container.querySelector('#btn-profile-rest-off')?.addEventListener('click', () => {
-    deactivateRestMode();
-    showToast('Modo descanso desativado.', 'success');
-    renderProfile(container);
-  });
-  container.querySelector('#btn-profile-water-off')?.addEventListener('click', () => {
-    deactivateHydrationReminder();
-    showToast('Lembrete de hidratação desativado.', 'success');
-    renderProfile(container);
-  });
-  container.querySelector('#btn-go-insights')?.addEventListener('click', () => navigate(ROUTES.INSIGHTS));
-  container.querySelector('#btn-go-calendar')?.addEventListener('click', () => navigate(ROUTES.CALENDARIO));
+  container.querySelector('#btn-go-padrao')?.addEventListener('click', () => navigate(ROUTES.MEU_PADRAO));
 
   container.querySelector('#discrete-mode')?.addEventListener('change', (e) => {
     setDiscreteMode(e.target.checked);

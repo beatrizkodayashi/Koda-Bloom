@@ -21,6 +21,11 @@ export const ROUTES = {
   CALENDARIO: '/app/calendario',
   REGISTRAR: '/app/registrar',
   INSIGHTS: '/app/insights',
+  MEU_PADRAO: '/app/meu-padrao',
+  NECESSAIRE: '/app/bolsinha',
+  PLANEJADOR: '/app/planejador',
+  RELATORIO: '/app/relatorio',
+  ISSO_E_NORMAL: '/app/isso-e-normal',
   PERFIL: '/app/perfil',
   CUIDADO: '/app/cuidado',
 };

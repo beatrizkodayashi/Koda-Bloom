@@ -97,7 +97,7 @@
   --card-outline: var(--palette-brown-soft);
   --card-outline-soft: var(--palette-brown-soft);
   --card-body-bg: var(--palette-cream-soft);
-  --card-header-bg: #ffadbb;
+  --card-header-bg: var(--palette-pink);
   --card-shadow-color: rgba(255, 204, 189, 0.95);
   --card-shadow: 7px 7px 0 0 var(--card-shadow-color);
   --card-shadow-hover: 9px 9px 0 0 rgba(255, 178, 143, 0.85);

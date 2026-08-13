@@ -1,0 +1,434 @@
+/* Fase 2 — Bolsinha, Planejador, Relatório, Isso é normal? */
+
+.mobile-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: var(--space-3, 0.75rem);
+  padding: 0.45rem 0.85rem 0.45rem 0.65rem;
+  border: 2px solid var(--card-outline);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 251, 222, 0.85);
+  color: var(--color-text, #333);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--card-shadow-color);
+  transition:
+    transform var(--transition-fast, 0.15s ease),
+    box-shadow var(--transition-fast, 0.15s ease);
+}
+
+.mobile-back-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--card-shadow-color);
+}
+
+@media (min-width: 1024px) {
+  .mobile-back-btn {
+    display: none;
+  }
+}
+
+.page-mascot-section--tools .page-header {
+  margin-bottom: var(--space-3, 0.75rem);
+}
+
+.page-mascot-section--tools .duck-companion {
+  gap: var(--space-2, 0.5rem);
+  margin-bottom: var(--space-4, 1rem);
+}
+
+.bloom-mascot-img--tools {
+  width: min(180px, 46vw);
+  height: auto;
+}
+
+.phase2-page {
+  gap: 1rem;
+}
+
+.phase2-progress-bar {
+  height: 0.55rem;
+  background: var(--palette-cream-dark, #f0e8d0);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.phase2-progress-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--palette-pink, #ffb6c8), var(--palette-pink-dark, #e8a0b8));
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.necessaire-progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.necessaire-progress-percent {
+  color: var(--palette-pink-dark, #c97a94);
+}
+
+.necessaire-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.necessaire-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  background: var(--palette-cream, #fffbde);
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid rgba(255, 173, 187, 0.2);
+  cursor: pointer;
+}
+
+.necessaire-item:has(.bloom-checkbox-input:checked) {
+  border-color: rgba(255, 173, 187, 0.55);
+  background: rgba(255, 182, 200, 0.12);
+}
+
+.necessaire-item-label {
+  flex: 1;
+  font-size: 0.92rem;
+}
+
+.necessaire-item--custom {
+  position: relative;
+}
+
+.necessaire-remove {
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #6c757d);
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+  cursor: pointer;
+}
+
+.phase2-inline-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.phase2-inline-form .bloom-input {
+  flex: 1;
+}
+
+.page-mascot-section--tools + .phase2-page,
+.page-mascot-section--tools + .card-stack {
+  margin-top: var(--space-2, 0.5rem);
+}
+
+/* Planejador */
+.planner-page {
+  gap: var(--card-gap, 1rem);
+}
+
+.planner-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  text-align: left;
+}
+
+.planner-field {
+  width: 100%;
+  min-width: 0;
+}
+
+.planner-field label {
+  display: block;
+  text-align: left;
+  width: 100%;
+}
+
+.planner-field input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.planner-date-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3, 0.75rem);
+  width: 100%;
+}
+
+.planner-submit {
+  margin-top: var(--space-1, 0.25rem);
+}
+
+.planner-empty-hint {
+  margin-top: var(--space-4, 1rem);
+  padding-top: var(--space-4, 1rem);
+  border-top: 1px dashed rgba(255, 173, 187, 0.35);
+  font-size: 0.88rem;
+  color: var(--text-muted, #6c757d);
+  text-align: center;
+  line-height: 1.45;
+}
+
+.planner-form-card .card-bloom-body {
+  text-align: left;
+}
+
+.phase2-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.phase2-form-row .form-bloom {
+  min-width: 0;
+}
+
+.phase2-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.phase2-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.phase2-badge--ok {
+  background: rgba(45, 138, 78, 0.12);
+  color: #2d8a4e;
+}
+
+.phase2-badge--warn {
+  background: rgba(255, 173, 187, 0.35);
+  color: #a64d62;
+}
+
+.planner-event-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.planner-duck {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.85rem;
+  background: var(--palette-cream, #fffbde);
+  border-radius: var(--radius-md, 12px);
+  margin-bottom: 0.75rem;
+}
+
+.planner-suggestions {
+  padding-left: 1.1rem;
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted, #6c757d);
+}
+
+.planner-event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.planner-card--warn {
+  border-color: rgba(255, 173, 187, 0.45);
+}
+
+.phase2-btn-muted {
+  opacity: 0.85;
+}
+
+.phase2-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+.phase2-tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.85rem 0.5rem;
+  border: 1px solid rgba(255, 173, 187, 0.35);
+  border-radius: var(--radius-md, 12px);
+  background: var(--palette-cream, #fffbde);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.phase2-tool-btn:hover {
+  background: rgba(255, 182, 200, 0.18);
+  transform: translateY(-1px);
+}
+
+.normalcy-list,
+.normalcy-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.normalcy-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.85rem;
+  border-radius: var(--radius-md, 12px);
+  background: var(--palette-cream, #fffbde);
+}
+
+.normalcy-item--typical {
+  border-left: 3px solid #2d8a4e;
+}
+
+.normalcy-item--unusual {
+  border-left: 3px solid #c45c5c;
+}
+
+.normalcy-item--occasional,
+.normalcy-item--new,
+.normalcy-item--unknown {
+  border-left: 3px solid var(--palette-pink-dark, #e8a0b8);
+}
+
+.normalcy-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.normalcy-body {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-muted, #6c757d);
+}
+
+.normalcy-chips {
+  margin-bottom: 0;
+}
+
+.doctor-report {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-md, 12px);
+  padding: 1.25rem;
+}
+
+.doctor-report-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.doctor-report-title {
+  font-size: 1.15rem;
+  margin-bottom: 0.35rem;
+}
+
+.doctor-report-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted, #6c757d);
+  margin: 0;
+}
+
+.doctor-report-section {
+  margin-bottom: 1.25rem;
+}
+
+.doctor-report-section h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.doctor-report-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.doctor-report-cycle {
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.doctor-report-cycle:last-child {
+  border-bottom: none;
+}
+
+.doctor-report-cycle-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+
+.doctor-report-footer {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 0.78rem;
+  color: var(--text-muted, #6c757d);
+}
+
+.phase2-empty {
+  padding: 0.5rem 0;
+}
+
+@media print {
+  .bottom-nav,
+  .mobile-back-btn,
+  .page-mascot-section--no-print,
+  .phase2-actions--no-print,
+  .card-bloom-header .card-bloom-dots {
+    display: none !important;
+  }
+
+  .doctor-report {
+    border: none;
+    padding: 0;
+  }
+
+  body {
+    background: #fff !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .phase2-form-row,
+  .planner-date-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phase2-tools-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .phase2-inline-form {
+    flex-direction: column;
+  }
+}

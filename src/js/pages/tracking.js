@@ -3,37 +3,85 @@ import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import {
   MOODS, SYMPTOMS, FLOWS, SLEEP_OPTIONS, DISCHARGE_OPTIONS, ACTIVITY_OPTIONS,
-  getDailyLog, saveDailyLog, getPreferences, getDefaultPreferences,
+  getDailyLog, getDailyLogs, saveDailyLog, getPreferences, getDefaultPreferences,
 } from '../services/dailyLogService.js';
-import { upsertPeriodEntry } from '../services/cycleService.js';
+import {
+  upsertPeriodEntry,
+  getCycleStarts,
+  getPeriodEntries,
+  getPeriodContextForDate,
+  setPeriodEndDate,
+} from '../services/cycleService.js';
 import { buildSmartFollowUp } from '../services/bloomIntelligenceService.js';
+import { analyzeMultipleSymptoms } from '../services/bloomPhase2Service.js';
 import { renderSmartFollowUpBanner } from '../components/bloomIntelligence.js';
+import { renderIsThisNormalInline } from '../components/bloomPhase2.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { todayString, addDays } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
 
+const PERIOD_STATUS_OPTIONS = {
+  none: { value: 'none', label: 'Sem menstruação hoje' },
+  continue: { value: 'continue', label: 'Continuo menstruada' },
+  end: { value: 'end', label: 'Menstruação terminou hoje' },
+  start: { value: 'start', label: 'Início de menstruação hoje' },
+};
+
+function buildPeriodStatusOptions(periodContext) {
+  const options = [PERIOD_STATUS_OPTIONS.none];
+  if (periodContext.inPeriod) {
+    options.push(PERIOD_STATUS_OPTIONS.continue, PERIOD_STATUS_OPTIONS.end);
+  }
+  if (!periodContext.inPeriod || periodContext.isStartDay) {
+    options.push(PERIOD_STATUS_OPTIONS.start);
+  }
+  return options;
+}
+
+function derivePeriodStatus(logDate, existingLog, periodEntries, avgPeriod) {
+  const periodContext = getPeriodContextForDate(logDate, periodEntries, avgPeriod);
+  const hasFlow = Boolean(existingLog?.flow);
+  const startEntry = periodEntries.find((entry) => entry.start_date === logDate);
+
+  if (periodContext.isEndDay) return 'end';
+  if (startEntry) return 'start';
+  if (periodContext.inPeriod && hasFlow) return 'continue';
+  if (hasFlow) return 'continue';
+  return 'none';
+}
+
 export async function renderTracking(container) {
-  const { user } = getState();
+  const { user, profile } = getState();
   const logDate = sessionStorage.getItem('bloom_log_date') || todayString();
   sessionStorage.removeItem('bloom_log_date');
 
   let existingLog = null;
   let yesterdayLog = null;
   let prefs = getDefaultPreferences();
+  let periodStarts = [];
+  let periodEntries = [];
+  let dailyLogs = [];
 
   if (isAuthConfigured() && user) {
     try {
-      [existingLog, yesterdayLog, prefs] = await Promise.all([
+      [existingLog, yesterdayLog, prefs, periodStarts, periodEntries, dailyLogs] = await Promise.all([
         getDailyLog(user.id, logDate),
         getDailyLog(user.id, addDays(logDate, -1)),
         getPreferences(user.id).then((p) => p || getDefaultPreferences()),
+        getCycleStarts(user.id),
+        getPeriodEntries(user.id),
+        getDailyLogs(user.id),
       ]);
     } catch (err) {
       console.error(err);
     }
   }
+
+  const avgPeriod = profile?.average_period_length || 5;
+  const periodContext = getPeriodContextForDate(logDate, periodEntries, avgPeriod);
+  const periodStatusOptions = buildPeriodStatusOptions(periodContext);
 
   const followUp = buildSmartFollowUp(yesterdayLog, existingLog);
   const focusNotes = sessionStorage.getItem('bloom_focus_notes') === '1';
@@ -46,7 +94,8 @@ export async function renderTracking(container) {
   let sleepQuality = existingLog?.sleep_quality || null;
   let flow = existingLog?.flow || null;
   let notes = existingLog?.notes || '';
-  let periodStart = false;
+  let periodStatus = derivePeriodStatus(logDate, existingLog, periodEntries, avgPeriod);
+  const showFlowInitially = periodStatus === 'start' || periodStatus === 'continue' || periodStatus === 'end';
 
   function renderChips(items, selected, name) {
     return items.map((item) =>
@@ -77,15 +126,17 @@ export async function renderTracking(container) {
 
     <form id="tracking-form" class="card-stack">
       ${renderCard('Menstruação', `
-        <label class="card-bloom-check" for="period-start">
-          <input type="checkbox" id="period-start" class="bloom-checkbox-input" />
-          <span class="bloom-checkbox" aria-hidden="true">
-            <i class="bi bi-check-lg bloom-checkbox-icon"></i>
-          </span>
-          <span class="card-bloom-check-label">Início de menstruação hoje</span>
-        </label>
-        <div class="chip-grid" id="flow-chips">
-          ${renderChips(FLOWS, flow, 'flow')}
+        <p class="period-section-label">Como está hoje?</p>
+        <div class="chip-grid chip-grid--compact" id="period-status-chips">
+          ${periodStatusOptions.map((item) =>
+            `<button type="button" class="chip${periodStatus === item.value ? ' selected' : ''}" data-group="period-status" data-value="${item.value}">${item.label}</button>`
+          ).join('')}
+        </div>
+        <div class="period-flow-section${showFlowInitially ? '' : ' period-flow-section--hidden'}" id="period-flow-section">
+          <p class="period-section-label">Fluxo</p>
+          <div class="chip-grid chip-grid--compact" id="flow-chips">
+            ${renderChips(FLOWS, flow, 'flow')}
+          </div>
         </div>
       `)}
 
@@ -99,6 +150,7 @@ export async function renderTracking(container) {
             `<button type="button" class="chip${selectedSymptoms.has(s.value) ? ' selected' : ''}" data-group="symptom" data-value="${s.value}">${s.label}</button>`
           ).join('')}
         </div>
+        <div id="symptom-normalcy" class="mt-3"></div>
       `) : ''}
 
       ${prefs.track_pain ? renderCard('Dor (0,10)', `
@@ -124,6 +176,35 @@ export async function renderTracking(container) {
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
 
+  function updateNormalcyPanel() {
+    const panel = container.querySelector('#symptom-normalcy');
+    if (!panel) return;
+    if (!selectedSymptoms.size) {
+      panel.innerHTML = '';
+      return;
+    }
+    const analyses = analyzeMultipleSymptoms(
+      [...selectedSymptoms],
+      profile,
+      periodStarts,
+      dailyLogs
+    );
+    panel.innerHTML = renderIsThisNormalInline(analyses);
+  }
+
+  function updateFlowSectionVisibility() {
+    const section = container.querySelector('#period-flow-section');
+    if (!section) return;
+    const showFlow = periodStatus === 'start' || periodStatus === 'continue' || periodStatus === 'end';
+    section.classList.toggle('period-flow-section--hidden', !showFlow);
+    if (!showFlow) {
+      flow = null;
+      container.querySelectorAll('.chip[data-group="flow"]').forEach((chip) => chip.classList.remove('selected'));
+    }
+  }
+
+  updateNormalcyPanel();
+
   if (focusNotes) {
     container.querySelector('#notes')?.focus();
   }
@@ -139,6 +220,7 @@ export async function renderTracking(container) {
     }
     selectedSymptoms.add('colica');
     container.querySelectorAll('#symptom-chips .chip[data-value="colica"]').forEach((c) => c.classList.add('selected'));
+    updateNormalcyPanel();
     container.querySelector('#pain-scale')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     banner?.remove();
     showToast('Registre a intensidade abaixo, no seu tempo.', 'success');
@@ -151,12 +233,17 @@ export async function renderTracking(container) {
         chip.classList.toggle('selected');
         if (selectedSymptoms.has(chip.dataset.value)) selectedSymptoms.delete(chip.dataset.value);
         else selectedSymptoms.add(chip.dataset.value);
+        updateNormalcyPanel();
       } else {
         container.querySelectorAll(`.chip[data-group="${group}"]`).forEach((c) => c.classList.remove('selected'));
         chip.classList.add('selected');
         if (group === 'mood') selectedMood = chip.dataset.value;
         if (group === 'flow') flow = chip.dataset.value;
         if (group === 'sleep') sleepQuality = chip.dataset.value;
+        if (group === 'period-status') {
+          periodStatus = chip.dataset.value;
+          updateFlowSectionVisibility();
+        }
       }
     });
   });
@@ -171,10 +258,6 @@ export async function renderTracking(container) {
     });
   });
 
-  container.querySelector('#period-start')?.addEventListener('change', (e) => {
-    periodStart = e.target.checked;
-  });
-
   container.querySelector('#tracking-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!user || !isAuthConfigured()) {
@@ -182,13 +265,25 @@ export async function renderTracking(container) {
       return;
     }
 
+    const needsFlow = periodStatus === 'start' || periodStatus === 'continue';
+    if (needsFlow && !flow) {
+      showToast('Escolha a intensidade do fluxo.', 'error');
+      return;
+    }
+
     try {
-      if (periodStart) {
+      if (periodStatus === 'start') {
+        const existingStart = periodEntries.find((entry) => entry.start_date === logDate);
         await upsertPeriodEntry(user.id, {
+          ...(existingStart ? { id: existingStart.id } : {}),
           start_date: logDate,
           flow: flow || 'moderado',
         });
+      } else if (periodStatus === 'end' && periodContext.entry) {
+        await setPeriodEndDate(user.id, periodContext.entry.id, logDate);
       }
+
+      const logFlow = periodStatus === 'none' ? null : flow;
 
       await saveDailyLog(
         user.id,
@@ -198,7 +293,7 @@ export async function renderTracking(container) {
           pain_level: painLevel,
           energy_level: energyLevel,
           sleep_quality: sleepQuality,
-          flow,
+          flow: logFlow,
           notes: container.querySelector('#notes')?.value || null,
         },
         [...selectedSymptoms]

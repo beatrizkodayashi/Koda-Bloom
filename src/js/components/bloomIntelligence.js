@@ -113,6 +113,21 @@ export function renderCycleRetrospectiveCard(retro) {
   `, { className: 'card-bloom-soft' });
 }
 
+function renderSimulatorChips(groupId, options, selectedValue = '') {
+  return `
+    <div class="chip-grid cycle-simulator-options" id="${groupId}" role="group">
+      ${options.map(({ value, label }) => `
+        <button
+          type="button"
+          class="chip${String(value) === String(selectedValue) ? ' selected' : ''}"
+          data-value="${value}"
+          aria-pressed="${String(value) === String(selectedValue)}"
+        >${label}</button>
+      `).join('')}
+    </div>
+  `;
+}
+
 export function renderCycleSimulator({ lastPeriodStart, avgCycle, avgPeriod, simulation }) {
   if (!lastPeriodStart) return '';
 
@@ -120,24 +135,24 @@ export function renderCycleSimulator({ lastPeriodStart, avgCycle, avgPeriod, sim
     <p class="text-muted mb-0"><small>Teste cenários — o calendário mental se reorganiza aqui.</small></p>
     <div class="cycle-simulator-controls mt-4">
       <div class="form-bloom">
-        <label for="sim-offset">E se a menstruação viesse…</label>
-        <select id="sim-offset" class="bloom-select">
-          <option value="-3">3 dias antes</option>
-          <option value="-1">1 dia antes</option>
-          <option value="0" selected>No previsto</option>
-          <option value="2">2 dias depois</option>
-          <option value="5">5 dias depois</option>
-        </select>
+        <span class="cycle-simulator-label">E se a menstruação viesse…</span>
+        ${renderSimulatorChips('sim-offset', [
+          { value: '-3', label: '3 dias antes' },
+          { value: '-1', label: '1 dia antes' },
+          { value: '0', label: 'No previsto' },
+          { value: '2', label: '2 dias depois' },
+          { value: '5', label: '5 dias depois' },
+        ], '0')}
       </div>
-      <div class="form-bloom mt-3">
-        <label for="sim-cycle">E se meu ciclo durasse…</label>
-        <select id="sim-cycle" class="bloom-select">
-          <option value="">Média atual (${avgCycle} dias)</option>
-          <option value="25">25 dias</option>
-          <option value="28">28 dias</option>
-          <option value="32">32 dias</option>
-          <option value="35">35 dias</option>
-        </select>
+      <div class="form-bloom">
+        <span class="cycle-simulator-label">E se meu ciclo durasse…</span>
+        ${renderSimulatorChips('sim-cycle', [
+          { value: '', label: `Média atual (${avgCycle} dias)` },
+          { value: '25', label: '25 dias' },
+          { value: '28', label: '28 dias' },
+          { value: '32', label: '32 dias' },
+          { value: '35', label: '35 dias' },
+        ], '')}
       </div>
     </div>
     <div id="sim-result" class="cycle-simulator-result mt-4">
@@ -221,7 +236,8 @@ export function renderSmartFollowUpBanner(followUp) {
 export function renderCareModeButton() {
   return `
     <button type="button" class="btn-bloom btn-bloom-care w-100 mt-4" id="btn-care-mode">
-      ${renderIcon('care-sad', 'bloom-icon bloom-icon--sm')} Hoje não tô bem
+      <img src="/pato_triste.png" alt="" width="28" height="28" class="care-btn-duck" decoding="async" />
+      Hoje não tô bem
     </button>
   `;
 }
@@ -234,7 +250,6 @@ export function renderCareModePage(status = {}) {
   } = status;
 
   const actions = [
-    { id: 'care-quick-log', icon: 'note', label: 'Registrar sintomas rapidamente' },
     { id: 'care-breathe', icon: 'wind', label: 'Respiração guiada' },
     { id: 'care-water', icon: 'water', label: hydrationActive ? 'Hidratação ativa (toque para desligar)' : 'Lembrete de hidratação' },
     { id: 'care-rest', icon: 'bed', label: restActive ? 'Modo descanso ativo (toque para desligar)' : 'Modo descanso' },
@@ -246,7 +261,7 @@ export function renderCareModePage(status = {}) {
       <div class="care-mode-inner">
         <section class="care-mode-hero">
           <div class="care-mode-mascot-wrap">
-            <img src="/pato_padrao.png" alt="${APP_NAME}" class="bloom-mascot-img care-mode-mascot" width="140" height="140" decoding="async" />
+            <img src="/pato_triste.png" alt="${APP_NAME}" class="bloom-mascot-img care-mode-mascot" width="140" height="140" decoding="async" />
           </div>
           <h1>Hoje não tô bem</h1>
           <p class="care-mode-intro">Escolha só uma coisa por agora.</p>

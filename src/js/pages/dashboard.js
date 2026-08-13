@@ -13,6 +13,14 @@ import {
   buildPredictionWithConfidence,
   buildPersonalizedTips,
 } from '../services/bloomIntelligenceService.js';
+import {
+  buildPhaseSelfComparison,
+} from '../services/bloomPhase1Service.js';
+import {
+  renderPhaseSelfComparisonCard,
+  setExplainContext,
+  mountDuckExplain,
+} from '../components/bloomPhase1.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { generateDailySummary } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
@@ -26,6 +34,7 @@ import { maskPhaseLabel, maskPeriodText } from '../utils/discreteMode.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
 import { isRestModeActive, renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
+import { renderIcon } from '../components/icons.js';
 
 export async function renderDashboard(container) {
   const { user, profile } = getState();
@@ -57,6 +66,7 @@ export async function renderDashboard(container) {
   const enoughData = hasEnoughDataForPrediction(cycleStarts);
   const prediction = buildPredictionWithConfidence(profile, cycleStarts, today);
   const tips = buildPersonalizedTips(profile, cycleStarts, dailyLogs, today);
+  const selfCompare = buildPhaseSelfComparison(profile, cycleStarts, dailyLogs, today);
 
   const symptoms = (todayLog?.daily_symptoms || []).map((s) => s.symptom.replace('_', ' '));
   const summary = cycleDay
@@ -91,10 +101,19 @@ export async function renderDashboard(container) {
 
     <div class="card-stack">
       ${cycleDay ? renderCard('Seu ciclo hoje', `
-        <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${maskPhaseLabel(phaseLabel(phase))}</span>
-        <h2 class="mt-3 mb-2">Dia ${cycleDay} do seu ciclo</h2>
-        ${periodLine ? `<p class="text-muted mb-0">${periodLine}</p>` : ''}
-        ${!enoughData ? '<p class="text-muted mt-3 mb-0"><small>Ainda precisamos de mais registros para melhorar suas estimativas.</small></p>' : ''}
+        <div class="cycle-today-card">
+          <div class="cycle-today-main">
+            <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${maskPhaseLabel(phaseLabel(phase))}</span>
+            <h2 class="mt-3 mb-2">Dia ${cycleDay} do seu ciclo</h2>
+            ${periodLine ? `<p class="text-muted mb-0">${periodLine}</p>` : ''}
+            ${!enoughData ? '<p class="text-muted mt-3 mb-0"><small>Ainda precisamos de mais registros para melhorar suas estimativas.</small></p>' : ''}
+          </div>
+          <div class="cycle-today-footer">
+            <button type="button" class="btn btn-sm btn-outline-bloom duck-explain-trigger" data-explain="cycle_day">
+              ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Pato, me explica
+            </button>
+          </div>
+        </div>
       `, { className: 'card-bloom-soft' }) : renderCard('Primeiro registro', `
         <div class="empty-state py-2">
           <p class="text-muted">Vamos registrar seu ciclo para começar as estimativas.</p>
@@ -103,6 +122,7 @@ export async function renderDashboard(container) {
       `)}
 
       ${prediction && enoughData && !restMode ? renderPredictionConfidenceCard(prediction) : ''}
+      ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
       ${restMode ? '' : renderPersonalizedTips(tips)}
     </div>
 
@@ -132,4 +152,12 @@ export async function renderDashboard(container) {
   container.querySelectorAll('.bloom-tip--action[data-tip-action="care_mode"]').forEach((el) => {
     el.addEventListener('click', () => navigate(ROUTES.CUIDADO));
   });
+
+  setExplainContext({
+    cycleDay,
+    phase,
+    phaseLabel: phaseLabel(phase),
+    explanation: prediction?.explanation,
+  });
+  mountDuckExplain(container);
 }

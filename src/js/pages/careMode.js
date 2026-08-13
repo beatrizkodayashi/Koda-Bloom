@@ -26,10 +26,6 @@ function bindCareEvents(container) {
     navigate(ROUTES.HOJE);
   });
 
-  container.querySelector('#care-quick-log')?.addEventListener('click', () => {
-    navigate(ROUTES.REGISTRAR);
-  });
-
   container.querySelector('#care-journal')?.addEventListener('click', () => {
     sessionStorage.setItem('bloom_focus_notes', '1');
     navigate(ROUTES.REGISTRAR);

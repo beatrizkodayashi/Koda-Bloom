@@ -6,5 +6,7 @@
 @import './components.css';
 @import './layout.css';
 @import './intelligence.css';
+@import './phase1.css';
+@import './phase2.css';
 @import './help-chat.css';
 @import './desktop-scale.css';

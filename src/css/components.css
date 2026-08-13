@@ -283,6 +283,27 @@
   margin-top: var(--space-4);
 }
 
+.chip-grid--compact {
+  margin-top: 0;
+}
+
+.period-section-label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.period-flow-section {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--card-outline-soft);
+}
+
+.period-flow-section--hidden {
+  display: none;
+}
+
 .stat-value {
   font-size: var(--font-size-2xl);
   font-weight: 700;

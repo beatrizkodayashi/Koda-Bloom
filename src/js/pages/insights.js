@@ -14,11 +14,24 @@ import {
   buildSymptomBodyMap,
 } from '../services/bloomIntelligenceService.js';
 import { buildInsights } from '../services/insightsService.js';
+import {
+  buildCycleJourney,
+  buildPhaseSelfComparison,
+  buildMyPattern,
+} from '../services/bloomPhase1Service.js';
+import {
+  renderCycleJourneyCard,
+  renderPhaseSelfComparisonCard,
+  setExplainContext,
+  mountDuckExplain,
+} from '../components/bloomPhase1.js';
+import {
+  renderPhase2ToolsCard,
+  mountPhase2Navigation,
+} from '../components/bloomPhase2.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderCard } from '../components/card.js';
 import { formatDays, phaseLabel } from '../utils/formatters.js';
-import { isAuthConfigured } from '../services/authService.js';
-import { maskPhaseLabel } from '../utils/discreteMode.js';
 import {
   renderDuckObservationsCard,
   renderAnomalyAlert,
@@ -30,6 +43,7 @@ import {
   renderSimulatorResult,
   renderSymptomBodyMap,
 } from '../components/bloomIntelligence.js';
+import { isAuthConfigured } from '../services/authService.js';
 
 export async function renderInsights(container) {
   const { user, profile } = getState();
@@ -63,9 +77,16 @@ export async function renderInsights(container) {
     avgCycle: insights.averageCycle,
     avgPeriod: insights.averagePeriod,
   });
-
-  const timelinePhases = ['menstruation', 'follicular', 'ovulation', 'luteal'];
-  const currentPhase = insights.phase;
+  const journey = insights.cycleDay
+    ? buildCycleJourney({
+        cycleDay: insights.cycleDay,
+        phase: insights.phase,
+        avgCycle: insights.averageCycle,
+        avgPeriod: insights.averagePeriod,
+      })
+    : null;
+  const selfCompare = buildPhaseSelfComparison(profile, periodStarts, dailyLogs);
+  const pattern = buildMyPattern(profile, periodStarts, dailyLogs);
 
   const content = `
     <section class="page-mascot-section page-mascot-section--insights">
@@ -82,6 +103,8 @@ export async function renderInsights(container) {
 
     <div class="card-stack">
       ${renderAnomalyAlert(anomaly)}
+      ${journey ? renderCycleJourneyCard(journey) : ''}
+      ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
       ${prediction ? renderPredictionConfidenceCard(prediction) : ''}
       ${renderDuckObservationsCard(observations)}
       ${renderPersonalizedTips(tips)}
@@ -96,17 +119,17 @@ export async function renderInsights(container) {
         simulation,
       }) : ''}
 
-      ${renderCard('Meu ciclo', `
-        <div class="cycle-timeline">
-          ${timelinePhases.map((phase) => `
-            <div class="timeline-step${currentPhase === phase ? ' active' : ''}">
-              <span class="dot" style="background: var(--color-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'})"></span>
-              ${maskPhaseLabel(phaseLabel(phase))}
-            </div>
-          `).join('')}
-        </div>
-        ${insights.cycleDay ? `<p class="text-muted mt-3 mb-0"><small>Você está no dia ${insights.cycleDay}, ${maskPhaseLabel(phaseLabel(currentPhase))}.</small></p>` : ''}
-      `)}
+      ${pattern.enoughData ? renderCard('Meu padrão', `
+        <p class="mb-3">${pattern.duckIntro}</p>
+        <button type="button" class="btn-bloom btn-bloom-primary" id="btn-meu-padrao">Ver meu padrão completo</button>
+      `, { className: 'card-bloom-soft' }) : ''}
+
+      ${renderPhase2ToolsCard()}
+
+      ${renderCard('Isso é normal para mim?', `
+        <p class="mb-3 text-muted"><small>Consulte seu histórico pessoal sobre qualquer sintoma.</small></p>
+        <button type="button" class="btn-bloom btn-bloom-secondary" id="btn-isso-normal">Explorar sintomas</button>
+      `, { className: 'card-bloom-soft' })}
 
       <div class="feature-grid insights-stats">
         ${renderCard('Ciclo médio', `
@@ -136,19 +159,16 @@ export async function renderInsights(container) {
             <span class="text-muted">${formatDays(c.duration)}</span>
           </div>
         `).join('')}
-      `) : renderCard('', `
-        <div class="empty-state py-4">
-          <div class="duck-companion">
-            <img src="/pato_caderno.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--empty" width="160" height="160" decoding="async" />
-            <p class="mascot-caption">Registre mais ciclos para ver insights detalhados.</p>
-          </div>
-        </div>
-      `, { plain: true, className: 'card-bloom--plain' })}
+      `) : ''}
     </div>
   `;
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
+
+  container.querySelector('#btn-meu-padrao')?.addEventListener('click', () => navigate(ROUTES.MEU_PADRAO));
+  container.querySelector('#btn-isso-normal')?.addEventListener('click', () => navigate(ROUTES.ISSO_E_NORMAL));
+  mountPhase2Navigation(container, navigate, ROUTES);
 
   if (periodStarts[0]) {
     bindSimulator(container, periodStarts[0], insights.averageCycle, insights.averagePeriod);
@@ -157,24 +177,50 @@ export async function renderInsights(container) {
   container.querySelectorAll('.bloom-tip--action[data-tip-action="care_mode"]').forEach((el) => {
     el.addEventListener('click', () => navigate(ROUTES.CUIDADO));
   });
+
+  setExplainContext({
+    cycleDay: insights.cycleDay,
+    phase: insights.phase,
+    phaseLabel: phaseLabel(insights.phase),
+    explanation: prediction?.explanation,
+  });
+  mountDuckExplain(container);
 }
 
 function bindSimulator(container, lastPeriodStart, avgCycle, avgPeriod) {
-  const offsetEl = container.querySelector('#sim-offset');
-  const cycleEl = container.querySelector('#sim-cycle');
+  const offsetGroup = container.querySelector('#sim-offset');
+  const cycleGroup = container.querySelector('#sim-cycle');
   const resultEl = container.querySelector('#sim-result');
+
+  function getSelectedValue(group) {
+    return group?.querySelector('.chip.selected')?.dataset.value ?? '';
+  }
 
   function update() {
     const simulation = simulateCycleChange({
       lastPeriodStart,
       avgCycle,
       avgPeriod,
-      periodOffsetDays: Number(offsetEl?.value || 0),
-      cycleLengthDays: cycleEl?.value ? Number(cycleEl.value) : null,
+      periodOffsetDays: Number(getSelectedValue(offsetGroup) || 0),
+      cycleLengthDays: getSelectedValue(cycleGroup) ? Number(getSelectedValue(cycleGroup)) : null,
     });
     if (resultEl) resultEl.innerHTML = renderSimulatorResult(simulation);
   }
 
-  offsetEl?.addEventListener('change', update);
-  cycleEl?.addEventListener('change', update);
+  function bindChipGroup(group) {
+    group?.querySelectorAll('.chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        group.querySelectorAll('.chip').forEach((c) => {
+          c.classList.remove('selected');
+          c.setAttribute('aria-pressed', 'false');
+        });
+        chip.classList.add('selected');
+        chip.setAttribute('aria-pressed', 'true');
+        update();
+      });
+    });
+  }
+
+  bindChipGroup(offsetGroup);
+  bindChipGroup(cycleGroup);
 }

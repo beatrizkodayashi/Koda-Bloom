@@ -18,6 +18,11 @@ import { renderTracking } from './pages/tracking.js';
 import { renderInsights } from './pages/insights.js';
 import { renderProfile } from './pages/profile.js';
 import { renderCareMode } from './pages/careMode.js';
+import { renderMyPattern } from './pages/myPattern.js';
+import { renderNecessaire } from './pages/necessaire.js';
+import { renderPlanner } from './pages/planner.js';
+import { renderDoctorReport } from './pages/doctorReport.js';
+import { renderIsThisNormal } from './pages/isThisNormal.js';
 
 async function requireAuth(container, renderFn) {
   const { user } = getState();
@@ -51,6 +56,11 @@ function registerRoutes() {
   registerRoute(ROUTES.CALENDARIO, (c) => requireAuth(c, renderCalendar));
   registerRoute(ROUTES.REGISTRAR, (c) => requireAuth(c, renderTracking));
   registerRoute(ROUTES.INSIGHTS, (c) => requireAuth(c, renderInsights));
+  registerRoute(ROUTES.MEU_PADRAO, (c) => requireAuth(c, renderMyPattern));
+  registerRoute(ROUTES.NECESSAIRE, (c) => requireAuth(c, renderNecessaire));
+  registerRoute(ROUTES.PLANEJADOR, (c) => requireAuth(c, renderPlanner));
+  registerRoute(ROUTES.RELATORIO, (c) => requireAuth(c, renderDoctorReport));
+  registerRoute(ROUTES.ISSO_E_NORMAL, (c) => requireAuth(c, renderIsThisNormal));
   registerRoute(ROUTES.PERFIL, (c) => requireAuth(c, renderProfile));
   registerRoute(ROUTES.CUIDADO, (c) => requireAuth(c, renderCareMode));
 

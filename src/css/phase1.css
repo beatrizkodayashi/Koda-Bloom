@@ -1,0 +1,528 @@
+/* Fase 1 — Jornada, Meu padrão, Você×você, Pato me explica */
+
+.cycle-journey-card .card-bloom-body {
+  padding-top: 1rem;
+}
+
+.cycle-journey {
+  display: flex;
+  flex-direction: column;
+}
+
+.cycle-journey-track {
+  position: relative;
+  padding: 0 0.15rem 0.5rem;
+}
+
+.cycle-journey-rail {
+  position: absolute;
+  top: 2.65rem;
+  left: 12.5%;
+  right: 12.5%;
+  height: 4px;
+  background: var(--palette-cream-dark, #f0e8d0);
+  border-radius: 999px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.cycle-journey-progress {
+  height: 100%;
+  background: var(--palette-pink-dark, #e8a0b8);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.cycle-journey-nodes {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.cycle-journey-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.cycle-journey-node-top {
+  height: 2.35rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+}
+
+.cycle-journey-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--palette-cream-dark, #f0e8d0);
+  border: 2px solid var(--palette-pink-soft, #f5d0dc);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.cycle-journey-node--done .cycle-journey-dot {
+  background: var(--palette-pink-dark, #e8a0b8);
+  border-color: var(--palette-pink-dark, #e8a0b8);
+}
+
+.cycle-journey-node--active .cycle-journey-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--palette-pink, #ffb6c8);
+  border-color: var(--palette-pink-dark, #e8a0b8);
+  box-shadow: 0 0 0 4px rgba(255, 182, 200, 0.35);
+}
+
+.cycle-journey-label {
+  margin-top: 0.55rem;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: var(--text-muted, #6c757d);
+  max-width: 4.75rem;
+  hyphens: auto;
+}
+
+.cycle-journey-node--active .cycle-journey-label {
+  color: var(--text-primary, #333);
+  font-weight: 600;
+}
+
+.cycle-journey-here {
+  display: block;
+  min-height: 1rem;
+  margin-top: 0.2rem;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  color: var(--palette-pink-dark, #c97a94);
+  font-weight: 600;
+}
+
+.cycle-journey-here--placeholder {
+  visibility: hidden;
+}
+
+.cycle-journey-duck {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: cycle-journey-duck-bob 2.5s ease-in-out infinite;
+}
+
+.cycle-journey-duck-img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transform: scaleX(-1);
+}
+
+@keyframes cycle-journey-duck-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.cycle-journey-meta {
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 173, 187, 0.25);
+}
+
+.cycle-journey-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+}
+
+.cycle-journey-day {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.cycle-today-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 9rem;
+}
+
+.cycle-today-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.btn-outline-bloom {
+  border-color: var(--palette-pink-dark, #e8a0b8);
+  color: var(--palette-pink-dark, #c97a94);
+}
+
+.btn-outline-bloom:hover {
+  background: var(--palette-pink-soft, #fce4ec);
+  border-color: var(--palette-pink-dark, #e8a0b8);
+  color: var(--palette-pink-dark, #c97a94);
+}
+
+/* Você × você */
+.self-compare-intro {
+  font-size: 0.95rem;
+}
+
+.self-compare-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.self-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--palette-cream, #fffbde);
+  border-radius: var(--radius-md, 12px);
+}
+
+.self-compare-label {
+  font-weight: 500;
+}
+
+.self-compare-delta {
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.self-compare-delta--up {
+  color: #2d8a4e;
+}
+
+.self-compare-delta--down {
+  color: #c45c5c;
+}
+
+.self-compare-delta--neutral {
+  color: var(--text-muted, #6c757d);
+  font-weight: 500;
+}
+
+.self-compare-arrow {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Meu padrão */
+.page-mascot-section--pattern .page-header {
+  margin-bottom: 0.5rem;
+}
+
+.page-mascot-section--pattern .duck-companion {
+  margin-top: 0.25rem;
+}
+
+.bloom-mascot-img--pattern {
+  width: min(200px, 52vw);
+  height: auto;
+}
+
+.page-mascot-section--pattern + .my-pattern-page {
+  margin-top: 0.5rem;
+}
+
+.my-pattern-page {
+  gap: 1rem;
+}
+
+.my-pattern-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.my-pattern-progress-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.my-pattern-progress-value {
+  font-size: 0.85rem;
+  color: var(--palette-pink-dark, #c97a94);
+  font-weight: 600;
+}
+
+.my-pattern-progress-bar {
+  height: 0.55rem;
+  background: var(--palette-cream-dark, #f0e8d0);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.my-pattern-progress-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--palette-pink, #ffb6c8), var(--palette-pink-dark, #e8a0b8));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.my-pattern-progress-hint {
+  font-size: 0.9rem;
+  color: var(--text-muted, #6c757d);
+  line-height: 1.45;
+}
+
+.my-pattern-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.my-pattern-step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.85rem 0.95rem;
+  background: var(--palette-cream, #fffbde);
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid rgba(255, 173, 187, 0.2);
+}
+
+.my-pattern-step--done {
+  border-color: rgba(255, 173, 187, 0.45);
+  background: rgba(255, 182, 200, 0.12);
+}
+
+.my-pattern-step-icon {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--palette-pink-dark, #c97a94);
+  background: rgba(255, 182, 200, 0.25);
+}
+
+.my-pattern-step--done .my-pattern-step-icon {
+  background: var(--palette-pink-dark, #e8a0b8);
+  color: #fff;
+}
+
+.my-pattern-step-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.my-pattern-step-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted, #6c757d);
+  line-height: 1.4;
+}
+
+.my-pattern-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.my-pattern-actions .btn-bloom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.my-pattern-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.my-pattern-hero-bubble {
+  position: relative;
+  padding: 1.1rem 1.15rem;
+  background: var(--palette-cream, #fffbde);
+  border: 1px solid rgba(255, 173, 187, 0.35);
+  border-radius: 1rem 1rem 1rem 0.35rem;
+}
+
+.my-pattern-hero-quote {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.my-pattern-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--text-muted, #6c757d);
+}
+
+.my-pattern-stats {
+  margin: 0;
+}
+
+.my-pattern-stat {
+  text-align: center;
+}
+
+.my-pattern-stat-icon {
+  display: inline-flex;
+  margin-bottom: 0.35rem;
+}
+
+.my-pattern-stat-hint {
+  color: var(--text-muted, #6c757d);
+}
+
+.my-pattern-discoveries {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.my-pattern-discovery {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  background: var(--palette-cream, #fffbde);
+  border-radius: var(--radius-md, 12px);
+}
+
+.my-pattern-discovery-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.my-pattern-discovery-body {
+  font-size: 0.88rem;
+  color: var(--text-muted, #6c757d);
+  line-height: 1.45;
+}
+
+.my-pattern-disclaimer {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted, #6c757d);
+  line-height: 1.45;
+  margin: 0.5rem 0 0;
+}
+
+/* Modal Pato me explica */
+.duck-explain-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.duck-explain-modal[hidden] {
+  display: none;
+}
+
+.duck-explain-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.duck-explain-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--palette-cream, #fffbde);
+  border-radius: 1.25rem 1.25rem 0 0;
+  padding: 1.5rem 1.25rem 2rem;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  animation: duck-explain-slide 0.25s ease;
+}
+
+@keyframes duck-explain-slide {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.duck-explain-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted, #6c757d);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.duck-explain-duck {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.duck-explain-title {
+  font-size: 1.15rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.duck-explain-body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.duck-explain-disclaimer {
+  color: var(--text-muted, #6c757d);
+  text-align: center;
+}
+
+body.duck-explain-open {
+  overflow: hidden;
+}
+
+@media (min-width: 576px) {
+  .duck-explain-modal {
+    align-items: center;
+  }
+
+  .duck-explain-sheet {
+    border-radius: 1.25rem;
+    margin: 1rem;
+  }
+}

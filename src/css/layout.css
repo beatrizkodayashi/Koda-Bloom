@@ -378,24 +378,9 @@
   margin-bottom: 0;
 }
 
-.feature-grid .card-bloom:nth-child(5n + 1) .card-bloom-header {
-  background: rgba(255, 173, 187, 0.85);
-}
-
-.feature-grid .card-bloom:nth-child(5n + 2) .card-bloom-header {
-  background: rgba(255, 204, 189, 0.9);
-}
-
-.feature-grid .card-bloom:nth-child(5n + 3) .card-bloom-header {
-  background: var(--palette-cream-soft);
-}
-
-.feature-grid .card-bloom:nth-child(5n + 4) .card-bloom-header {
-  background: rgba(255, 173, 187, 0.7);
-}
-
-.feature-grid .card-bloom:nth-child(5n + 5) .card-bloom-header {
-  background: rgba(255, 178, 143, 0.75);
+/* Header pêssego — só cards do grid (landing, stats perfil/insights) */
+.feature-grid .card-bloom-header {
+  background: var(--palette-peach-light);
 }
 
 .feature-card i {
@@ -541,6 +526,19 @@
 }
 
 .page-mascot-section--insights + .card-stack {
+  margin-top: var(--space-2);
+}
+
+.page-mascot-section--pattern .page-header {
+  margin-bottom: var(--space-4);
+}
+
+.page-mascot-section--pattern .duck-companion {
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.page-mascot-section--pattern + .my-pattern-page {
   margin-top: var(--space-2);
 }
 
@@ -1411,6 +1409,109 @@
   gap: var(--space-3);
 }
 
+.profile-pattern-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 2.5px solid var(--card-outline);
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, rgba(255, 182, 200, 0.22) 0%, rgba(255, 251, 222, 0.95) 55%, rgba(255, 204, 189, 0.18) 100%);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.profile-pattern-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.profile-pattern-card:active {
+  transform: translate(0, 0);
+  box-shadow: var(--card-shadow);
+}
+
+.profile-pattern-card-glow {
+  position: absolute;
+  top: -2rem;
+  right: -1rem;
+  width: 8rem;
+  height: 8rem;
+  background: radial-gradient(circle, rgba(255, 182, 200, 0.45) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.profile-pattern-card-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 1.1rem;
+}
+
+.profile-pattern-card-duck img {
+  display: block;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.08));
+}
+
+.profile-pattern-card-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.profile-pattern-card-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--palette-pink-dark, #c97a94);
+}
+
+.profile-pattern-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary, #333);
+}
+
+.profile-pattern-card-text {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-muted, #6c757d);
+  margin-top: 0.15rem;
+}
+
+.profile-pattern-card-meta {
+  font-size: 0.78rem;
+  color: var(--palette-pink-dark, #c97a94);
+  margin-top: 0.35rem;
+  font-weight: 600;
+}
+
+.profile-pattern-card-arrow {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--palette-pink-dark, #c97a94);
+  font-size: 1rem;
+}
+
 .profile-cycle-regular .chip-grid {
   margin-top: var(--space-2);
 }
@@ -1424,10 +1525,6 @@
 
   .profile-confidence {
     justify-content: center;
-  }
-
-  .profile-quick-links {
-    flex-direction: column;
   }
 }
 
