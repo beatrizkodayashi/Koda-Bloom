@@ -3,6 +3,7 @@
  */
 
 import { APP_NAME } from '../config/app.js';
+import { companionWelcomeMessage } from '../utils/genderLanguage.js';
 
 const DUCK_STATES = {
   welcome: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -85,7 +86,7 @@ const DUCK_STATES = {
 };
 
 const DUCK_MESSAGES = {
-  welcome: 'Oi! Que bom ter você aqui. Vamos conhecer seu ciclo juntas?',
+  welcome: null,
   happy: 'Continue registrando , cada informação ajuda a entender melhor seu corpo.',
   sleeping: 'Descanse bem. Seu corpo também precisa de pausa.',
   period: 'Cuidado extra hoje. Hidrate-se e escute seu corpo.',
@@ -106,9 +107,16 @@ export function getDuckState() {
 }
 
 export function renderDuckCompanion(options = {}) {
-  const { state = currentState, message, size = 'md', className = '' } = options;
+  const { state = currentState, message, size = 'md', className = '', profile = null } = options;
   const duckState = DUCK_STATES[state] || DUCK_STATES.welcome;
-  const duckMessage = message !== undefined ? message : (DUCK_MESSAGES[state] ?? '');
+  let duckMessage = message;
+  if (duckMessage === undefined) {
+    if (state === 'welcome') {
+      duckMessage = companionWelcomeMessage(profile);
+    } else {
+      duckMessage = DUCK_MESSAGES[state] ?? '';
+    }
+  }
 
   const sizeClass = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : '';
 

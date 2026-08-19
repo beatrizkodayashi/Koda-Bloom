@@ -34,7 +34,7 @@ export function renderNecessairePage(data) {
     <section class="page-mascot-section page-mascot-section--tools">
       <div class="page-header">
         <h1>Minha bolsinha</h1>
-        <p>Sua nécessaire menstrual virtual — pronta para viagens e dias imprevisíveis.</p>
+        <p>Sua nécessaire menstrual virtual, pronta para viagens e dias imprevisíveis.</p>
       </div>
       <div class="duck-companion">
         <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="180" height="180" decoding="async" />
@@ -107,7 +107,7 @@ export function renderPlannerPage(events, analyses) {
       </div>
       <div class="duck-companion">
         <img src="/pato_viajando.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="160" height="160" decoding="async" />
-        <p class="mascot-caption">Viagem, festa ou prova — eu te aviso se a menstruação pode aparecer.</p>
+        <p class="mascot-caption">Viagem, festa ou prova, eu te aviso se a menstruação pode aparecer.</p>
       </div>
     </section>
 
@@ -132,7 +132,7 @@ export function renderPlannerPage(events, analyses) {
         </form>
         ${
           !events.length
-            ? `<p class="planner-empty-hint mb-0">Nenhum evento ainda — adicione uma viagem ou compromisso acima.</p>`
+            ? `<p class="planner-empty-hint mb-0">Nenhum evento ainda, adicione uma viagem ou compromisso acima.</p>`
             : ''
         }
       `, { className: 'card-bloom-soft planner-form-card' })}

@@ -58,7 +58,7 @@ export function renderCycleJourneyCard(journey) {
       </div>
       <div class="cycle-journey-footer">
         <button type="button" class="btn btn-sm btn-outline-bloom duck-explain-trigger" data-explain="body">
-          ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Pato, me explica
+          ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Bloom, me explica
         </button>
       </div>
     </div>
@@ -105,11 +105,11 @@ export function renderMyPatternPage(pattern) {
     <section class="page-mascot-section page-mascot-section--pattern">
       <div class="page-header">
         <h1>Meu padrão</h1>
-        <p>O que o pato aprendeu sobre você</p>
+        <p>O que o Bloom aprendeu sobre você</p>
       </div>
       <div class="duck-companion">
         <img src="/pato_caderno.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--pattern" width="200" height="200" decoding="async" />
-        <p class="mascot-caption">${pattern.enoughData ? pattern.duckIntro : 'Cada registro me ajuda a entender seu ritmo — no seu tempo.'}</p>
+        <p class="mascot-caption">${pattern.enoughData ? pattern.duckIntro : 'Cada registro me ajuda a entender seu ritmo, no seu tempo.'}</p>
       </div>
     </section>
   `;
@@ -147,7 +147,7 @@ export function renderMyPatternPage(pattern) {
             </div>
             <p class="my-pattern-progress-hint mb-0">
               ${pattern.cyclesUntilReady === 2
-                ? 'Comece registrando sua menstruação — eu cuido do resto com carinho.'
+                ? 'Comece registrando sua menstruação, eu cuido do resto com carinho.'
                 : `Faltam ${pattern.cyclesUntilReady} ciclo${pattern.cyclesUntilReady > 1 ? 's' : ''} para eu montar seu padrão completo.`}
             </p>
           </div>
@@ -238,7 +238,7 @@ export function renderMyPatternPage(pattern) {
   return `
     ${header}
     <div class="card-stack my-pattern-page">
-      ${renderCard('O pato te conta', `
+      ${renderCard('O Bloom te conta', `
         <div class="my-pattern-hero">
           <div class="my-pattern-hero-bubble">
             <p class="my-pattern-hero-quote mb-0">"${pattern.duckIntro}"</p>

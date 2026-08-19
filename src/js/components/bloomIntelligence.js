@@ -27,12 +27,12 @@ export function renderPredictionConfidenceCard(prediction) {
 
 export function renderDuckObservationsCard(observations) {
   if (!observations.length) {
-    return renderCard('O pato percebeu', `
-      <p class="text-muted mb-0">Continue registrando por alguns ciclos — eu começo a notar padrões só seus.</p>
+    return renderCard('O Bloom percebeu', `
+      <p class="text-muted mb-0">Continue registrando por alguns ciclos, eu começo a notar padrões só seus.</p>
     `, { className: 'card-bloom-soft' });
   }
 
-  return renderCard('O pato percebeu', `
+  return renderCard('O Bloom percebeu', `
     <div class="duck-observations">
       ${observations.map((obs) => `
         <article class="duck-observation duck-observation--${obs.category}">
@@ -132,7 +132,7 @@ export function renderCycleSimulator({ lastPeriodStart, avgCycle, avgPeriod, sim
   if (!lastPeriodStart) return '';
 
   return renderCard('E se meu ciclo mudar?', `
-    <p class="text-muted mb-0"><small>Teste cenários — o calendário mental se reorganiza aqui.</small></p>
+    <p class="text-muted mb-0"><small>Teste cenários, o calendário mental se reorganiza aqui.</small></p>
     <div class="cycle-simulator-controls mt-4">
       <div class="form-bloom">
         <span class="cycle-simulator-label">E se a menstruação viesse…</span>
@@ -204,7 +204,7 @@ export function renderSymptomBodyMap(bodyMap) {
 export function renderPersonalizedTips(tips) {
   if (!tips.length) return '';
 
-  return renderCard('O pato aprende com você', `
+  return renderCard('O Bloom aprende com você', `
     <div class="bloom-tips">
       ${tips.map((tip) => `
         <div class="bloom-tip${tip.action ? ' bloom-tip--action' : ''}" data-tip-action="${tip.action || ''}">
@@ -265,7 +265,7 @@ export function renderCareModePage(status = {}) {
           </div>
           <h1>Hoje não tô bem</h1>
           <p class="care-mode-intro">Escolha só uma coisa por agora.</p>
-          <p class="care-mode-subtitle">Tudo bem não estar bem. Vamos com calma — só o que você precisar hoje.</p>
+          <p class="care-mode-subtitle">Tudo bem não estar bem. Vamos com calma, só o que você precisar hoje.</p>
         </section>
 
         <div class="care-mode-actions">

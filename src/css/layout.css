@@ -428,6 +428,15 @@
   gap: var(--space-4);
 }
 
+.auth-field-label {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.auth-gender-chips {
+  margin-top: var(--space-2);
+}
+
 .auth-links {
   margin-top: var(--space-4);
   text-align: center;

@@ -6,9 +6,10 @@ import { savePreferences, getDefaultPreferences } from '../services/dailyLogServ
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { showToast } from '../components/toast.js';
 import { todayString } from '../utils/dates.js';
+import { onboardingWelcomeLine, welcomeWord } from '../utils/genderLanguage.js';
 
 const STEPS = [
-  { id: 'welcome', title: 'Bem-vinda!' },
+  { id: 'welcome', title: 'Boas-vindas' },
   { id: 'last_period', title: 'Última menstruação' },
   { id: 'cycle_length', title: 'Duração do ciclo' },
   { id: 'period_length', title: 'Duração da menstruação' },
@@ -38,13 +39,14 @@ function renderProgress() {
 
 function renderStepContent() {
   const step = STEPS[currentStep];
+  const { profile } = getState();
 
   switch (step.id) {
     case 'welcome':
       return `
-        ${renderDuckCompanion({ state: 'welcome', size: 'lg' })}
+        ${renderDuckCompanion({ state: 'welcome', size: 'lg', profile })}
         <h2>Olá! Eu sou o ${APP_NAME}, seu companheiro.</h2>
-        <p class="text-muted">Vou te ajudar a entender seu ciclo com carinho. Vamos configurar algumas coisas juntas?</p>
+        <p class="text-muted">${welcomeWord(profile)}! Vou te ajudar a entender seu ciclo com carinho. ${onboardingWelcomeLine(profile)}</p>
         <div class="form-bloom mt-4">
           <label for="display_name">Como posso te chamar?</label>
           <input type="text" id="display_name" value="${formData.display_name}" placeholder="Seu nome" maxlength="50" />

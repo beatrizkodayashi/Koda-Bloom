@@ -36,13 +36,13 @@ function topSymptomInLogs(logs) {
   return top ? { symptom: top[0], label: SYMPTOM_LABELS[top[0]] || top[0], count: top[1] } : null;
 }
 
-function dominantMoodInLogs(logs) {
+function dominantMoodInLogs(logs, profile = null) {
   const counts = {};
   logs.forEach((log) => {
     if (log.mood) counts[log.mood] = (counts[log.mood] || 0) + 1;
   });
   const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-  return top ? { mood: top[0], label: moodLabel(top[0]), count: top[1] } : null;
+  return top ? { mood: top[0], label: moodLabel(top[0], profile), count: top[1] } : null;
 }
 
 function periodLengthForStart(periodEntries, startDate, fallback) {
@@ -132,7 +132,7 @@ export function simulateCycleChange({
   return { nextPeriod, ovulation, fertile, phases, summary, effectiveCycle };
 }
 
-/** "O pato percebeu" — padrões nos registros (#1) */
+/** "O Bloom percebeu", padrões nos registros (#1) */
 export function buildDuckObservations(profile, periodStarts, dailyLogs) {
   const observations = [];
   if (periodStarts.length < 2 || !dailyLogs.length) return observations;
@@ -167,7 +167,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
         id: `symptom_${value}`,
         category: 'symptoms',
         icon: 'duck-thought',
-        title: 'O pato percebeu uma coisa...',
+        title: 'O Bloom percebeu uma coisa...',
         body: `Nos últimos ${checked} ciclos, você registrou ${label.toLowerCase()} 1–2 dias antes da menstruação.`,
         priority: hits / checked,
       });
@@ -194,7 +194,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
       id: 'mood_luteal',
       category: 'mood',
       icon: 'duck-thought',
-      title: 'O pato percebeu uma coisa...',
+      title: 'O Bloom percebeu uma coisa...',
       body: 'Seu humor tende a ficar mais sensível na fase lútea, nos ciclos que você registrou.',
       priority: 0.7,
     });
@@ -222,7 +222,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
       id: 'energy_pre',
       category: 'energy',
       icon: 'duck-thought',
-      title: 'O pato percebeu uma coisa...',
+      title: 'O Bloom percebeu uma coisa...',
       body: 'Sua energia costuma cair 1–2 dias antes da menstruação começar.',
       priority: 0.65,
     });
@@ -249,7 +249,7 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
       id: 'sleep_pre',
       category: 'sleep',
       icon: 'duck-thought',
-      title: 'O pato percebeu uma coisa...',
+      title: 'O Bloom percebeu uma coisa...',
       body: 'Seu sono tende a piorar nos dias que antecedem a menstruação.',
       priority: 0.6,
     });
@@ -262,8 +262,8 @@ export function buildDuckObservations(profile, periodStarts, dailyLogs) {
         id: 'cycle_stable',
         category: 'cycle',
         icon: 'duck-thought',
-        title: 'O pato percebeu uma coisa...',
-        body: `Sua duração de ciclo é bem estável — em média ${formatDays(stats.average)}, com pouca variação.`,
+        title: 'O Bloom percebeu uma coisa...',
+        body: `Sua duração de ciclo é bem estável, em média ${formatDays(stats.average)}, com pouca variação.`,
         priority: 0.5,
       });
     }
@@ -284,7 +284,7 @@ export function detectAnomaly(profile, periodStarts, referenceDate = todayString
   if (currentDay > avgCycle + 5) {
     return {
       icon: 'warning',
-      title: 'Seu pato percebeu uma mudança',
+      title: 'O Bloom percebeu uma mudança',
       body: `Seu ciclo atual está ${diffFromAvg} dias mais longo que sua média dos últimos ciclos (${formatDays(avgCycle)}).`,
       disclaimer:
         'Se isso continuar acontecendo ou estiver te preocupando, considere conversar com um profissional de saúde.',
@@ -294,7 +294,7 @@ export function detectAnomaly(profile, periodStarts, referenceDate = todayString
   if (periodStarts.length >= 4 && stats.variation >= 8) {
     return {
       icon: 'warning',
-      title: 'Seu pato percebeu uma mudança',
+      title: 'O Bloom percebeu uma mudança',
       body: `Seus ciclos recentes variaram bastante (de ${stats.min} a ${stats.max} dias). Vale acompanhar nos próximos meses.`,
       disclaimer:
         'Variações acontecem, mas se estiver te preocupando, considere conversar com um profissional de saúde.',
@@ -351,11 +351,11 @@ export function compareRecentCycles(profile, periodStarts, dailyLogs, periodEntr
   const prevEnergy = parseFloat(avgOf(previousLogs, 'energy_level'));
   const currEnergy = parseFloat(avgOf(currentLogs, 'energy_level'));
 
-  let duckReaction = 'Cada ciclo é único — estou aqui para te acompanhar nos dois.';
+  let duckReaction = 'Cada ciclo é único, estou aqui para te acompanhar nos dois.';
   if (!Number.isNaN(prevPain) && !Number.isNaN(currPain) && currPain > prevPain + 1.5) {
     duckReaction = 'Parece um ciclo mais intenso no que diz respeito à dor. Seja gentil consigo mesma.';
   } else if (!Number.isNaN(prevEnergy) && !Number.isNaN(currEnergy) && currEnergy < prevEnergy - 1.5) {
-    duckReaction = 'Sua energia ficou um pouco mais baixa neste ciclo — vale reservar momentos de descanso.';
+    duckReaction = 'Sua energia ficou um pouco mais baixa neste ciclo, vale reservar momentos de descanso.';
   } else if (previousDuration && currentDuration && currentDuration > previousDuration + 3) {
     duckReaction = 'Este ciclo está durando um pouco mais que o anterior. Tudo bem levar no seu tempo.';
   }
@@ -373,12 +373,12 @@ export function buildCycleRetrospective(profile, periodStarts, dailyLogs, period
   const logs = getLogsBetween(dailyLogs, cycleStart, cycleEnd);
   const duration = diffDays(cycleStart, cycleEnd);
   const periodLen = periodLengthForStart(periodEntries, cycleStart, avgPeriod);
-  const mood = dominantMoodInLogs(logs);
+  const mood = dominantMoodInLogs(logs, profile);
   const topSymptom = topSymptomInLogs(logs);
   const avgEnergy = avgOf(logs, 'energy_level');
   const cycleNumber = periodStarts.length - 1;
 
-  let duckVerdict = 'Um ciclo cheio de informações — obrigado por confiar no Bloom.';
+  let duckVerdict = 'Um ciclo cheio de informações, obrigado por confiar no Bloom.';
   if (mood?.mood === 'tranquila' || mood?.mood === 'feliz') {
     duckVerdict = 'Seu ciclo desse mês pareceu mais leve emocionalmente. Que bom!';
   } else if (topSymptom?.symptom === 'colica') {
@@ -400,7 +400,7 @@ export function buildCycleRetrospective(profile, periodStarts, dailyLogs, period
   };
 }
 
-/** O pato aprende com você — sugestões personalizadas (#6) */
+/** O Bloom aprende com você, sugestões personalizadas (#6) */
 export function buildPersonalizedTips(profile, periodStarts, dailyLogs, referenceDate = todayString()) {
   const tips = [];
   if (!periodStarts.length) return tips;

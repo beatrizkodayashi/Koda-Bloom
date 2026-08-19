@@ -131,11 +131,11 @@ export function buildPatterns(periodStarts, dailyLogs, profile) {
   return patterns;
 }
 
-export function getMostCommonMood(moodByPhase, phase) {
+export function getMostCommonMood(moodByPhase, phase, profile = null) {
   const moods = moodByPhase[phase];
   if (!moods) return null;
   const sorted = Object.entries(moods).sort((a, b) => b[1] - a[1]);
-  return sorted[0] ? moodLabel(sorted[0][0]) : null;
+  return sorted[0] ? moodLabel(sorted[0][0], profile) : null;
 }
 
 export { formatDays };

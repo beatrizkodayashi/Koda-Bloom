@@ -272,7 +272,7 @@ export function buildDoctorReport(profile, periodStarts, dailyLogs, periodEntrie
       periodLen,
       avgPain,
       topSymptoms,
-      topMood: topMood ? moodLabel(topMood[0]) : null,
+      topMood: topMood ? moodLabel(topMood[0], profile) : null,
       checkins: logs.length,
     };
   });
@@ -318,7 +318,7 @@ export function analyzeSymptomNormalcy(symptom, profile, periodStarts, dailyLogs
       symptom,
       label,
       status: 'unknown',
-      duckMessage: 'Ainda não tenho histórico seu — registre alguns ciclos e eu te conto.',
+      duckMessage: 'Ainda não tenho histórico seu, registre alguns ciclos e eu te conto.',
     };
   }
 
@@ -351,7 +351,7 @@ export function analyzeSymptomNormalcy(symptom, profile, periodStarts, dailyLogs
   }
 
   let status = 'new';
-  let duckMessage = `"${label}" ainda não apareceu muito no seu histórico — vale acompanhar.`;
+  let duckMessage = `"${label}" ainda não apareceu muito no seu histórico, vale acompanhar.`;
 
   if (occurrences >= 2) {
     status = 'typical';
@@ -364,7 +364,7 @@ export function analyzeSymptomNormalcy(symptom, profile, periodStarts, dailyLogs
     duckMessage = `Você já registrou "${label}" em ${occurrences} ciclo${occurrences > 1 ? 's' : ''}, principalmente ${range}.`;
   } else if (occurrences === 1) {
     status = 'occasional';
-    duckMessage = `"${label}" apareceu em 1 ciclo anterior — ainda estou aprendendo seu padrão com isso.`;
+    duckMessage = `"${label}" apareceu em 1 ciclo anterior, ainda estou aprendendo seu padrão com isso.`;
   }
 
   const inCurrentCycle = dailyLogs.some(
@@ -377,7 +377,7 @@ export function analyzeSymptomNormalcy(symptom, profile, periodStarts, dailyLogs
     const usualNow = cycleDays.some((d) => Math.abs(d - currentDay) <= 3);
     if (!usualNow && maxDay != null && currentDay > maxDay + 5) {
       status = 'unusual';
-      duckMessage = `"${label}" costuma aparecer ${minDay != null && maxDay != null ? `entre os dias ${minDay}–${maxDay}` : 'em fases específicas'} — hoje (dia ${currentDay}) está fora desse padrão seu.`;
+      duckMessage = `"${label}" costuma aparecer ${minDay != null && maxDay != null ? `entre os dias ${minDay}–${maxDay}` : 'em fases específicas'}, hoje (dia ${currentDay}) está fora desse padrão seu.`;
     }
   }
 
@@ -393,7 +393,7 @@ export function analyzeSymptomNormalcy(symptom, profile, periodStarts, dailyLogs
     currentPhase,
     currentPhaseLabel: phaseLabel(currentPhase),
     duckMessage,
-    disclaimer: 'Isso compara com seu histórico pessoal — não é diagnóstico médico.',
+    disclaimer: 'Isso compara com seu histórico pessoal, não é diagnóstico médico.',
   };
 }
 

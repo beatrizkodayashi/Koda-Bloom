@@ -37,7 +37,7 @@ function bindCareEvents(container) {
       showToast('Lembrete de hidratação desativado.', 'success');
     } else {
       activateHydrationReminder();
-      showToast('Te lembro de beber água hoje — a cada 2 horas, sem pressa.', 'success');
+      showToast('Te lembro de beber água hoje, a cada 2 horas, sem pressa.', 'success');
     }
     paintCarePage(container);
   });
@@ -51,8 +51,8 @@ function bindCareEvents(container) {
       activateRestMode({ withDiscrete });
       showToast(
         withDiscrete
-          ? 'Modo descanso ativo — app simplificado e modo discreto ligado.'
-          : 'Modo descanso ativo — app simplificado até amanhã.',
+          ? 'Modo descanso ativo, app simplificado e modo discreto ligado.'
+          : 'Modo descanso ativo, app simplificado até amanhã.',
         'success'
       );
     }

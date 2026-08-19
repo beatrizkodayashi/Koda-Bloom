@@ -102,18 +102,18 @@ function buildBloomMessage({ name, totalCheckins, streak, periodStarts, signatur
     if (needed > 0) {
       return `Estou aprendendo seu ritmo. Mais ${needed} ciclo${needed > 1 ? 's' : ''} e minhas estimativas ficam bem melhores para você.`;
     }
-    return 'Continue registrando — quanto mais eu te conheço, melhor posso te acompanhar.';
+    return 'Continue registrando, quanto mais eu te conheço, melhor posso te acompanhar.';
   }
 
   if (phase && phase !== 'unknown' && daysUntil != null && daysUntil <= 5 && daysUntil >= 0) {
-    return `Você está na ${phaseLabel(phase).toLowerCase()}. Próximo período estimado ${formatDaysUntil(daysUntil)} — estou de olho com carinho.`;
+    return `Você está na ${phaseLabel(phase).toLowerCase()}. Próximo período estimado ${formatDaysUntil(daysUntil)}, estou de olho com carinho.`;
   }
 
   if (signatureMood) {
     return `Nos seus registros, "${signatureMood.label}" aparece bastante. Obrigado por compartilhar isso comigo.`;
   }
 
-  return 'Cada detalhe que você registra me ajuda a entender melhor seu corpo — no seu tempo.';
+  return 'Cada detalhe que você registra me ajuda a entender melhor seu corpo, no seu tempo.';
 }
 
 function buildNextMilestone({ knowScore, enoughData, periodStarts, badges }) {
@@ -151,7 +151,7 @@ export function buildProfileSummary(profile, user, periodStarts, dailyLogs, pref
   const signatureMood = topMood
     ? {
         value: topMood[0],
-        label: moodLabel(topMood[0]),
+        label: moodLabel(topMood[0], profile),
         count: topMood[1],
         moodIcon: topMood[0],
       }

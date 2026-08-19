@@ -4,7 +4,8 @@ import { ROUTES } from './config/app.js';
 import { registerRoute, initRouter, renderRoute, navigate } from './router.js';
 import { setState, getState } from './state/store.js';
 import { getSession, onAuthStateChange, isAuthConfigured } from './services/authService.js';
-import { getProfile } from './services/cycleService.js';
+import { getProfile, upsertProfile } from './services/cycleService.js';
+import { takePendingGender } from './utils/genderLanguage.js';
 import { initToast } from './components/toast.js';
 import { initDuckHelpChat } from './components/duckHelpChat.js';
 import { initCareModeEffects } from './services/careModeService.js';
@@ -32,7 +33,11 @@ async function requireAuth(container, renderFn) {
   }
 
   if (isAuthConfigured()) {
-    const profile = await getProfile(user.id);
+    let profile = await getProfile(user.id);
+    const pendingGender = takePendingGender();
+    if (pendingGender && !profile?.gender) {
+      profile = await upsertProfile(user.id, { gender: pendingGender });
+    }
     setState({ profile });
 
     if (!profile?.onboarding_completed && location.pathname !== ROUTES.ONBOARDING) {

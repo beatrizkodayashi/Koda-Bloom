@@ -32,7 +32,7 @@ export async function renderIsThisNormal(container) {
       <section class="page-mascot-section page-mascot-section--tools">
         <div class="page-header">
           <h1>Isso é normal?</h1>
-          <p>Consulta seu histórico — não substitui orientação médica.</p>
+          <p>Consulta seu histórico, não substitui orientação médica.</p>
         </div>
         <div class="duck-companion">
           <img src="/pato_padrao.png" alt="" class="bloom-mascot-img bloom-mascot-img--tools" width="140" height="140" decoding="async" />

@@ -5,7 +5,7 @@ import {
   getCycleDay,
   getCyclePhase,
 } from './cycleCalculator.js';
-import { buildInsights } from './insightsService.js';
+import { patternIntroMessage } from '../utils/genderLanguage.js';
 import { addDays, todayString } from '../utils/dates.js';
 import { formatDays, phaseLabel, moodLabel } from '../utils/formatters.js';
 
@@ -16,12 +16,12 @@ const PHASE_EXPLAIN = {
   menstruation: {
     title: 'Menstruação',
     body:
-      'Seu corpo está eliminando o revestimento do útero. É comum sentir cansaço, cólicas ou mudanças de humor. Cada corpo reage de um jeito — o que você registra aqui é só seu.',
+      'Seu corpo está eliminando o revestimento do útero. É comum sentir cansaço, cólicas ou mudanças de humor. Cada corpo reage de um jeito, o que você registra aqui é só seu.',
   },
   follicular: {
     title: 'Fase folicular',
     body:
-      'Depois da menstruação, os hormônios começam a subir aos poucos. Muitas pessoas sentem mais energia, clareza ou disposição nesta fase — mas não precisa ser assim para todo mundo.',
+      'Depois da menstruação, os hormônios começam a subir aos poucos. Muitas pessoas sentem mais energia, clareza ou disposição nesta fase, mas não precisa ser assim para todo mundo.',
   },
   ovulation: {
     title: 'Ovulação estimada',
@@ -31,7 +31,7 @@ const PHASE_EXPLAIN = {
   luteal: {
     title: 'Fase lútea',
     body:
-      'Entre a ovulação e a próxima menstruação, o progesterona aumenta. Fome, inchaço, irritabilidade ou sonolência são comuns — e variam muito de pessoa para pessoa.',
+      'Entre a ovulação e a próxima menstruação, o progesterona aumenta. Fome, inchaço, irritabilidade ou sonolência são comuns, e variam muito de pessoa para pessoa.',
   },
 };
 
@@ -153,11 +153,11 @@ export function buildMyPattern(profile, periodStarts, dailyLogs) {
       }
     : null;
 
-  let duckIntro = 'Ainda estou te conhecendo — registre mais e eu conto tudo com carinho.';
+  let duckIntro = 'Ainda estou te conhecendo, registre mais e eu conto tudo com carinho.';
   if (periodStarts.length >= 3 && dailyLogs.length >= 10) {
-    duckIntro = 'Amiga... descobri umas coisas sobre você.';
+    duckIntro = patternIntroMessage(profile);
   } else if (periodStarts.length >= 1) {
-    duckIntro = 'Já comecei a notar seu ritmo — quanto mais você registra, mais eu entendo.';
+    duckIntro = 'Já comecei a notar seu ritmo, quanto mais você registra, mais eu entendo.';
   }
 
   return {
@@ -246,19 +246,19 @@ export function buildPhaseSelfComparison(profile, periodStarts, dailyLogs, refer
   };
 }
 
-/** #1 — Pato, me explica */
+/** #1, Bloom me explica */
 export function getCycleExplanation(topic, context = {}) {
   const disclaimer =
-    'Isso é uma explicação geral baseada nos seus registros — não substitui orientação médica.';
+    'Isso é uma explicação geral baseada nos seus registros, não substitui orientação médica.';
 
   if (topic === 'hunger' || topic === 'fome') {
     return {
       title: 'Por que tanta fome hoje?',
       body:
         context.phase === 'luteal'
-          ? 'Na fase lútea, muitas pessoas sentem mais fome — o corpo pede mais energia antes da menstruação. Seus registros mostram que você está nessa fase agora.'
+          ? 'Na fase lútea, muitas pessoas sentem mais fome, o corpo pede mais energia antes da menstruação. Seus registros mostram que você está nessa fase agora.'
           : context.phase === 'menstruation'
-            ? 'Durante a menstruação, o corpo gasta energia extra. Fome ou desejo por doces podem aparecer — e tudo bem ouvir isso com gentileza.'
+            ? 'Durante a menstruação, o corpo gasta energia extra. Fome ou desejo por doces podem aparecer, e tudo bem ouvir isso com gentileza.'
             : 'A fome pode variar ao longo do ciclo por causa de hormônios, sono ou estresse. O que você sente hoje pode estar ligado à sua fase atual, mas cada corpo é único.',
       disclaimer,
     };
@@ -269,7 +269,7 @@ export function getCycleExplanation(topic, context = {}) {
       title: 'O que está acontecendo no meu corpo?',
       body: context.phase && PHASE_EXPLAIN[context.phase]
         ? `${PHASE_EXPLAIN[context.phase].body} Você está no dia ${context.cycleDay || '?'} do ciclo.`
-        : 'Seu corpo passa por fases ao longo do ciclo — menstruação, preparação, ovulação estimada e fase lútea. Registre como se sente para eu aprender seu ritmo.',
+        : 'Seu corpo passa por fases ao longo do ciclo, menstruação, preparação, ovulação estimada e fase lútea. Registre como se sente para eu aprender seu ritmo.',
       disclaimer,
     };
   }
@@ -277,7 +277,7 @@ export function getCycleExplanation(topic, context = {}) {
   if (topic === 'cycle_day') {
     return {
       title: `Dia ${context.cycleDay} do ciclo`,
-      body: `Contamos a partir do primeiro dia da sua última menstruação registrada. Hoje você está na ${context.phaseLabel || 'sua fase atual'} — uma estimativa baseada no seu histórico, não em um exame.`,
+      body: `Contamos a partir do primeiro dia da sua última menstruação registrada. Hoje você está na ${context.phaseLabel || 'sua fase atual'}, uma estimativa baseada no seu histórico, não em um exame.`,
       disclaimer,
     };
   }
@@ -301,7 +301,7 @@ export function getCycleExplanation(topic, context = {}) {
 
   return {
     title: 'Seu ciclo',
-    body: 'Cada fase traz sensações diferentes. Continue registrando — eu aprendo com você, no seu tempo.',
+    body: 'Cada fase traz sensações diferentes. Continue registrando, eu aprendo com você, no seu tempo.',
     disclaimer,
   };
 }

@@ -1,6 +1,9 @@
 import { APP_NAME, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { signIn, signUp, resetPassword, isAuthConfigured } from '../services/authService.js';
+import { upsertProfile } from '../services/cycleService.js';
+import { setState } from '../state/store.js';
+import { GENDER_OPTIONS, savePendingGender } from '../utils/genderLanguage.js';
 import { showToast } from '../components/toast.js';
 import { isValidEmail, isValidPassword } from '../utils/validators.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
@@ -117,6 +120,15 @@ export function renderSignup(container) {
         label: 'Confirmar senha',
         autocomplete: 'new-password',
       })}
+      <div class="form-bloom">
+        <p class="auth-field-label">Como prefere ser tratade no app?</p>
+        <p class="text-muted mb-2"><small>Homens trans também menstruam. Usamos isso só na linguagem, no seu tempo.</small></p>
+        <div class="chip-grid auth-gender-chips" id="gender-chips">
+          ${GENDER_OPTIONS.map((opt) =>
+            `<button type="button" class="chip" data-gender="${opt.value}">${opt.label}</button>`
+          ).join('')}
+        </div>
+      </div>
       <div id="form-error" class="form-error" role="alert" hidden></div>
       <button type="submit" class="btn-bloom btn-bloom-primary w-100">Criar conta</button>
     </form>`,
@@ -129,6 +141,13 @@ export function renderSignup(container) {
 
   mountPasswordToggles(container);
 
+  container.querySelectorAll('#gender-chips .chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      container.querySelectorAll('#gender-chips .chip').forEach((c) => c.classList.remove('selected'));
+      chip.classList.add('selected');
+    });
+  });
+
   container.querySelector('#link-login')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.LOGIN); });
   container.querySelector('#link-home')?.addEventListener('click', (e) => { e.preventDefault(); navigate(ROUTES.LANDING); });
 
@@ -138,6 +157,7 @@ export function renderSignup(container) {
     const email = container.querySelector('#email').value;
     const password = container.querySelector('#password').value;
     const confirm = container.querySelector('#password-confirm').value;
+    const gender = container.querySelector('#gender-chips .chip.selected')?.dataset.gender;
 
     if (!isAuthConfigured()) {
       errorEl.textContent = 'Supabase não configurado. Veja o arquivo .env.example.';
@@ -163,9 +183,23 @@ export function renderSignup(container) {
       return;
     }
 
+    if (!gender) {
+      errorEl.textContent = 'Escolha como prefere ser tratade no app.';
+      errorEl.hidden = false;
+      return;
+    }
+
     try {
       errorEl.hidden = true;
       const result = await signUp(email, password);
+      if (result.user) {
+        if (result.session) {
+          const profile = await upsertProfile(result.user.id, { gender });
+          setState({ user: result.user, profile });
+        } else {
+          savePendingGender(gender);
+        }
+      }
       if (result.user && !result.session) {
         showToast('Verifique seu e-mail para confirmar a conta.', 'success');
       } else {

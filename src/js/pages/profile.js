@@ -1,12 +1,11 @@
 import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
-import { getState, resetState } from '../state/store.js';
+import { getState, resetState, setState } from '../state/store.js';
 import { signOut } from '../services/authService.js';
 import { upsertProfile, getCycleStarts } from '../services/cycleService.js';
 import { savePreferences, getPreferences, getDefaultPreferences, getDailyLogs } from '../services/dailyLogService.js';
 import { buildProfileSummary } from '../services/profileSummaryService.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { renderStreakCard } from '../components/streakCard.js';
 import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { isAuthConfigured } from '../services/authService.js';
@@ -14,6 +13,8 @@ import { isDiscreteMode, setDiscreteMode, discreteNotificationPreview } from '..
 import { renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
 import { formatStreakLabel } from '../utils/streak.js';
 import { renderIcon } from '../components/icons.js';
+import { renderBadgesCard } from '../components/profileInsightCards.js';
+import { GENDER_OPTIONS, displayNamePrompt, getGender } from '../utils/genderLanguage.js';
 
 const PREF_ITEMS = [
   ['track_mood', 'Humor'],
@@ -31,35 +32,6 @@ const PREF_ITEMS = [
 function formatMemberSince(dateStr) {
   if (!dateStr) return null;
   return new Date(dateStr).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-}
-
-function renderMyPatternPromoCard(summary) {
-  const ready = summary.cycleCount >= 2;
-  const hint = ready
-    ? 'Descobertas, números e o tom do pato — tudo sobre você.'
-    : `Registre mais ${Math.max(0, 2 - summary.cycleCount)} ciclo(s) para eu montar seu retrato completo.`;
-
-  return `
-    <button type="button" class="profile-pattern-card" id="btn-go-padrao">
-      <span class="profile-pattern-card-glow" aria-hidden="true"></span>
-      <span class="profile-pattern-card-inner">
-        <span class="profile-pattern-card-duck">
-          <img src="/pato_caderno.png" alt="" width="72" height="72" decoding="async" />
-        </span>
-        <span class="profile-pattern-card-copy">
-          <span class="profile-pattern-card-eyebrow">${renderIcon('sparkles', 'bloom-icon bloom-icon--sm')} Seu padrão</span>
-          <span class="profile-pattern-card-title">Meu padrão</span>
-          <span class="profile-pattern-card-text">${hint}</span>
-          <span class="profile-pattern-card-meta">
-            ${summary.cycleCount} ciclo${summary.cycleCount !== 1 ? 's' : ''} · ${summary.totalCheckins} check-in${summary.totalCheckins !== 1 ? 's' : ''}
-          </span>
-        </span>
-        <span class="profile-pattern-card-arrow" aria-hidden="true">
-          <i class="bi bi-arrow-right"></i>
-        </span>
-      </span>
-    </button>
-  `;
 }
 
 function renderProfileStats(summary) {
@@ -96,7 +68,7 @@ function renderKnowScoreCard(summary) {
         <span class="profile-know-score-value">${summary.knowScore}%</span>
       </div>
       <div class="profile-know-score-copy">
-        <p class="mb-2">Quanto mais você registra, melhor eu entendo seu ritmo — sempre no seu tempo.</p>
+        <p class="mb-2">Quanto mais você registra, melhor eu entendo seu ritmo, sempre no seu tempo.</p>
         <div class="profile-confidence">
           <span class="profile-confidence-label">Confiança das estimativas</span>
           <span class="profile-confidence-badge profile-confidence-badge--${summary.confidence}">${summary.confidenceLabel}</span>
@@ -115,38 +87,6 @@ function renderKnowScoreCard(summary) {
         ` : '<p class="text-muted mb-0 mt-3"><small>Você já desbloqueou todos os marcos principais. Incrível!</small></p>'}
       </div>
     </div>
-  `, { className: 'card-bloom-soft' });
-}
-
-function renderBadgesCard(summary) {
-  return renderCard('Suas conquistas', `
-    <p class="text-muted mb-0"><small>${summary.unlockedBadges.length} de ${summary.badges.length} desbloqueadas — cada uma conta sua jornada com o Bloom.</small></p>
-    <div class="profile-badges" role="list">
-      ${summary.badges.map((badge) => `
-        <div class="profile-badge${badge.unlocked ? ' profile-badge--unlocked' : ''}" role="listitem" title="${badge.hint}">
-          <span class="profile-badge-icon">${renderIcon(badge.icon, 'bloom-icon bloom-icon--md')}</span>
-          <span class="profile-badge-label">${badge.label}</span>
-        </div>
-      `).join('')}
-    </div>
-  `);
-}
-
-function renderSignatureCard(summary) {
-  if (summary.signatureMood) {
-    return renderCard('Sua assinatura emocional', `
-      <div class="profile-signature">
-        <span class="profile-signature-icon">${renderIcon(summary.signatureMood.moodIcon, 'bloom-icon bloom-icon--xl')}</span>
-        <div>
-          <p class="profile-signature-mood mb-1">${summary.signatureMood.label}</p>
-          <p class="text-muted mb-0"><small>Apareceu ${summary.signatureMood.count} vez${summary.signatureMood.count > 1 ? 'es' : ''} nos seus registros recentes.</small></p>
-        </div>
-      </div>
-    `, { className: 'card-bloom-soft' });
-  }
-
-  return renderCard('Sua assinatura emocional', `
-    <p class="text-muted mb-0">Registre seu humor no check-in diário e eu mostro aqui o que mais aparece nos seus dias.</p>
   `, { className: 'card-bloom-soft' });
 }
 
@@ -172,6 +112,8 @@ export async function renderProfile(container) {
   const summary = buildProfileSummary(profile, user, periodStarts, dailyLogs, prefs);
   const memberSince = formatMemberSince(summary.memberSince);
   const headerName = summary.name === 'você' ? 'Perfil' : summary.name;
+  let cycleRegular = profile?.cycle_regular !== false;
+  let selectedGender = getGender(profile);
 
   const content = `
     ${renderRestModeBanner()}
@@ -188,19 +130,9 @@ export async function renderProfile(container) {
     </section>
 
     <div class="card-stack">
-      ${summary.cycleDay ? renderCard('Seu momento', `
-        <span class="badge-bloom badge-phase-${summary.phase === 'menstruation' ? 'menstruation' : summary.phase === 'follicular' ? 'follicular' : summary.phase === 'ovulation' ? 'ovulation' : 'luteal'}">${summary.phaseLabel}</span>
-        <p class="mb-0 mt-3">Hoje é o dia <strong>${summary.cycleDay}</strong> do seu ciclo estimado.</p>
-      `, { className: 'card-bloom-soft' }) : ''}
-
-      ${renderStreakCard({ streak: summary.streak, buttonId: 'btn-profile-streak', buttonLabel: 'Registrar hoje' })}
-
       ${renderProfileStats(summary)}
       ${renderKnowScoreCard(summary)}
-      ${renderSignatureCard(summary)}
       ${renderBadgesCard(summary)}
-
-      ${renderMyPatternPromoCard(summary)}
 
       ${renderCard('Modo discreto', `
         <p class="text-muted mb-0"><small>Esconde termos sensíveis na tela. Ideal para privacidade no dia a dia.</small></p>
@@ -219,14 +151,22 @@ export async function renderProfile(container) {
         <p class="mb-0">${user?.email || '-'}</p>
         ${memberSince ? `<p class="text-muted mt-3 mb-0"><small>Membro desde ${memberSince}</small></p>` : ''}
         <div class="form-bloom mt-4">
-          <label for="display_name">Como você quer ser chamada?</label>
+          <label for="display_name">${displayNamePrompt(profile)}</label>
           <input type="text" id="display_name" value="${profile?.display_name || ''}" maxlength="50" placeholder="Seu nome ou apelido" />
+        </div>
+        <div class="form-bloom mt-4">
+          <p class="mb-2"><small>Tratamento no app</small></p>
+          <div class="chip-grid" id="gender-chips">
+            ${GENDER_OPTIONS.map((opt) =>
+              `<button type="button" class="chip${selectedGender === opt.value ? ' selected' : ''}" data-gender="${opt.value}">${opt.label}</button>`
+            ).join('')}
+          </div>
         </div>
         <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-save-profile">Salvar perfil</button>
       `)}
 
       ${renderCard('Categorias do check-in', `
-        <p class="text-muted mb-0"><small>Escolha o que aparece no registro diário — personalize do seu jeito.</small></p>
+        <p class="text-muted mb-0"><small>Escolha o que aparece no registro diário, personalize do seu jeito.</small></p>
         <div class="chip-grid" id="pref-chips">
           ${PREF_ITEMS.map(([key, label]) =>
             `<button type="button" class="chip${prefs[key] ? ' selected' : ''}" data-key="${key}">${label}</button>`
@@ -269,7 +209,6 @@ export async function renderProfile(container) {
   mountRestModeBanner(container, () => renderProfile(container));
 
   const localPrefs = { ...prefs };
-  let cycleRegular = profile?.cycle_regular !== false;
 
   container.querySelectorAll('#pref-chips .chip').forEach((chip) => {
     chip.addEventListener('click', () => {
@@ -287,8 +226,13 @@ export async function renderProfile(container) {
     });
   });
 
-  container.querySelector('#btn-profile-streak')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
-  container.querySelector('#btn-go-padrao')?.addEventListener('click', () => navigate(ROUTES.MEU_PADRAO));
+  container.querySelectorAll('#gender-chips .chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      selectedGender = chip.dataset.gender;
+      container.querySelectorAll('#gender-chips .chip').forEach((c) => c.classList.remove('selected'));
+      chip.classList.add('selected');
+    });
+  });
 
   container.querySelector('#discrete-mode')?.addEventListener('change', (e) => {
     setDiscreteMode(e.target.checked);
@@ -298,12 +242,14 @@ export async function renderProfile(container) {
   container.querySelector('#btn-save-profile')?.addEventListener('click', async () => {
     if (!user) return;
     try {
-      await upsertProfile(user.id, {
+      const updated = await upsertProfile(user.id, {
         display_name: container.querySelector('#display_name').value,
+        gender: selectedGender,
         average_cycle_length: Number(container.querySelector('#avg_cycle').value),
         average_period_length: Number(container.querySelector('#avg_period').value),
         cycle_regular: cycleRegular,
       });
+      setState({ profile: updated });
       showToast('Perfil salvo!', 'success');
     } catch (err) {
       showToast(err.message, 'error');

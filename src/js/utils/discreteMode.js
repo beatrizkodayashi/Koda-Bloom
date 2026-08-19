@@ -8,19 +8,19 @@ export function setDiscreteMode(enabled) {
   localStorage.setItem(STORAGE_KEY, enabled ? 'true' : 'false');
 }
 
-export function maskPeriodText(text, discreteText = 'O pato tem uma novidade para você') {
+export function maskPeriodText(text, discreteText = 'O Bloom tem uma novidade para você') {
   if (!isDiscreteMode()) return text;
   return discreteText;
 }
 
 export function maskPredictionHeadline(headline) {
   if (!isDiscreteMode()) return headline;
-  return 'O pato tem uma novidade para você';
+  return 'O Bloom tem uma novidade para você';
 }
 
 export function discreteNotificationPreview(enabled) {
   if (enabled) {
-    return '"O pato tem uma novidade para você."';
+    return '"O Bloom tem uma novidade para você."';
   }
   return '"Sua menstruação começa amanhã."';
 }

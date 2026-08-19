@@ -2,9 +2,10 @@ import { APP_NAME, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import {
-  MOODS, SYMPTOMS, FLOWS, SLEEP_OPTIONS, DISCHARGE_OPTIONS, ACTIVITY_OPTIONS,
   getDailyLog, getDailyLogs, saveDailyLog, getPreferences, getDefaultPreferences,
+  SYMPTOMS, FLOWS, SLEEP_OPTIONS, DISCHARGE_OPTIONS, ACTIVITY_OPTIONS,
 } from '../services/dailyLogService.js';
+import { getMoodOptions, periodContinueLabel } from '../utils/genderLanguage.js';
 import {
   upsertPeriodEntry,
   getCycleStarts,
@@ -24,15 +25,17 @@ import { isAuthConfigured } from '../services/authService.js';
 
 const PERIOD_STATUS_OPTIONS = {
   none: { value: 'none', label: 'Sem menstruação hoje' },
-  continue: { value: 'continue', label: 'Continuo menstruada' },
   end: { value: 'end', label: 'Menstruação terminou hoje' },
   start: { value: 'start', label: 'Início de menstruação hoje' },
 };
 
-function buildPeriodStatusOptions(periodContext) {
+function buildPeriodStatusOptions(periodContext, profile) {
   const options = [PERIOD_STATUS_OPTIONS.none];
   if (periodContext.inPeriod) {
-    options.push(PERIOD_STATUS_OPTIONS.continue, PERIOD_STATUS_OPTIONS.end);
+    options.push(
+      { value: 'continue', label: periodContinueLabel(profile) },
+      PERIOD_STATUS_OPTIONS.end
+    );
   }
   if (!periodContext.inPeriod || periodContext.isStartDay) {
     options.push(PERIOD_STATUS_OPTIONS.start);
@@ -81,7 +84,7 @@ export async function renderTracking(container) {
 
   const avgPeriod = profile?.average_period_length || 5;
   const periodContext = getPeriodContextForDate(logDate, periodEntries, avgPeriod);
-  const periodStatusOptions = buildPeriodStatusOptions(periodContext);
+  const periodStatusOptions = buildPeriodStatusOptions(periodContext, profile);
 
   const followUp = buildSmartFollowUp(yesterdayLog, existingLog);
   const focusNotes = sessionStorage.getItem('bloom_focus_notes') === '1';
@@ -141,7 +144,7 @@ export async function renderTracking(container) {
       `)}
 
       ${prefs.track_mood ? renderCard('Humor', `
-        <div class="chip-grid" id="mood-chips">${renderChips(MOODS, selectedMood, 'mood')}</div>
+        <div class="chip-grid" id="mood-chips">${renderChips(getMoodOptions(profile), selectedMood, 'mood')}</div>
       `) : ''}
 
       ${prefs.track_symptoms ? renderCard('Sintomas', `

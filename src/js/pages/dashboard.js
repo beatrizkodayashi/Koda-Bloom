@@ -11,7 +11,6 @@ import {
 } from '../services/cycleCalculator.js';
 import {
   buildPredictionWithConfidence,
-  buildPersonalizedTips,
 } from '../services/bloomIntelligenceService.js';
 import {
   buildPhaseSelfComparison,
@@ -25,15 +24,13 @@ import { renderAppShell, mountAppNavigation } from '../components/bottomNavigati
 import { generateDailySummary } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
 import {
-  renderPredictionConfidenceCard,
-  renderPersonalizedTips,
   renderCareModeButton,
 } from '../components/bloomIntelligence.js';
 import { formatDaysUntil, greetingName, phaseLabel } from '../utils/formatters.js';
 import { maskPhaseLabel, maskPeriodText } from '../utils/discreteMode.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
-import { isRestModeActive, renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
+import { renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
 import { renderIcon } from '../components/icons.js';
 
 export async function renderDashboard(container) {
@@ -65,7 +62,6 @@ export async function renderDashboard(container) {
   const daysUntil = lastPeriodStart ? daysUntilNextPeriod(lastPeriodStart, avgCycle, today) : null;
   const enoughData = hasEnoughDataForPrediction(cycleStarts);
   const prediction = buildPredictionWithConfidence(profile, cycleStarts, today);
-  const tips = buildPersonalizedTips(profile, cycleStarts, dailyLogs, today);
   const selfCompare = buildPhaseSelfComparison(profile, cycleStarts, dailyLogs, today);
 
   const symptoms = (todayLog?.daily_symptoms || []).map((s) => s.symptom.replace('_', ' '));
@@ -77,12 +73,10 @@ export async function renderDashboard(container) {
     ? maskPeriodText(
         `Próximo período estimado ${formatDaysUntil(daysUntil)}.`,
         daysUntil <= 2
-          ? 'O pato tem uma novidade para você em breve.'
-          : 'O pato está acompanhando seu ritmo com carinho.'
+          ? 'O Bloom tem uma novidade para você em breve.'
+          : 'O Bloom está acompanhando seu ritmo com carinho.'
       )
     : '';
-
-  const restMode = isRestModeActive();
 
   const content = `
     ${renderRestModeBanner()}
@@ -110,7 +104,7 @@ export async function renderDashboard(container) {
           </div>
           <div class="cycle-today-footer">
             <button type="button" class="btn btn-sm btn-outline-bloom duck-explain-trigger" data-explain="cycle_day">
-              ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Pato, me explica
+              ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Bloom, me explica
             </button>
           </div>
         </div>
@@ -121,9 +115,7 @@ export async function renderDashboard(container) {
         </div>
       `)}
 
-      ${prediction && enoughData && !restMode ? renderPredictionConfidenceCard(prediction) : ''}
       ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
-      ${restMode ? '' : renderPersonalizedTips(tips)}
     </div>
 
     ${renderCareModeButton()}
@@ -148,10 +140,6 @@ export async function renderDashboard(container) {
   container.querySelector('#btn-calendar')?.addEventListener('click', () => navigate(ROUTES.CALENDARIO));
   container.querySelector('#btn-first-log')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
   container.querySelector('#btn-care-mode')?.addEventListener('click', () => navigate(ROUTES.CUIDADO));
-
-  container.querySelectorAll('.bloom-tip--action[data-tip-action="care_mode"]').forEach((el) => {
-    el.addEventListener('click', () => navigate(ROUTES.CUIDADO));
-  });
 
   setExplainContext({
     cycleDay,

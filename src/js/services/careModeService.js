@@ -78,7 +78,7 @@ function scheduleHydrationReminder(delayMs = HYDRATION_INTERVAL_MS) {
 
   hydrationTimer = setTimeout(() => {
     if (!isHydrationReminderActive()) return;
-    showToast('Hora de um gole de água — no seu tempo.', 'success');
+    showToast('Hora de um gole de água, no seu tempo.', 'success');
     scheduleHydrationReminder(HYDRATION_INTERVAL_MS);
   }, delayMs);
 }
@@ -111,7 +111,7 @@ export function renderRestModeBanner() {
     <div class="rest-mode-banner" role="status">
       <div class="rest-mode-banner-copy">
         <strong>Modo descanso</strong>
-        <span>Só o essencial hoje — Insights ficou de fora.${discreteNote}</span>
+        <span>Só o essencial hoje, Insights ficou de fora.${discreteNote}</span>
       </div>
       <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm" id="btn-rest-mode-off">Desativar</button>
     </div>

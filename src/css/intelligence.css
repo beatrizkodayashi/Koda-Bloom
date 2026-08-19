@@ -460,16 +460,20 @@
   gap: var(--space-3);
   width: 100%;
   padding: var(--space-3) var(--space-4);
-  border: 2px solid var(--card-outline-soft);
+  border: 2px solid rgba(255, 204, 189, 0.85);
   border-radius: var(--radius-xl);
-  background: var(--palette-cream-soft);
+  background: rgba(255, 251, 222, 0.92);
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text);
   cursor: pointer;
   text-align: left;
-  box-shadow: 2px 2px 0 rgba(255, 178, 143, 0.25);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 2px 2px 0 rgba(255, 204, 189, 0.35);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .care-mode-action .bloom-icon {
@@ -482,12 +486,29 @@
 
 .care-mode-action:hover {
   transform: translateY(-1px);
-  box-shadow: 3px 3px 0 rgba(255, 178, 143, 0.35);
+  background: rgba(255, 204, 189, 0.45);
+  border-color: rgba(255, 204, 189, 0.95);
+  box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.4);
 }
 
 .care-mode-exit {
   width: 100%;
   margin-top: var(--space-5);
+}
+
+.care-mode-page .care-mode-exit,
+.care-mode-page .care-breathe-panel .btn-bloom {
+  background: rgba(255, 251, 222, 0.92);
+  color: var(--color-text);
+  border: 2px solid rgba(255, 204, 189, 0.85);
+  box-shadow: 2px 2px 0 rgba(255, 204, 189, 0.35);
+}
+
+.care-mode-page .care-mode-exit:hover:not(:disabled),
+.care-mode-page .care-breathe-panel .btn-bloom:hover:not(:disabled) {
+  background: rgba(255, 204, 189, 0.45);
+  border-color: rgba(255, 204, 189, 0.95);
+  color: var(--color-text);
 }
 
 .care-breathe-panel {
@@ -541,9 +562,9 @@
 }
 
 .care-mode-action--active {
-  border-color: var(--palette-pink);
-  background: rgba(255, 173, 187, 0.25);
-  box-shadow: 3px 3px 0 rgba(255, 178, 143, 0.45);
+  border-color: rgba(255, 204, 189, 0.95);
+  background: rgba(255, 204, 189, 0.55);
+  box-shadow: 3px 3px 0 rgba(255, 204, 189, 0.45);
 }
 
 .care-mode-options {

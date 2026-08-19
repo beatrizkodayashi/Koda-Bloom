@@ -2,22 +2,20 @@ import { APP_NAME, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getCycleStarts, getPeriodEntries } from '../services/cycleService.js';
-import { getDailyLogs } from '../services/dailyLogService.js';
+import { getDailyLogs, getPreferences, getDefaultPreferences } from '../services/dailyLogService.js';
 import {
-  buildDuckObservations,
   detectAnomaly,
   compareRecentCycles,
   buildCycleRetrospective,
-  buildPersonalizedTips,
   buildPredictionWithConfidence,
   simulateCycleChange,
   buildSymptomBodyMap,
 } from '../services/bloomIntelligenceService.js';
 import { buildInsights } from '../services/insightsService.js';
+import { buildProfileSummary } from '../services/profileSummaryService.js';
 import {
   buildCycleJourney,
   buildPhaseSelfComparison,
-  buildMyPattern,
 } from '../services/bloomPhase1Service.js';
 import {
   renderCycleJourneyCard,
@@ -29,16 +27,17 @@ import {
   renderPhase2ToolsCard,
   mountPhase2Navigation,
 } from '../components/bloomPhase2.js';
+import {
+  renderMyPatternPromoCard,
+  renderSignatureCard,
+} from '../components/profileInsightCards.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderCard } from '../components/card.js';
 import { formatDays, phaseLabel } from '../utils/formatters.js';
 import {
-  renderDuckObservationsCard,
   renderAnomalyAlert,
   renderCycleComparisonCard,
   renderCycleRetrospectiveCard,
-  renderPersonalizedTips,
-  renderPredictionConfidenceCard,
   renderCycleSimulator,
   renderSimulatorResult,
   renderSymptomBodyMap,
@@ -51,25 +50,27 @@ export async function renderInsights(container) {
   let periodStarts = [];
   let dailyLogs = [];
   let periodEntries = [];
+  let prefs = getDefaultPreferences();
 
   if (isAuthConfigured() && user) {
     try {
-      [periodStarts, dailyLogs, periodEntries] = await Promise.all([
+      [periodStarts, dailyLogs, periodEntries, prefs] = await Promise.all([
         getCycleStarts(user.id),
         getDailyLogs(user.id),
         getPeriodEntries(user.id),
+        getPreferences(user.id).then((p) => p || getDefaultPreferences()),
       ]);
     } catch (err) {
       console.error(err);
     }
   }
 
+  const profileSummary = buildProfileSummary(profile, user, periodStarts, dailyLogs, prefs);
+
   const insights = buildInsights(profile, periodStarts, dailyLogs);
-  const observations = buildDuckObservations(profile, periodStarts, dailyLogs);
   const anomaly = detectAnomaly(profile, periodStarts);
   const comparison = compareRecentCycles(profile, periodStarts, dailyLogs, periodEntries);
   const retrospective = buildCycleRetrospective(profile, periodStarts, dailyLogs, periodEntries);
-  const tips = buildPersonalizedTips(profile, periodStarts, dailyLogs);
   const prediction = buildPredictionWithConfidence(profile, periodStarts);
   const bodyMap = buildSymptomBodyMap(dailyLogs);
   const simulation = simulateCycleChange({
@@ -86,18 +87,17 @@ export async function renderInsights(container) {
       })
     : null;
   const selfCompare = buildPhaseSelfComparison(profile, periodStarts, dailyLogs);
-  const pattern = buildMyPattern(profile, periodStarts, dailyLogs);
 
   const content = `
     <section class="page-mascot-section page-mascot-section--insights">
       <div class="page-header">
         <h1>Insights</h1>
-        <p>O pato encontra padrões nos seus próprios registros.</p>
+        <p>O Bloom encontra padrões nos seus próprios registros.</p>
       </div>
 
       <div class="duck-companion">
         <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--insights" width="275" height="275" decoding="async" />
-        <p class="mascot-caption">Quanto mais você registra, mais eu entendo seu ritmo — no seu tempo.</p>
+        <p class="mascot-caption">Quanto mais você registra, mais eu entendo seu ritmo, no seu tempo.</p>
       </div>
     </section>
 
@@ -105,9 +105,8 @@ export async function renderInsights(container) {
       ${renderAnomalyAlert(anomaly)}
       ${journey ? renderCycleJourneyCard(journey) : ''}
       ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
-      ${prediction ? renderPredictionConfidenceCard(prediction) : ''}
-      ${renderDuckObservationsCard(observations)}
-      ${renderPersonalizedTips(tips)}
+      ${renderMyPatternPromoCard(profileSummary)}
+      ${renderSignatureCard(profileSummary)}
       ${renderSymptomBodyMap(bodyMap)}
       ${renderCycleRetrospectiveCard(retrospective)}
       ${renderCycleComparisonCard(comparison)}
@@ -118,11 +117,6 @@ export async function renderInsights(container) {
         avgPeriod: insights.averagePeriod,
         simulation,
       }) : ''}
-
-      ${pattern.enoughData ? renderCard('Meu padrão', `
-        <p class="mb-3">${pattern.duckIntro}</p>
-        <button type="button" class="btn-bloom btn-bloom-primary" id="btn-meu-padrao">Ver meu padrão completo</button>
-      `, { className: 'card-bloom-soft' }) : ''}
 
       ${renderPhase2ToolsCard()}
 
@@ -166,17 +160,13 @@ export async function renderInsights(container) {
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
 
-  container.querySelector('#btn-meu-padrao')?.addEventListener('click', () => navigate(ROUTES.MEU_PADRAO));
+  container.querySelector('#btn-go-padrao')?.addEventListener('click', () => navigate(ROUTES.MEU_PADRAO));
   container.querySelector('#btn-isso-normal')?.addEventListener('click', () => navigate(ROUTES.ISSO_E_NORMAL));
   mountPhase2Navigation(container, navigate, ROUTES);
 
   if (periodStarts[0]) {
     bindSimulator(container, periodStarts[0], insights.averageCycle, insights.averagePeriod);
   }
-
-  container.querySelectorAll('.bloom-tip--action[data-tip-action="care_mode"]').forEach((el) => {
-    el.addEventListener('click', () => navigate(ROUTES.CUIDADO));
-  });
 
   setExplainContext({
     cycleDay: insights.cycleDay,

@@ -1,4 +1,5 @@
 import { formatDisplayDate, formatShortDate } from './dates.js';
+import { moodLabelFor } from './genderLanguage.js';
 
 export function capitalize(str) {
   if (!str) return '';
@@ -27,7 +28,8 @@ export function greetingName(displayName) {
   return 'você';
 }
 
-export function moodLabel(mood) {
+export function moodLabel(mood, profile = null) {
+  if (profile) return moodLabelFor(mood, profile);
   const labels = {
     feliz: 'Feliz',
     tranquila: 'Tranquila',
