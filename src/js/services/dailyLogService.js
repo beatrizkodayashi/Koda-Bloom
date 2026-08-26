@@ -23,16 +23,24 @@ export const MOODS = [
 ];
 
 export const SYMPTOMS = [
-  { value: 'colica', label: 'Cólica' },
-  { value: 'dor_cabeca', label: 'Dor de cabeça' },
-  { value: 'acne', label: 'Acne' },
-  { value: 'inchaco', label: 'Inchaço' },
-  { value: 'sensibilidade_seios', label: 'Sensibilidade nos seios' },
-  { value: 'dor_lombar', label: 'Dor lombar' },
-  { value: 'nausea', label: 'Náusea' },
-  { value: 'fadiga', label: 'Fadiga' },
-  { value: 'desejo_comida', label: 'Desejo por comida' },
+  { value: 'colica', label: 'Cólica', category: 'physical' },
+  { value: 'dor_cabeca', label: 'Dor de cabeça', category: 'physical' },
+  { value: 'acne', label: 'Acne', category: 'physical' },
+  { value: 'inchaco', label: 'Inchaço', category: 'physical' },
+  { value: 'sensibilidade_seios', label: 'Sensibilidade nos seios', category: 'physical' },
+  { value: 'dor_lombar', label: 'Dor lombar', category: 'physical' },
+  { value: 'nausea', label: 'Náusea', category: 'physical' },
+  { value: 'fadiga', label: 'Fadiga', category: 'physical' },
+  { value: 'desejo_comida', label: 'Desejo por comida', category: 'physical' },
+  { value: 'tpm', label: 'TPM', category: 'emotional' },
+  { value: 'irritabilidade', label: 'Irritabilidade', category: 'emotional' },
+  { value: 'humor_instavel', label: 'Humor instável', category: 'emotional' },
+  { value: 'ansiedade', label: 'Ansiedade', category: 'emotional' },
+  { value: 'tristeza', label: 'Tristeza', category: 'emotional' },
 ];
+
+export const PHYSICAL_SYMPTOMS = SYMPTOMS.filter((s) => s.category === 'physical');
+export const EMOTIONAL_SYMPTOMS = SYMPTOMS.filter((s) => s.category === 'emotional');
 
 export const FLOWS = [
   { value: 'spotting', label: 'Spotting' },
@@ -62,6 +70,8 @@ export const ACTIVITY_OPTIONS = [
   { value: 'moderada', label: 'Moderada' },
   { value: 'intensa', label: 'Intensa' },
 ];
+
+import { MODULE_DEFAULTS } from '../config/modules.js';
 
 export async function getDailyLog(userId, logDate) {
   const supabase = getSupabaseOrThrow();
@@ -151,5 +161,6 @@ export function getDefaultPreferences() {
     track_water: false,
     track_notes: true,
     reminder_enabled: false,
+    ...MODULE_DEFAULTS,
   };
 }

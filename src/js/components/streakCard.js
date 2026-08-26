@@ -4,9 +4,10 @@ export function renderStreakCard({
   streak,
   buttonId = 'btn-streak-register',
   buttonLabel = 'Registrar hoje',
+  compact = false,
 } = {}) {
   return `
-    <div class="calendar-streak-card" role="region" aria-label="Sequência de registros">
+    <div class="calendar-streak-card${compact ? ' calendar-streak-card--compact' : ''}" role="region" aria-label="Sequência de registros">
       <div class="calendar-streak-card-main">
         <div class="calendar-streak-card-icon" aria-hidden="true">
           <i class="bi bi-heart-fill"></i>
@@ -17,7 +18,7 @@ export function renderStreakCard({
         </div>
       </div>
       <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm calendar-streak-card-action" id="${buttonId}">
-        ${buttonLabel}
+        ${compact ? 'Registrar' : buttonLabel}
       </button>
     </div>
   `;

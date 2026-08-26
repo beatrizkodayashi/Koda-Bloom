@@ -61,6 +61,20 @@ export const MOOD_ICONS = {
     <circle cx="12" cy="12" r="10" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.5"/>
     <path d="M13.5 5.5L9 13h3.5L10.5 18.5 15 11h-3.5L13.5 5.5z" fill="#FFB28F" stroke="#FFADBB" stroke-width="1" stroke-linejoin="round"/>
   </svg>`,
+  normal: `<svg ${SVG_BASE}>
+    <circle cx="12" cy="12" r="10" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.5"/>
+    <circle cx="9" cy="10" r="1.25" fill="#3D2C33"/>
+    <circle cx="15" cy="10" r="1.25" fill="#3D2C33"/>
+    <path d="M8.5 15h7" stroke="#FFADBB" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  dor_face: `<svg ${SVG_BASE}>
+    <circle cx="12" cy="12" r="10" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.5"/>
+    <path d="M7.5 9.5l2 1.5M14.5 9.5l-2 1.5" stroke="#3D2C33" stroke-width="1.25" stroke-linecap="round"/>
+    <circle cx="9" cy="11.5" r="1.2" fill="#3D2C33"/>
+    <circle cx="15" cy="11.5" r="1.2" fill="#3D2C33"/>
+    <path d="M9 16.5c.8-.9 4.2-.9 5 0" stroke="#FFADBB" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M6.5 7.5 8 9M17.5 7.5 16 9" stroke="#FFB28F" stroke-width="1.1" stroke-linecap="round"/>
+  </svg>`,
 };
 
 export const BLOOM_ICONS = {
@@ -205,6 +219,11 @@ export const BLOOM_ICONS = {
   book: `<svg ${SVG_BASE}>
     <path d="M6 5.5h5a3 3 0 0 1 3 3V19a3 3 0 0 0-3-3H6V5.5z" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.5" stroke-linejoin="round"/>
     <path d="M18 5.5h-5a3 3 0 0 0-3 3V19a3 3 0 0 1 3-3h5V5.5z" fill="#FFFBDE" stroke="#FFB28F" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>`,
+  capsule: `<svg ${SVG_BASE}>
+    <rect x="5" y="9" width="14" height="6" rx="3" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.5"/>
+    <path d="M12 9v6" stroke="#FFB28F" stroke-width="1.5"/>
+    <path d="M7.5 7.5h9" stroke="#8BB4D4" stroke-width="1.25" stroke-linecap="round" opacity="0.8"/>
   </svg>`,
   cycle: `<svg ${SVG_BASE}>
     <path d="M12 4a8 8 0 1 1-2.3 15.6" stroke="#FFADBB" stroke-width="1.5" stroke-linecap="round"/>

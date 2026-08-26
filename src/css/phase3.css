@@ -1,0 +1,110 @@
+/* Bloom Fase C — Relações */
+
+.relations-page .relations-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.relations-page .relations-details[open] summary {
+  margin-bottom: var(--space-2);
+}
+
+.relations-check-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.relations-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.relations-history-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--color-border);
+}
+
+.relations-history-title {
+  font-weight: 700;
+}
+
+.relations-history-remove {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0 var(--space-1);
+  cursor: pointer;
+}
+
+.relations-history-remove:hover {
+  color: var(--color-text);
+}
+
+.relations-pin-form input[type='tel'],
+.relations-pin-input {
+  letter-spacing: 0.35em;
+  text-align: center;
+  max-width: 10rem;
+}
+
+.privacy-section-divider {
+  border-top: 1px solid var(--color-border);
+}
+
+.privacy-section-title {
+  font-weight: 700;
+}
+
+.privacy-status {
+  font-weight: 600;
+  margin: 0;
+}
+
+.privacy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.relations-history-feeling-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.feeling-chip-grid {
+  gap: var(--space-2);
+}
+
+.chip.feeling-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+}
+
+.chip.feeling-chip .bloom-icon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 767.98px) {
+  .nav-card-body--compact {
+    padding-inline: 0;
+  }
+
+  .nav-card-body--compact .bottom-nav-item {
+    font-size: 0.625rem;
+    padding-inline: 0.125rem;
+  }
+}

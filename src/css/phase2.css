@@ -1,36 +1,5 @@
 /* Fase 2 — Bolsinha, Planejador, Relatório, Isso é normal? */
 
-.mobile-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: var(--space-3, 0.75rem);
-  padding: 0.45rem 0.85rem 0.45rem 0.65rem;
-  border: 2px solid var(--card-outline);
-  border-radius: var(--radius-full, 999px);
-  background: rgba(255, 251, 222, 0.85);
-  color: var(--color-text, #333);
-  font-size: 0.875rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  box-shadow: 3px 3px 0 var(--card-shadow-color);
-  transition:
-    transform var(--transition-fast, 0.15s ease),
-    box-shadow var(--transition-fast, 0.15s ease);
-}
-
-.mobile-back-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0 var(--card-shadow-color);
-}
-
-@media (min-width: 1024px) {
-  .mobile-back-btn {
-    display: none;
-  }
-}
-
 .page-mascot-section--tools .page-header {
   margin-bottom: var(--space-3, 0.75rem);
 }
@@ -222,6 +191,11 @@
   color: #a64d62;
 }
 
+.phase2-badge--muted {
+  background: rgba(61, 44, 51, 0.08);
+  color: var(--color-text-muted);
+}
+
 .planner-event-meta {
   display: flex;
   align-items: center;
@@ -401,7 +375,7 @@
 
 @media print {
   .bottom-nav,
-  .mobile-back-btn,
+  .page-back-wrap,
   .page-mascot-section--no-print,
   .phase2-actions--no-print,
   .card-bloom-header .card-bloom-dots {

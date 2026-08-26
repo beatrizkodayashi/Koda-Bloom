@@ -5,16 +5,22 @@ import { signOut } from '../services/authService.js';
 import { upsertProfile, getCycleStarts } from '../services/cycleService.js';
 import { savePreferences, getPreferences, getDefaultPreferences, getDailyLogs } from '../services/dailyLogService.js';
 import { buildProfileSummary } from '../services/profileSummaryService.js';
-import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
+import { renderAppShell, mountAppNavigation, refreshAppNavigation } from '../components/bottomNavigation.js';
 import { renderCard } from '../components/card.js';
 import { showToast } from '../components/toast.js';
 import { isAuthConfigured } from '../services/authService.js';
-import { isDiscreteMode, setDiscreteMode, discreteNotificationPreview } from '../utils/discreteMode.js';
+import { setDiscreteMode } from '../utils/discreteMode.js';
 import { renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
 import { formatStreakLabel } from '../utils/streak.js';
-import { renderIcon } from '../components/icons.js';
 import { renderBadgesCard } from '../components/profileInsightCards.js';
 import { GENDER_OPTIONS, displayNamePrompt, getGender } from '../utils/genderLanguage.js';
+import { PROFILE_TRACK_MODULES } from '../config/modules.js';
+import { renderModulePickerChips, renderContraceptiveOptOutToggle, renderIntimateHealthOptOutToggle } from '../components/dashboardToday.js';
+import {
+  renderProfilePrivacyCard,
+  mountProfilePrivacyHandlers,
+} from '../components/privacySettings.js';
+import { getIntimateUserId } from '../services/intimateLockService.js';
 
 const PREF_ITEMS = [
   ['track_mood', 'Humor'],
@@ -112,8 +118,10 @@ export async function renderProfile(container) {
   const summary = buildProfileSummary(profile, user, periodStarts, dailyLogs, prefs);
   const memberSince = formatMemberSince(summary.memberSince);
   const headerName = summary.name === 'você' ? 'Perfil' : summary.name;
+  const intimateUserId = getIntimateUserId();
   let cycleRegular = profile?.cycle_regular !== false;
   let selectedGender = getGender(profile);
+  const localPrefs = { ...prefs };
 
   const content = `
     ${renderRestModeBanner()}
@@ -134,17 +142,7 @@ export async function renderProfile(container) {
       ${renderKnowScoreCard(summary)}
       ${renderBadgesCard(summary)}
 
-      ${renderCard('Modo discreto', `
-        <p class="text-muted mb-0"><small>Esconde termos sensíveis na tela. Ideal para privacidade no dia a dia.</small></p>
-        <label class="card-bloom-check mt-4" for="discrete-mode">
-          <input type="checkbox" id="discrete-mode" class="bloom-checkbox-input" ${isDiscreteMode() ? 'checked' : ''} />
-          <span class="bloom-checkbox" aria-hidden="true">
-            <i class="bi bi-check-lg bloom-checkbox-icon"></i>
-          </span>
-          <span class="card-bloom-check-label">${renderIcon('discrete', 'bloom-icon bloom-icon--sm')} Ativar modo discreto</span>
-        </label>
-        <p class="text-muted mt-3 mb-0"><small>Exemplo: ${discreteNotificationPreview(isDiscreteMode())}</small></p>
-      `, { className: 'card-bloom-soft' })}
+      ${renderProfilePrivacyCard(intimateUserId)}
 
       ${renderCard('Conta', `
         <p class="text-muted mb-1"><small>E-mail</small></p>
@@ -165,11 +163,21 @@ export async function renderProfile(container) {
         <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-save-profile">Salvar perfil</button>
       `)}
 
+      ${renderCard('O que você acompanha', `
+        <p class="text-muted mb-0"><small>Meu ciclo sempre fica ativo. Ajuste o restante quando quiser.</small></p>
+        <div class="mt-3" id="module-picker">
+          ${renderModulePickerChips(PROFILE_TRACK_MODULES, localPrefs)}
+        </div>
+        ${renderContraceptiveOptOutToggle(localPrefs.module_contraceptive)}
+        ${renderIntimateHealthOptOutToggle(localPrefs.module_intimate_health)}
+        <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-save-modules">Salvar áreas</button>
+      `, { className: 'card-bloom-soft' })}
+
       ${renderCard('Categorias do check-in', `
         <p class="text-muted mb-0"><small>Escolha o que aparece no registro diário, personalize do seu jeito.</small></p>
         <div class="chip-grid" id="pref-chips">
           ${PREF_ITEMS.map(([key, label]) =>
-            `<button type="button" class="chip${prefs[key] ? ' selected' : ''}" data-key="${key}">${label}</button>`
+            `<button type="button" class="chip${localPrefs[key] ? ' selected' : ''}" data-key="${key}">${label}</button>`
           ).join('')}
         </div>
         <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm mt-4" id="btn-save-prefs">Salvar preferências</button>
@@ -208,14 +216,51 @@ export async function renderProfile(container) {
   mountAppNavigation(container);
   mountRestModeBanner(container, () => renderProfile(container));
 
-  const localPrefs = { ...prefs };
-
   container.querySelectorAll('#pref-chips .chip').forEach((chip) => {
     chip.addEventListener('click', () => {
       const key = chip.dataset.key;
       localPrefs[key] = !localPrefs[key];
       chip.classList.toggle('selected');
     });
+  });
+
+  container.querySelectorAll('#module-picker .chip[data-module]').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const key = chip.dataset.module;
+      localPrefs[key] = !localPrefs[key];
+      chip.classList.toggle('selected');
+    });
+  });
+
+  container.querySelector('#module-contraceptive-enabled')?.addEventListener('change', (e) => {
+    localPrefs.module_contraceptive = e.target.checked;
+  });
+
+  container.querySelector('#module-intimate-health-enabled')?.addEventListener('change', (e) => {
+    localPrefs.module_intimate_health = e.target.checked;
+  });
+
+  container.querySelector('#btn-save-modules')?.addEventListener('click', async () => {
+    if (!user) return;
+    try {
+      const contraceptiveEnabled = container.querySelector('#module-contraceptive-enabled')?.checked !== false;
+      const intimateHealthEnabled = container.querySelector('#module-intimate-health-enabled')?.checked !== false;
+      localPrefs.module_contraceptive = contraceptiveEnabled;
+      localPrefs.module_intimate_health = intimateHealthEnabled;
+      const saved = await savePreferences(user.id, {
+        module_symptoms: localPrefs.module_symptoms,
+        module_mood: localPrefs.module_mood,
+        module_habits: localPrefs.module_habits,
+        module_contraceptive: contraceptiveEnabled,
+        module_intimate_health: intimateHealthEnabled,
+        module_sexual: localPrefs.module_sexual,
+      });
+      setState({ preferences: { ...localPrefs, ...saved } });
+      refreshAppNavigation(container);
+      showToast('Áreas atualizadas!', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
   });
 
   container.querySelectorAll('#cycle-regular-chips .chip').forEach((chip) => {
@@ -236,7 +281,16 @@ export async function renderProfile(container) {
 
   container.querySelector('#discrete-mode')?.addEventListener('change', (e) => {
     setDiscreteMode(e.target.checked);
+    refreshAppNavigation(container);
     showToast(e.target.checked ? 'Modo discreto ativado' : 'Modo discreto desativado', 'success');
+    renderProfile(container);
+  });
+
+  mountProfilePrivacyHandlers(container, intimateUserId, {
+    onChange: (message, type = 'success') => {
+      showToast(message, type);
+      if (type === 'success') renderProfile(container);
+    },
   });
 
   container.querySelector('#btn-save-profile')?.addEventListener('click', async () => {

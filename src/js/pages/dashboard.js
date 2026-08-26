@@ -1,33 +1,35 @@
 import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
-import { getLastPeriodStart, getCycleStarts } from '../services/cycleService.js';
-import { getDailyLog, getDailyLogs } from '../services/dailyLogService.js';
+import { getLastPeriodStart, getCycleStarts, getPeriodEntries } from '../services/cycleService.js';
+import { getDailyLog, getDailyLogs, getPreferences, getDefaultPreferences } from '../services/dailyLogService.js';
 import {
   getCycleDay,
   getCyclePhase,
-  daysUntilNextPeriod,
   hasEnoughDataForPrediction,
+  buildPeriodDelayAlert,
+  estimateFertileWindow,
 } from '../services/cycleCalculator.js';
+import { buildPredictionWithConfidence } from '../services/bloomIntelligenceService.js';
+import { buildDashboardContext } from '../services/bloomDashboardService.js';
+import { buildContraceptiveTodaySummary } from '../services/contraceptiveService.js';
 import {
-  buildPredictionWithConfidence,
-} from '../services/bloomIntelligenceService.js';
-import {
-  buildPhaseSelfComparison,
-} from '../services/bloomPhase1Service.js';
-import {
-  renderPhaseSelfComparisonCard,
   setExplainContext,
   mountDuckExplain,
 } from '../components/bloomPhase1.js';
+import {
+  renderDashboardHero,
+  renderDashboardTodaySection,
+} from '../components/dashboardToday.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
-import { generateDailySummary } from '../components/duckCompanion.js';
 import { renderCard } from '../components/card.js';
 import {
   renderCareModeButton,
+  renderPeriodDelayAlert,
+  renderFertilityDisclaimer,
 } from '../components/bloomIntelligence.js';
-import { formatDaysUntil, greetingName, phaseLabel } from '../utils/formatters.js';
-import { maskPhaseLabel, maskPeriodText } from '../utils/discreteMode.js';
+import { phaseLabel } from '../utils/formatters.js';
+import { maskPhaseLabel } from '../utils/discreteMode.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
 import { renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
@@ -39,16 +41,20 @@ export async function renderDashboard(container) {
 
   let lastPeriodStart = null;
   let cycleStarts = [];
+  let periodEntries = [];
   let todayLog = null;
   let dailyLogs = [];
+  let prefs = getDefaultPreferences();
 
   if (isAuthConfigured() && user) {
     try {
-      [lastPeriodStart, cycleStarts, todayLog, dailyLogs] = await Promise.all([
+      [lastPeriodStart, cycleStarts, periodEntries, todayLog, dailyLogs, prefs] = await Promise.all([
         getLastPeriodStart(user.id),
         getCycleStarts(user.id),
+        getPeriodEntries(user.id),
         getDailyLog(user.id, today),
         getDailyLogs(user.id),
+        getPreferences(user.id).then((p) => p || getDefaultPreferences()),
       ]);
     } catch (err) {
       console.error(err);
@@ -59,47 +65,43 @@ export async function renderDashboard(container) {
   const avgPeriod = profile?.average_period_length || 5;
   const cycleDay = lastPeriodStart ? getCycleDay(lastPeriodStart, today) : null;
   const phase = cycleDay ? getCyclePhase(cycleDay, avgCycle, avgPeriod) : 'unknown';
-  const daysUntil = lastPeriodStart ? daysUntilNextPeriod(lastPeriodStart, avgCycle, today) : null;
   const enoughData = hasEnoughDataForPrediction(cycleStarts);
   const prediction = buildPredictionWithConfidence(profile, cycleStarts, today);
-  const selfCompare = buildPhaseSelfComparison(profile, cycleStarts, dailyLogs, today);
+  const periodDelay = buildPeriodDelayAlert(profile, cycleStarts, periodEntries, today);
+  const fertileWindow = lastPeriodStart ? estimateFertileWindow(lastPeriodStart, avgCycle) : null;
+  const inFertileWindow = fertileWindow && today >= fertileWindow.start && today <= fertileWindow.end;
+  const showFertilityNote = Boolean(inFertileWindow);
 
-  const symptoms = (todayLog?.daily_symptoms || []).map((s) => s.symptom.replace('_', ' '));
-  const summary = cycleDay
-    ? generateDailySummary({ cycleDay, phase, mood: todayLog?.mood, symptoms, painLevel: todayLog?.pain_level })
-    : 'Vamos registrar seu primeiro ciclo?';
+  const dashCtx = buildDashboardContext({
+    profile,
+    periodStarts: cycleStarts,
+    dailyLogs,
+    todayLog,
+    prefs,
+    today,
+  });
 
-  const periodLine = daysUntil != null
-    ? maskPeriodText(
-        `Próximo período estimado ${formatDaysUntil(daysUntil)}.`,
-        daysUntil <= 2
-          ? 'O Bloom tem uma novidade para você em breve.'
-          : 'O Bloom está acompanhando seu ritmo com carinho.'
-      )
-    : '';
+  if (isAuthConfigured() && user && dashCtx.modules.showContraceptive) {
+    try {
+      dashCtx.contraceptive = await buildContraceptiveTodaySummary(user.id, today);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const content = `
     ${renderRestModeBanner()}
+    ${renderDashboardHero(dashCtx)}
 
-    <section class="page-mascot-section">
-      <div class="page-header">
-        <h1>Olá, ${greetingName(profile?.display_name)}!</h1>
-        <p>${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-      </div>
+    <div class="card-stack dash-main-stack">
+      ${periodDelay ? renderPeriodDelayAlert(periodDelay) : ''}
 
-      <div class="duck-companion">
-        <img src="/pato_comemorando.png" alt="${APP_NAME}" class="bloom-mascot-img" width="240" height="240" decoding="async" />
-        <p class="mascot-caption">${summary}</p>
-      </div>
-    </section>
-
-    <div class="card-stack">
       ${cycleDay ? renderCard('Seu ciclo hoje', `
         <div class="cycle-today-card">
           <div class="cycle-today-main">
             <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${maskPhaseLabel(phaseLabel(phase))}</span>
             <h2 class="mt-3 mb-2">Dia ${cycleDay} do seu ciclo</h2>
-            ${periodLine ? `<p class="text-muted mb-0">${periodLine}</p>` : ''}
+            ${showFertilityNote ? `<div class="mt-2">${renderFertilityDisclaimer()}</div>` : ''}
             ${!enoughData ? '<p class="text-muted mt-3 mb-0"><small>Ainda precisamos de mais registros para melhorar suas estimativas.</small></p>' : ''}
           </div>
           <div class="cycle-today-footer">
@@ -115,7 +117,7 @@ export async function renderDashboard(container) {
         </div>
       `)}
 
-      ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
+      ${renderDashboardTodaySection(dashCtx)}
     </div>
 
     ${renderCareModeButton()}
@@ -139,7 +141,17 @@ export async function renderDashboard(container) {
   container.querySelector('#btn-checkin')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
   container.querySelector('#btn-calendar')?.addEventListener('click', () => navigate(ROUTES.CALENDARIO));
   container.querySelector('#btn-first-log')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
+  container.querySelector('#btn-register-delayed-period')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
   container.querySelector('#btn-care-mode')?.addEventListener('click', () => navigate(ROUTES.CUIDADO));
+  container.querySelector('#btn-dash-relations')?.addEventListener('click', () => navigate(ROUTES.RELACOES));
+  container.querySelector('#btn-dash-contraceptive')?.addEventListener('click', () => {
+    if (dashCtx.contraceptive?.configured === false) {
+      navigate(ROUTES.ANTICONCEPCIONAL);
+      return;
+    }
+    sessionStorage.setItem('bloom_focus_contraceptive', '1');
+    navigate(ROUTES.REGISTRAR);
+  });
 
   setExplainContext({
     cycleDay,

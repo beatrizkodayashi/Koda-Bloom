@@ -3,8 +3,32 @@ import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import {
   getDailyLog, getDailyLogs, saveDailyLog, getPreferences, getDefaultPreferences,
-  SYMPTOMS, FLOWS, SLEEP_OPTIONS, DISCHARGE_OPTIONS, ACTIVITY_OPTIONS,
+  SYMPTOMS, PHYSICAL_SYMPTOMS, EMOTIONAL_SYMPTOMS, FLOWS, SLEEP_OPTIONS, DISCHARGE_OPTIONS, ACTIVITY_OPTIONS,
 } from '../services/dailyLogService.js';
+import { isModuleEnabled } from '../config/modules.js';
+import {
+  getContraceptiveProfile,
+  getContraceptiveLogs,
+  logContraceptiveIntake,
+  buildContraceptivePageContext,
+  getMethodMeta,
+} from '../services/contraceptiveService.js';
+import {
+  getIntimateHealthLogs,
+  saveIntimateHealthLog,
+  buildIntimatePageContext,
+  logHasIntimateEntry,
+} from '../services/intimateHealthService.js';
+import {
+  renderRegisterContraceptiveSection,
+  mountRegisterContraceptiveHandlers,
+} from '../components/bloomContraceptive.js';
+import {
+  renderRegisterIntimateSection,
+  mountRegisterIntimateHandlers,
+  bindIntimateFormChips,
+  readIntimateFormState,
+} from '../components/bloomIntimateHealth.js';
 import { getMoodOptions, periodContinueLabel } from '../utils/genderLanguage.js';
 import {
   upsertPeriodEntry,
@@ -36,6 +60,8 @@ function buildPeriodStatusOptions(periodContext, profile) {
       { value: 'continue', label: periodContinueLabel(profile) },
       PERIOD_STATUS_OPTIONS.end
     );
+  } else {
+    options.push({ value: 'spotting', label: 'Sangramento fora do período' });
   }
   if (!periodContext.inPeriod || periodContext.isStartDay) {
     options.push(PERIOD_STATUS_OPTIONS.start);
@@ -51,6 +77,7 @@ function derivePeriodStatus(logDate, existingLog, periodEntries, avgPeriod) {
   if (periodContext.isEndDay) return 'end';
   if (startEntry) return 'start';
   if (periodContext.inPeriod && hasFlow) return 'continue';
+  if (hasFlow && !periodContext.inPeriod) return 'spotting';
   if (hasFlow) return 'continue';
   return 'none';
 }
@@ -66,6 +93,11 @@ export async function renderTracking(container) {
   let periodStarts = [];
   let periodEntries = [];
   let dailyLogs = [];
+  let showContraceptive = false;
+  let showIntimateHealth = false;
+  let contraceptiveCtx = null;
+  let intimateCtx = null;
+  let contraceptiveStatus = null;
 
   if (isAuthConfigured() && user) {
     try {
@@ -77,6 +109,31 @@ export async function renderTracking(container) {
         getPeriodEntries(user.id),
         getDailyLogs(user.id),
       ]);
+
+      showContraceptive = isModuleEnabled(prefs, 'module_contraceptive');
+      showIntimateHealth = isModuleEnabled(prefs, 'module_intimate_health');
+
+      const extraLoads = [];
+      if (showContraceptive) {
+        extraLoads.push(getContraceptiveProfile(user.id), getContraceptiveLogs(user.id, 90));
+      }
+      if (showIntimateHealth) {
+        extraLoads.push(getIntimateHealthLogs(user.id, addDays(logDate, -30), logDate));
+      }
+
+      if (extraLoads.length) {
+        const extraResults = await Promise.all(extraLoads);
+        let offset = 0;
+        if (showContraceptive) {
+          const profile = extraResults[offset++];
+          const logs = extraResults[offset++];
+          contraceptiveCtx = buildContraceptivePageContext(profile, logs, logDate);
+          contraceptiveStatus = contraceptiveCtx.todayLog?.status || null;
+        }
+        if (showIntimateHealth) {
+          intimateCtx = buildIntimatePageContext(extraResults[offset++], logDate);
+        }
+      }
     } catch (err) {
       console.error(err);
     }
@@ -98,7 +155,13 @@ export async function renderTracking(container) {
   let flow = existingLog?.flow || null;
   let notes = existingLog?.notes || '';
   let periodStatus = derivePeriodStatus(logDate, existingLog, periodEntries, avgPeriod);
-  const showFlowInitially = periodStatus === 'start' || periodStatus === 'continue' || periodStatus === 'end';
+  const showFlowInitially = ['start', 'continue', 'end', 'spotting'].includes(periodStatus);
+
+  function renderSymptomChips(items) {
+    return items.map((s) =>
+      `<button type="button" class="chip${selectedSymptoms.has(s.value) ? ' selected' : ''}" data-group="symptom" data-value="${s.value}">${s.label}</button>`
+    ).join('');
+  }
 
   function renderChips(items, selected, name) {
     return items.map((item) =>
@@ -136,10 +199,11 @@ export async function renderTracking(container) {
           ).join('')}
         </div>
         <div class="period-flow-section${showFlowInitially ? '' : ' period-flow-section--hidden'}" id="period-flow-section">
-          <p class="period-section-label">Fluxo</p>
+          <p class="period-section-label">${periodStatus === 'spotting' ? 'Intensidade do sangramento' : 'Fluxo'}</p>
           <div class="chip-grid chip-grid--compact" id="flow-chips">
-            ${renderChips(FLOWS, flow, 'flow')}
+            ${renderChips(periodStatus === 'spotting' ? FLOWS.filter((f) => f.value === 'spotting' || f.value === 'leve' || f.value === 'moderado') : FLOWS, flow, 'flow')}
           </div>
+          ${periodStatus === 'spotting' ? '<p class="text-muted mb-0 mt-2"><small>Fora da menstruação. Registre só se fizer sentido para você.</small></p>' : ''}
         </div>
       `)}
 
@@ -148,11 +212,10 @@ export async function renderTracking(container) {
       `) : ''}
 
       ${prefs.track_symptoms ? renderCard('Sintomas', `
-        <div class="chip-grid" id="symptom-chips">
-          ${SYMPTOMS.map((s) =>
-            `<button type="button" class="chip${selectedSymptoms.has(s.value) ? ' selected' : ''}" data-group="symptom" data-value="${s.value}">${s.label}</button>`
-          ).join('')}
-        </div>
+        <p class="period-section-label mb-2">Físicos</p>
+        <div class="chip-grid" id="symptom-chips-physical">${renderSymptomChips(PHYSICAL_SYMPTOMS)}</div>
+        <p class="period-section-label mb-2 mt-3">Emocionais e TPM</p>
+        <div class="chip-grid" id="symptom-chips-emotional">${renderSymptomChips(EMOTIONAL_SYMPTOMS)}</div>
         <div id="symptom-normalcy" class="mt-3"></div>
       `) : ''}
 
@@ -168,6 +231,10 @@ export async function renderTracking(container) {
         <div class="chip-grid" id="sleep-chips">${renderChips(SLEEP_OPTIONS, sleepQuality, 'sleep')}</div>
       `) : ''}
 
+      ${showContraceptive && contraceptiveCtx ? renderRegisterContraceptiveSection(contraceptiveCtx) : ''}
+
+      ${showIntimateHealth && intimateCtx ? renderRegisterIntimateSection(intimateCtx) : ''}
+
       ${prefs.track_notes ? renderCard('Notas', `
         <textarea id="notes" rows="4" class="form-control bloom-textarea${focusNotes ? ' bloom-textarea--focus' : ''}" placeholder="Algo que queira lembrar..." maxlength="2000">${notes}</textarea>
       `) : ''}
@@ -178,6 +245,35 @@ export async function renderTracking(container) {
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
+
+  if (showIntimateHealth) {
+    bindIntimateFormChips(container, 'reg-intimate');
+  }
+
+  if (showContraceptive && contraceptiveCtx) {
+    mountRegisterContraceptiveHandlers(container, {
+      onNavigateManage: () => navigate(ROUTES.ANTICONCEPCIONAL),
+      onStatusSelect: (status) => {
+        contraceptiveStatus = status;
+      },
+    });
+  }
+
+  if (showIntimateHealth && intimateCtx) {
+    mountRegisterIntimateHandlers(container, {
+      onNavigateManage: () => navigate(ROUTES.SAUDE_INTIMA),
+    });
+  }
+
+  if (sessionStorage.getItem('bloom_focus_contraceptive') === '1') {
+    sessionStorage.removeItem('bloom_focus_contraceptive');
+    requestAnimationFrame(() => {
+      const section = container.querySelector('.register-contraceptive-card');
+      section?.classList.add('register-section-focus');
+      section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.setTimeout(() => section?.classList.remove('register-section-focus'), 2400);
+    });
+  }
 
   function updateNormalcyPanel() {
     const panel = container.querySelector('#symptom-normalcy');
@@ -198,7 +294,7 @@ export async function renderTracking(container) {
   function updateFlowSectionVisibility() {
     const section = container.querySelector('#period-flow-section');
     if (!section) return;
-    const showFlow = periodStatus === 'start' || periodStatus === 'continue' || periodStatus === 'end';
+    const showFlow = ['start', 'continue', 'end', 'spotting'].includes(periodStatus);
     section.classList.toggle('period-flow-section--hidden', !showFlow);
     if (!showFlow) {
       flow = null;
@@ -222,7 +318,7 @@ export async function renderTracking(container) {
       return;
     }
     selectedSymptoms.add('colica');
-    container.querySelectorAll('#symptom-chips .chip[data-value="colica"]').forEach((c) => c.classList.add('selected'));
+    container.querySelectorAll('.chip[data-group="symptom"][data-value="colica"]').forEach((c) => c.classList.add('selected'));
     updateNormalcyPanel();
     container.querySelector('#pain-scale')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     banner?.remove();
@@ -268,9 +364,9 @@ export async function renderTracking(container) {
       return;
     }
 
-    const needsFlow = periodStatus === 'start' || periodStatus === 'continue';
+    const needsFlow = periodStatus === 'start' || periodStatus === 'continue' || periodStatus === 'spotting';
     if (needsFlow && !flow) {
-      showToast('Escolha a intensidade do fluxo.', 'error');
+      showToast(periodStatus === 'spotting' ? 'Escolha a intensidade do sangramento.' : 'Escolha a intensidade do fluxo.', 'error');
       return;
     }
 
@@ -301,6 +397,17 @@ export async function renderTracking(container) {
         },
         [...selectedSymptoms]
       );
+
+      if (showContraceptive && contraceptiveCtx?.profile && getMethodMeta(contraceptiveCtx.profile.method)?.schedule === 'daily' && contraceptiveStatus) {
+        await logContraceptiveIntake(user.id, { log_date: logDate, status: contraceptiveStatus });
+      }
+
+      if (showIntimateHealth) {
+        const intimatePayload = readIntimateFormState(container, 'reg-intimate');
+        if (logHasIntimateEntry(intimatePayload) || intimateCtx?.todayLog) {
+          await saveIntimateHealthLog(user.id, { log_date: logDate, ...intimatePayload });
+        }
+      }
 
       showToast('Registro salvo!', 'success');
       navigate(ROUTES.CALENDARIO);

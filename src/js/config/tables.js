@@ -12,6 +12,10 @@ export const TABLES = {
   DAILY_LOGS: 'bloom_daily_logs',
   DAILY_SYMPTOMS: 'bloom_daily_symptoms',
   ONBOARDING_PROGRESS: 'bloom_onboarding_progress',
+  SEXUAL_LOGS: 'bloom_sexual_logs',
+  CONTRACEPTIVE_PROFILES: 'bloom_contraceptive_profiles',
+  CONTRACEPTIVE_LOGS: 'bloom_contraceptive_logs',
+  INTIMATE_HEALTH_LOGS: 'bloom_intimate_health_logs',
 };
 
 /** Relacionamento aninhado no PostgREST (select com join) */

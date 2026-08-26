@@ -2,9 +2,22 @@ import { NAV_ITEMS } from '../config/app.js';
 import { navigate } from '../router.js';
 import { renderBrandLogo } from './brandLogo.js';
 import { filterNavItemsForRestMode } from '../services/careModeService.js';
+import { getState } from '../state/store.js';
+import { isModuleEnabled, mergeModulePreferences } from '../config/modules.js';
+import { getDefaultPreferences } from '../services/dailyLogService.js';
+
+function resolveNavLabel(item) {
+  return item.label;
+}
 
 function getNavItems() {
-  return filterNavItemsForRestMode(NAV_ITEMS);
+  const { preferences } = getState();
+  const prefs = mergeModulePreferences(preferences || getDefaultPreferences());
+  const items = NAV_ITEMS.filter((item) => {
+    if (!item.moduleKey) return true;
+    return isModuleEnabled(prefs, item.moduleKey);
+  });
+  return filterNavItemsForRestMode(items);
 }
 
 function isActive(path) {
@@ -20,19 +33,19 @@ export function renderBottomNavigation() {
   nav.setAttribute('aria-label', 'Navegação principal');
 
   const body = document.createElement('div');
-  body.className = 'card-bloom-body nav-card-body';
+  body.className = `card-bloom-body nav-card-body${getNavItems().length >= 6 ? ' nav-card-body--compact' : ''}`;
 
   getNavItems().forEach((item) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `bottom-nav-item${item.highlight ? ' highlight' : ''}${isActive(item.path) ? ' active' : ''}`;
-    btn.setAttribute('aria-label', item.label);
+    btn.setAttribute('aria-label', resolveNavLabel(item));
     btn.setAttribute('aria-current', isActive(item.path) ? 'page' : 'false');
 
     if (item.highlight) {
-      btn.innerHTML = `<span class="nav-icon-wrap"><i class="bi ${item.icon}" aria-hidden="true"></i></span><span>${item.label}</span>`;
+      btn.innerHTML = `<span class="nav-icon-wrap"><i class="bi ${item.icon}" aria-hidden="true"></i></span><span>${resolveNavLabel(item)}</span>`;
     } else {
-      btn.innerHTML = `<i class="bi ${item.icon}" aria-hidden="true"></i><span>${item.label}</span>`;
+      btn.innerHTML = `<i class="bi ${item.icon}" aria-hidden="true"></i><span>${resolveNavLabel(item)}</span>`;
     }
 
     btn.addEventListener('click', () => navigate(item.path));
@@ -67,7 +80,7 @@ export function renderSidebar() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `sidebar-item${isActive(item.path) ? ' active' : ''}`;
-    btn.innerHTML = `<i class="bi ${item.icon}" aria-hidden="true"></i><span>${item.label}</span>`;
+    btn.innerHTML = `<i class="bi ${item.icon}" aria-hidden="true"></i><span>${resolveNavLabel(item)}</span>`;
     btn.addEventListener('click', () => navigate(item.path));
     navEl.appendChild(btn);
   });
@@ -92,4 +105,11 @@ export function renderAppShell(contentHtml) {
 export function mountAppNavigation(container) {
   container.insertAdjacentElement('afterbegin', renderSidebar());
   container.insertAdjacentElement('beforeend', renderBottomNavigation());
+}
+
+export function refreshAppNavigation(container = document.getElementById('app')) {
+  if (!container) return;
+  container.querySelector('.sidebar')?.remove();
+  container.querySelector('.bottom-nav-wrap')?.remove();
+  mountAppNavigation(container);
 }

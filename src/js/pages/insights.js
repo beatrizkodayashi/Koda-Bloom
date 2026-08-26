@@ -43,6 +43,10 @@ import {
   renderSymptomBodyMap,
 } from '../components/bloomIntelligence.js';
 import { isAuthConfigured } from '../services/authService.js';
+import { isModuleEnabled } from '../config/modules.js';
+import { getIntimateHealthLogs, buildIntimatePageContext } from '../services/intimateHealthService.js';
+import { renderIntimateTimeline } from '../components/bloomIntimateHealth.js';
+import { addDays, todayString } from '../utils/dates.js';
 
 export async function renderInsights(container) {
   const { user, profile } = getState();
@@ -51,6 +55,7 @@ export async function renderInsights(container) {
   let dailyLogs = [];
   let periodEntries = [];
   let prefs = getDefaultPreferences();
+  let intimateTimelineCard = '';
 
   if (isAuthConfigured() && user) {
     try {
@@ -60,6 +65,13 @@ export async function renderInsights(container) {
         getPeriodEntries(user.id),
         getPreferences(user.id).then((p) => p || getDefaultPreferences()),
       ]);
+
+      if (isModuleEnabled(prefs, 'module_intimate_health')) {
+        const today = todayString();
+        const intimateLogs = await getIntimateHealthLogs(user.id, addDays(today, -30), today);
+        const intimateCtx = buildIntimatePageContext(intimateLogs, today);
+        intimateTimelineCard = renderIntimateTimeline(intimateCtx.timeline);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -105,6 +117,7 @@ export async function renderInsights(container) {
       ${renderAnomalyAlert(anomaly)}
       ${journey ? renderCycleJourneyCard(journey) : ''}
       ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
+      ${intimateTimelineCard}
       ${renderMyPatternPromoCard(profileSummary)}
       ${renderSignatureCard(profileSummary)}
       ${renderSymptomBodyMap(bodyMap)}
@@ -162,6 +175,7 @@ export async function renderInsights(container) {
 
   container.querySelector('#btn-go-padrao')?.addEventListener('click', () => navigate(ROUTES.MEU_PADRAO));
   container.querySelector('#btn-isso-normal')?.addEventListener('click', () => navigate(ROUTES.ISSO_E_NORMAL));
+  container.querySelector('#btn-intimate-timeline-detail')?.addEventListener('click', () => navigate(ROUTES.SAUDE_INTIMA));
   mountPhase2Navigation(container, navigate, ROUTES);
 
   if (periodStarts[0]) {

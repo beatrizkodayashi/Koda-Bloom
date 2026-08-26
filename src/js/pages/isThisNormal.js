@@ -3,6 +3,8 @@ import { getCycleStarts } from '../services/cycleService.js';
 import { getDailyLogs, SYMPTOMS } from '../services/dailyLogService.js';
 import { analyzeSymptomNormalcy } from '../services/bloomPhase2Service.js';
 import { renderIsThisNormalTool } from '../components/bloomPhase2.js';
+import { renderPageBackButton, mountPageBackButton } from '../components/pageBackButton.js';
+import { ROUTES } from '../config/app.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { isAuthConfigured } from '../services/authService.js';
 
@@ -41,8 +43,10 @@ export async function renderIsThisNormal(container) {
       <div class="card-stack phase2-page">
         ${renderIsThisNormalTool(SYMPTOMS, symptom, result)}
       </div>
+      ${renderPageBackButton()}
     `);
     mountAppNavigation(container);
+    mountPageBackButton(container, ROUTES.INSIGHTS);
 
     container.querySelectorAll('[data-normalcy]').forEach((chip) => {
       chip.addEventListener('click', () => {

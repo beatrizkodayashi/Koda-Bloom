@@ -6,6 +6,7 @@ import {
   getCyclePhase,
 } from './cycleCalculator.js';
 import { patternIntroMessage } from '../utils/genderLanguage.js';
+import { buildInsights } from './insightsService.js';
 import { addDays, todayString } from '../utils/dates.js';
 import { formatDays, phaseLabel, moodLabel } from '../utils/formatters.js';
 

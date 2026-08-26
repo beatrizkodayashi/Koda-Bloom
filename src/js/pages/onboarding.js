@@ -1,12 +1,14 @@
 import { APP_NAME, DEFAULTS, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
 import { navigate } from '../router.js';
-import { getState } from '../state/store.js';
+import { getState, setState } from '../state/store.js';
 import { upsertProfile, upsertPeriodEntry, saveOnboardingProgress } from '../services/cycleService.js';
 import { savePreferences, getDefaultPreferences } from '../services/dailyLogService.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { showToast } from '../components/toast.js';
 import { todayString } from '../utils/dates.js';
 import { onboardingWelcomeLine, welcomeWord } from '../utils/genderLanguage.js';
+import { PROFILE_TRACK_MODULES, MODULE_DEFAULTS } from '../config/modules.js';
+import { renderModulePickerChips } from '../components/dashboardToday.js';
 
 const STEPS = [
   { id: 'welcome', title: 'Boas-vindas' },
@@ -29,6 +31,8 @@ const formData = {
   track_symptoms: true,
   track_pain: true,
   track_sleep: true,
+  track_energy: true,
+  ...MODULE_DEFAULTS,
 };
 
 function renderProgress() {
@@ -96,13 +100,18 @@ function renderStepContent() {
       return `
         ${renderDuckCompanion({ state: 'flower', size: 'md' })}
         <h2>O que você quer acompanhar?</h2>
-        <p class="text-muted">Pode mudar depois nas configurações.</p>
-        <div class="d-flex flex-wrap gap-2 mt-4" id="tracking-chips">
+        <p class="text-muted">Pode mudar depois no perfil, no seu tempo.</p>
+        <div class="mt-4" id="module-picker">
+          ${renderModulePickerChips(PROFILE_TRACK_MODULES, formData)}
+        </div>
+        <p class="period-section-label mb-2 mt-4">No check-in diário</p>
+        <div class="d-flex flex-wrap gap-2" id="tracking-chips">
           ${[
             ['track_mood', 'Humor'],
             ['track_symptoms', 'Sintomas'],
             ['track_pain', 'Dor'],
             ['track_sleep', 'Sono'],
+            ['track_energy', 'Energia'],
           ].map(([key, label]) =>
             `<button type="button" class="chip${formData[key] ? ' selected' : ''}" data-key="${key}">${label}</button>`
           ).join('')}
@@ -180,6 +189,42 @@ export async function renderOnboarding(container) {
         chip.classList.toggle('selected');
       });
     });
+
+    container.querySelectorAll('#module-picker .chip[data-module]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        if (chip.dataset.comingSoon === '1') {
+          formData[chip.dataset.module] = !formData[chip.dataset.module];
+          chip.classList.toggle('selected');
+          return;
+        }
+        const key = chip.dataset.module;
+        formData[key] = !formData[key];
+        chip.classList.toggle('selected');
+        syncCheckinFromModules();
+      });
+    });
+  }
+
+  function syncCheckinFromModules() {
+    if (formData.module_mood === false) formData.track_mood = false;
+    if (formData.module_symptoms === false) {
+      formData.track_symptoms = false;
+      formData.track_pain = false;
+    }
+    if (formData.module_habits === false) {
+      formData.track_sleep = false;
+      formData.track_energy = false;
+    }
+    if (formData.module_mood) formData.track_mood = true;
+    if (formData.module_symptoms) {
+      formData.track_symptoms = true;
+      formData.track_pain = true;
+    }
+    if (formData.module_habits) {
+      formData.track_sleep = true;
+      formData.track_energy = true;
+    }
+    render();
   }
 
   function saveCurrentStepData() {
@@ -217,16 +262,24 @@ export async function renderOnboarding(container) {
       }
 
       const defaults = getDefaultPreferences();
-      await savePreferences(user.id, {
+      const savedPrefs = await savePreferences(user.id, {
         ...defaults,
         track_mood: formData.track_mood,
         track_symptoms: formData.track_symptoms,
         track_pain: formData.track_pain,
         track_sleep: formData.track_sleep,
+        track_energy: formData.track_energy,
+        module_symptoms: formData.module_symptoms,
+        module_mood: formData.module_mood,
+        module_habits: formData.module_habits,
+        module_contraceptive: formData.module_contraceptive,
+        module_sexual: formData.module_sexual,
+        module_intimate_health: formData.module_intimate_health,
       });
+      setState({ preferences: savedPrefs });
 
       showToast('Onboarding concluído!', 'success');
-      navigate(ROUTES.CALENDARIO);
+      navigate(ROUTES.HOJE);
     } catch (err) {
       showToast(err.message || 'Erro ao salvar.', 'error');
     }

@@ -1,6 +1,7 @@
 import { getSupabaseOrThrow } from '../config/supabase.js';
 import { TABLES } from '../config/tables.js';
-import { addDays } from '../utils/dates.js';
+
+export { getPeriodContextForDate } from './cycleCalculator.js';
 
 export async function getProfile(userId) {
   const supabase = getSupabaseOrThrow();
@@ -78,21 +79,6 @@ export async function getLastPeriodStart(userId) {
 export async function getCycleStarts(userId) {
   const entries = await getPeriodEntries(userId);
   return entries.map((e) => e.start_date);
-}
-
-export function getPeriodContextForDate(logDate, periodEntries, avgPeriod = 5) {
-  for (const entry of periodEntries) {
-    const end = entry.end_date || addDays(entry.start_date, avgPeriod - 1);
-    if (logDate >= entry.start_date && logDate <= end) {
-      return {
-        inPeriod: true,
-        entry,
-        isStartDay: logDate === entry.start_date,
-        isEndDay: entry.end_date === logDate,
-      };
-    }
-  }
-  return { inPeriod: false, entry: null, isStartDay: false, isEndDay: false };
 }
 
 export async function setPeriodEndDate(userId, entryId, endDate) {

@@ -2,14 +2,33 @@ import { ROUTES, APP_NAME } from '../config/app.js';
 import { navigate } from '../router.js';
 import { getState } from '../state/store.js';
 import { getPeriodEntries } from '../services/cycleService.js';
-import { getDailyLogs } from '../services/dailyLogService.js';
+import { getDailyLogs, getPreferences, getDefaultPreferences } from '../services/dailyLogService.js';
+import { isModuleEnabled } from '../config/modules.js';
+import {
+  getContraceptiveLogs,
+  buildContraceptiveLogMap,
+  getContraceptiveDayClass,
+  getStatusMeta,
+} from '../services/contraceptiveService.js';
+import {
+  getIntimateHealthLogs,
+  buildIntimateLogMap,
+  getIntimateDayClass,
+  summarizeIntimateLog,
+} from '../services/intimateHealthService.js';
 import {
   estimateFertileWindow,
   predictNextPeriod,
   hasEnoughDataForPrediction,
+  buildPeriodDelayAlert,
+  getSpottingDates,
 } from '../services/cycleCalculator.js';
 import { buildPredictionWithConfidence } from '../services/bloomIntelligenceService.js';
-import { renderPredictionConfidenceCard } from '../components/bloomIntelligence.js';
+import {
+  renderPredictionConfidenceCard,
+  renderPeriodDelayAlert,
+  renderFertilityDisclaimer,
+} from '../components/bloomIntelligence.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { calculateStreak } from '../utils/streak.js';
 import {
@@ -25,6 +44,8 @@ import { renderStreakCard } from '../components/streakCard.js';
 import { renderRestModeBanner, mountRestModeBanner, isRestModeActive } from '../services/careModeService.js';
 
 let viewYear, viewMonth;
+let contraceptiveLogMap = {};
+let intimateLogMap = {};
 
 export async function renderCalendar(container) {
   const { user, profile } = getState();
@@ -36,12 +57,38 @@ export async function renderCalendar(container) {
   let periodEntries = [];
   let dailyLogs = [];
   let lastPeriodStart = null;
+  let prefs = getDefaultPreferences();
+  let showContraceptive = false;
+  let showIntimateHealth = false;
 
   if (isAuthConfigured() && user) {
     try {
-      periodEntries = await getPeriodEntries(user.id);
-      dailyLogs = await getDailyLogs(user.id);
+      const loads = await Promise.all([
+        getPeriodEntries(user.id),
+        getDailyLogs(user.id),
+        getPreferences(user.id).then((p) => p || getDefaultPreferences()),
+      ]);
+      periodEntries = loads[0];
+      dailyLogs = loads[1];
+      prefs = loads[2];
       lastPeriodStart = periodEntries[0]?.start_date || null;
+      showContraceptive = isModuleEnabled(prefs, 'module_contraceptive');
+      showIntimateHealth = isModuleEnabled(prefs, 'module_intimate_health');
+
+      const extraLoads = [];
+      if (showContraceptive) extraLoads.push(getContraceptiveLogs(user.id, 90));
+      if (showIntimateHealth) extraLoads.push(getIntimateHealthLogs(user.id, addDays(today, -90), today));
+
+      if (extraLoads.length) {
+        const extraResults = await Promise.all(extraLoads);
+        let offset = 0;
+        if (showContraceptive) {
+          contraceptiveLogMap = buildContraceptiveLogMap(extraResults[offset++]);
+        }
+        if (showIntimateHealth) {
+          intimateLogMap = buildIntimateLogMap(extraResults[offset++]);
+        }
+      }
     } catch (err) {
       console.error(err);
     }
@@ -50,10 +97,11 @@ export async function renderCalendar(container) {
   const logDates = dailyLogs.map((l) => l.log_date);
   const streak = calculateStreak(logDates, today);
   const logDateSet = new Set(logDates);
-
   const avgCycle = profile?.average_cycle_length || 28;
   const avgPeriod = profile?.average_period_length || 5;
   const periodStarts = periodEntries.map((e) => e.start_date);
+  const spottingDates = getSpottingDates(dailyLogs, periodEntries, avgPeriod);
+  const periodDelay = buildPeriodDelayAlert(profile, periodStarts, periodEntries, today);
   const prediction = buildPredictionWithConfidence(profile, periodStarts, today);
   const enoughData = hasEnoughDataForPrediction(periodStarts);
 
@@ -80,10 +128,47 @@ export async function renderCalendar(container) {
       }
     }
 
+    if (spottingDates.has(dateStr)) classes.push('spotting-outside');
+
     if (logDateSet.has(dateStr)) classes.push('has-log');
     if (dateStr === today) classes.push('today');
 
     return classes.join(' ');
+  }
+
+  function renderContraceptiveDot(log) {
+    if (!log) return '';
+    const tone = getContraceptiveDayClass(log.status) || 'contraceptive-taken';
+    const label = getStatusMeta(log.status)?.label || 'Anticoncepcional';
+    return `<span class="calendar-day-dot calendar-day-dot--contraceptive ${tone}" title="${label}"></span>`;
+  }
+
+  function renderIntimateDot(log) {
+    if (!log) return '';
+    const tone = getIntimateDayClass(log) || 'intimate-note';
+    return `<span class="calendar-day-dot calendar-day-dot--intimate ${tone}" title="Saúde íntima"></span>`;
+  }
+
+  function renderDayMarkers(dateStr) {
+    const hasLog = logDateSet.has(dateStr);
+    const extraDots = [];
+
+    if (showContraceptive) {
+      const contraceptiveDot = renderContraceptiveDot(contraceptiveLogMap[dateStr]);
+      if (contraceptiveDot) extraDots.push(contraceptiveDot);
+    }
+
+    if (showIntimateHealth) {
+      const intimateDot = renderIntimateDot(intimateLogMap[dateStr]);
+      if (intimateDot) extraDots.push(intimateDot);
+    }
+
+    if (!hasLog && !extraDots.length) return '';
+
+    return `<span class="calendar-day-body" aria-hidden="true">
+      ${hasLog ? '<span class="calendar-day-heart-wrap"><i class="bi bi-heart-fill calendar-day-heart" title="Com registro"></i></span>' : ''}
+      ${extraDots.length ? `<span class="calendar-day-dots">${extraDots.join('')}</span>` : ''}
+    </span>`;
   }
 
   function renderCalendarGrid() {
@@ -112,9 +197,15 @@ export async function renderCalendar(container) {
       const dateStr = formatDateString(new Date(viewYear, viewMonth, d));
       const classes = getDayClasses(dateStr);
       const hasLog = logDateSet.has(dateStr);
-      html += `<button type="button" class="calendar-day ${classes}" data-date="${dateStr}" aria-label="${d} de ${monthNames[viewMonth]}${hasLog ? ', com registro' : ''}">
+      const contraceptiveLog = contraceptiveLogMap[dateStr];
+      const ariaParts = [`${d} de ${monthNames[viewMonth]}`];
+      if (hasLog) ariaParts.push('com registro');
+      if (contraceptiveLog) {
+        ariaParts.push(`anticoncepcional: ${getStatusMeta(contraceptiveLog.status)?.label || 'registrado'}`);
+      }
+      html += `<button type="button" class="calendar-day ${classes}" data-date="${dateStr}" aria-label="${ariaParts.join(', ')}">
         <span class="calendar-day-number">${d}</span>
-        <span class="calendar-day-heart-wrap" aria-hidden="true">${hasLog ? '<i class="bi bi-heart-fill calendar-day-heart"></i>' : ''}</span>
+        ${renderDayMarkers(dateStr)}
       </button>`;
     }
 
@@ -123,15 +214,23 @@ export async function renderCalendar(container) {
           <div class="calendar-legend">
             <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
             <span class="legend-item"><span class="legend-dot legend-dot-period"></span> Menstruação</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-spotting"></span> Sangramento fora do período</span>
             <span class="legend-item"><span class="legend-dot legend-dot-predicted"></span> Previsão</span>
-            <span class="legend-item"><span class="legend-dot legend-dot-fertile"></span> Janela fértil</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-fertile"></span> Janela fértil est.</span>
             <span class="legend-item"><span class="legend-dot legend-dot-ovulation"></span> Ovulação est.</span>
+            ${showContraceptive ? '<span class="legend-item"><span class="calendar-day-dot calendar-day-dot--contraceptive contraceptive-taken"></span> Anticoncepcional tomado</span><span class="legend-item"><span class="calendar-day-dot calendar-day-dot--contraceptive contraceptive-missed"></span> Esqueci / atrasada</span>' : ''}
+            ${showIntimateHealth ? '<span class="legend-item"><span class="legend-dot legend-dot-intimate"></span> Saúde íntima</span>' : ''}
           </div>
+          ${renderFertilityDisclaimer('calendar-fertility-disclaimer mt-3')}
         </div>
       </div>
     `;
     return html;
   }
+
+  const predictionCard = prediction && enoughData && !isRestModeActive()
+    ? renderPredictionConfidenceCard(prediction, { compact: true })
+    : '';
 
   const content = `
     ${renderRestModeBanner()}
@@ -142,13 +241,16 @@ export async function renderCalendar(container) {
       </div>
       <div class="calendar-hero">
         <div class="calendar-hero-mascot">
-          <img src="/pato_calendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar-hero" width="160" height="160" decoding="async" />
+          <img src="/pato_calendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar-hero" width="128" height="128" decoding="async" />
         </div>
-        ${renderStreakCard({ streak })}
+        <div class="calendar-hero-panel">
+          ${renderStreakCard({ streak })}
+          ${predictionCard}
+        </div>
       </div>
     </div>
 
-    ${prediction && enoughData && !isRestModeActive() ? renderPredictionConfidenceCard(prediction) : ''}
+    ${periodDelay && !isRestModeActive() ? renderPeriodDelayAlert(periodDelay) : ''}
 
     ${renderCard('Seu mês', renderCalendarGrid(), { className: 'calendar-card' })}
     <div id="day-detail" hidden></div>
@@ -157,6 +259,10 @@ export async function renderCalendar(container) {
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
   mountRestModeBanner(container, () => renderCalendar(container));
+
+  container.querySelector('#btn-register-delayed-period')?.addEventListener('click', () => {
+    navigate(ROUTES.REGISTRAR);
+  });
 
   container.querySelector('#btn-streak-register')?.addEventListener('click', () => {
     navigate(ROUTES.REGISTRAR);
@@ -183,11 +289,17 @@ export async function renderCalendar(container) {
         btn.classList.add('selected');
         const date = btn.dataset.date;
         const log = dailyLogs.find((l) => l.log_date === date);
+        const isSpotting = spottingDates.has(date);
+        const intimateLog = intimateLogMap[date];
+        const contraceptiveLog = contraceptiveLogMap[date];
         const detail = container.querySelector('#day-detail');
         detail.hidden = false;
         detail.innerHTML = renderCard(
           new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }),
-          `${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` , humor: ${log.mood}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
+          `${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` , humor: ${log.mood}` : ''}${log.flow ? ` , fluxo: ${log.flow}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
+          ${isSpotting ? '<p class="text-muted mb-0"><small>Sangramento registrado fora da menstruação.</small></p>' : ''}
+          ${contraceptiveLog ? `<p class="text-muted mb-0"><small><span class="calendar-day-dot calendar-day-dot--contraceptive ${getContraceptiveDayClass(contraceptiveLog.status) || 'contraceptive-taken'}"></span> Anticoncepcional: ${getStatusMeta(contraceptiveLog.status)?.label || 'registrado'}.</small></p>` : ''}
+          ${intimateLog ? `<p class="text-muted mb-0"><small>Saúde íntima: ${summarizeIntimateLog(intimateLog)}.</small></p>` : ''}
           <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm mt-2" data-goto="${date}">Registrar neste dia</button>`
         );
         detail.querySelector('[data-goto]')?.addEventListener('click', () => {

@@ -9,6 +9,7 @@ import { takePendingGender } from './utils/genderLanguage.js';
 import { initToast } from './components/toast.js';
 import { initDuckHelpChat } from './components/duckHelpChat.js';
 import { initCareModeEffects } from './services/careModeService.js';
+import { initIntimateLockEffects, hasIntimatePin, getIntimateUserId, isIntimateAreaUnlocked } from './services/intimateLockService.js';
 
 import { renderLanding } from './pages/landing.js';
 import { renderLogin, renderSignup, renderResetPassword } from './pages/auth.js';
@@ -24,6 +25,10 @@ import { renderNecessaire } from './pages/necessaire.js';
 import { renderPlanner } from './pages/planner.js';
 import { renderDoctorReport } from './pages/doctorReport.js';
 import { renderIsThisNormal } from './pages/isThisNormal.js';
+import { renderRelations } from './pages/relations.js';
+import { renderContraceptive } from './pages/contraceptive.js';
+import { renderIntimateHealth } from './pages/intimateHealth.js';
+import { getPreferences, getDefaultPreferences } from './services/dailyLogService.js';
 
 async function requireAuth(container, renderFn) {
   const { user } = getState();
@@ -39,6 +44,11 @@ async function requireAuth(container, renderFn) {
       profile = await upsertProfile(user.id, { gender: pendingGender });
     }
     setState({ profile });
+
+    if (isAuthConfigured()) {
+      const prefs = await getPreferences(user.id).then((p) => p || getDefaultPreferences());
+      setState({ preferences: prefs });
+    }
 
     if (!profile?.onboarding_completed && location.pathname !== ROUTES.ONBOARDING) {
       navigate(ROUTES.ONBOARDING, true);
@@ -66,6 +76,9 @@ function registerRoutes() {
   registerRoute(ROUTES.PLANEJADOR, (c) => requireAuth(c, renderPlanner));
   registerRoute(ROUTES.RELATORIO, (c) => requireAuth(c, renderDoctorReport));
   registerRoute(ROUTES.ISSO_E_NORMAL, (c) => requireAuth(c, renderIsThisNormal));
+  registerRoute(ROUTES.RELACOES, (c) => requireAuth(c, renderRelations));
+  registerRoute(ROUTES.ANTICONCEPCIONAL, (c) => requireAuth(c, renderContraceptive));
+  registerRoute(ROUTES.SAUDE_INTIMA, (c) => requireAuth(c, renderIntimateHealth));
   registerRoute(ROUTES.PERFIL, (c) => requireAuth(c, renderProfile));
   registerRoute(ROUTES.CUIDADO, (c) => requireAuth(c, renderCareMode));
 
@@ -100,6 +113,12 @@ async function bootstrap() {
   try {
     initToast();
     initCareModeEffects();
+    initIntimateLockEffects(() => {
+      if (location.pathname !== ROUTES.RELACOES) return;
+      if (!hasIntimatePin(getIntimateUserId())) return;
+      if (isIntimateAreaUnlocked(getIntimateUserId())) return;
+      renderRoute(ROUTES.RELACOES);
+    });
     initDuckHelpChat();
     registerRoutes();
     initRouter();

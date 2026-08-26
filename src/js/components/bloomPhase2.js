@@ -1,36 +1,18 @@
 import { renderCard } from './card.js';
 import { renderIcon } from './icons.js';
-import { APP_NAME, HEALTH_DISCLAIMER, ROUTES } from '../config/app.js';
-import { navigate } from '../router.js';
+import { APP_NAME, HEALTH_DISCLAIMER } from '../config/app.js';
+import { renderPageBackButton } from './pageBackButton.js';
 import {
   NECESSAIRE_ITEMS,
   getNecessaireSummary,
 } from '../services/bloomPhase2Service.js';
 
-export function renderMobileBackButton() {
-  return `
-    <button type="button" class="mobile-back-btn" id="mobile-back-btn" aria-label="Voltar para página anterior">
-      <i class="bi bi-arrow-left" aria-hidden="true"></i>
-      <span>Voltar</span>
-    </button>
-  `;
-}
-
-export function mountMobileBackButton(container, fallbackRoute = ROUTES.INSIGHTS) {
-  container.querySelector('#mobile-back-btn')?.addEventListener('click', () => {
-    if (window.history.length > 1) {
-      history.back();
-      return;
-    }
-    navigate(fallbackRoute);
-  });
-}
+export { renderPageBackButton, mountPageBackButton as mountMobileBackButton } from './pageBackButton.js';
 
 export function renderNecessairePage(data) {
   const summary = getNecessaireSummary(data);
 
   return `
-    ${renderMobileBackButton()}
     <section class="page-mascot-section page-mascot-section--tools">
       <div class="page-header">
         <h1>Minha bolsinha</h1>
@@ -92,6 +74,7 @@ export function renderNecessairePage(data) {
         <button type="button" class="btn-bloom btn-bloom-secondary w-100" id="nec-reset">Recomeçar conferência</button>
       </div>
     </div>
+    ${renderPageBackButton()}
   `;
 }
 
@@ -99,7 +82,6 @@ export function renderPlannerPage(events, analyses) {
   const analysisMap = Object.fromEntries(analyses.map((a) => [a.event.id, a]));
 
   return `
-    ${renderMobileBackButton()}
     <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact">
       <div class="page-header">
         <h1>Planejador</h1>
@@ -145,6 +127,7 @@ export function renderPlannerPage(events, analyses) {
           : ''
       }
     </div>
+    ${renderPageBackButton()}
   `;
 }
 
@@ -193,7 +176,6 @@ function renderEventAnalysisCard(event, analysis) {
 export function renderDoctorReportPage(report) {
   if (!report.enoughData) {
     return `
-      ${renderMobileBackButton()}
       <section class="page-mascot-section page-mascot-section--tools">
         <div class="page-header">
           <h1>Relatório</h1>
@@ -208,11 +190,11 @@ export function renderDoctorReportPage(report) {
           </div>
         `, { plain: true, className: 'card-bloom-soft' })}
       </div>
+      ${renderPageBackButton()}
     `;
   }
 
   return `
-    ${renderMobileBackButton()}
     <section class="page-mascot-section page-mascot-section--tools page-mascot-section--no-print">
       <div class="page-header">
         <h1>Relatório</h1>
@@ -286,6 +268,7 @@ export function renderDoctorReportPage(report) {
         </footer>
       </article>
     </div>
+    ${renderPageBackButton()}
   `;
 }
 

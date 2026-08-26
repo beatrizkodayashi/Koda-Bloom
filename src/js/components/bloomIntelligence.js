@@ -1,18 +1,62 @@
 import { renderCard } from './card.js';
-import { APP_NAME } from '../config/app.js';
+import { APP_NAME, FERTILITY_DISCLAIMER } from '../config/app.js';
 import { renderIcon } from './icons.js';
 
 function retroItem(iconId, text) {
   return `<li class="cycle-retro-item">${renderIcon(iconId, 'bloom-icon bloom-icon--sm')}<span>${text}</span></li>`;
 }
 
-export function renderPredictionConfidenceCard(prediction) {
+export function renderFertilityDisclaimer(className = '') {
+  return `
+    <p class="bloom-fertility-disclaimer ${className} mb-0" role="note">
+      <small>${FERTILITY_DISCLAIMER}</small>
+    </p>
+  `;
+}
+
+export function renderPeriodDelayAlert(delay) {
+  if (!delay) return '';
+
+  return `
+    <div class="bloom-anomaly-alert bloom-delay-alert" role="alert">
+      <div class="bloom-anomaly-icon">${renderIcon(delay.icon || 'calendar', 'bloom-icon bloom-icon--md')}</div>
+      <div>
+        <p class="bloom-anomaly-title">${delay.title}</p>
+        <p class="bloom-anomaly-body">${delay.body}</p>
+        <p class="bloom-anomaly-disclaimer mb-2"><small>${delay.disclaimer}</small></p>
+        <button type="button" class="btn-bloom btn-bloom-secondary btn-bloom-sm" id="btn-register-delayed-period">Registrar menstruação</button>
+      </div>
+    </div>
+  `;
+}
+
+export function renderPredictionConfidenceCard(prediction, options = {}) {
   if (!prediction) return '';
+
+  const { compact = false } = options;
+
+  if (compact) {
+    return `
+      <div class="calendar-prediction-chip" role="region" aria-label="Próxima menstruação">
+        <div class="calendar-prediction-chip-body">
+          <div class="calendar-prediction-chip-copy">
+            <span class="calendar-prediction-chip-eyebrow">${renderIcon('heart-soft', 'bloom-icon bloom-icon--sm')} Próxima menstruação</span>
+            <p class="calendar-prediction-chip-headline">${prediction.headline}</p>
+            <p class="calendar-prediction-chip-date">${prediction.formattedDate}</p>
+          </div>
+          <span class="calendar-prediction-chip-badge" aria-label="Confiança da previsão">${prediction.percent}%</span>
+        </div>
+        <div class="calendar-prediction-chip-bar bloom-confidence-bar" role="progressbar" aria-valuenow="${prediction.percent}" aria-valuemin="0" aria-valuemax="100" aria-hidden="true">
+          <span class="bloom-confidence-fill" style="width: ${prediction.percent}%"></span>
+        </div>
+      </div>
+    `;
+  }
 
   return renderCard('Próxima menstruação', `
     <div class="bloom-prediction">
       <p class="bloom-prediction-headline">${renderIcon('heart-soft', 'bloom-icon bloom-icon--sm')} ${prediction.headline}</p>
-      <p class="text-muted mb-3"><small>${prediction.formattedDate}</small></p>
+      <p class="text-muted bloom-prediction-date"><small>${prediction.formattedDate}</small></p>
       <div class="bloom-confidence-bar" role="progressbar" aria-valuenow="${prediction.percent}" aria-valuemin="0" aria-valuemax="100" aria-label="Confiança da previsão">
         <span class="bloom-confidence-fill" style="width: ${prediction.percent}%"></span>
       </div>
@@ -20,7 +64,8 @@ export function renderPredictionConfidenceCard(prediction) {
         <span class="bloom-confidence-percent">${prediction.percent}%</span>
         <span class="bloom-confidence-label">confiança</span>
       </div>
-      <p class="bloom-prediction-explanation mb-0"><small>${prediction.explanation}</small></p>
+      <p class="bloom-prediction-explanation mb-2"><small>${prediction.explanation}</small></p>
+      ${renderFertilityDisclaimer()}
     </div>
   `, { className: 'card-bloom-soft bloom-prediction-card' });
 }

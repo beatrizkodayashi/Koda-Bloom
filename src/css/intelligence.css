@@ -46,6 +46,48 @@
   color: var(--color-text-muted);
 }
 
+.bloom-prediction-date {
+  margin: 0 0 var(--space-3);
+}
+
+.bloom-prediction-card--compact {
+  margin-bottom: 0;
+}
+
+.bloom-prediction-card--compact .card-bloom-header {
+  padding: var(--space-2) var(--space-3);
+}
+
+.bloom-prediction-card--compact .card-bloom-title {
+  font-size: var(--font-size-sm);
+}
+
+.bloom-prediction-card--compact .card-bloom-body {
+  padding: var(--space-3);
+}
+
+.bloom-prediction-card--compact .bloom-prediction-headline {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-1);
+}
+
+.bloom-prediction-card--compact .bloom-prediction-date {
+  margin-bottom: var(--space-2);
+}
+
+.bloom-prediction-card--compact .bloom-confidence-bar {
+  height: 0.5rem;
+}
+
+.bloom-prediction-card--compact .bloom-confidence-percent {
+  font-size: var(--font-size-base);
+}
+
+.bloom-prediction-card--compact .bloom-prediction-explanation,
+.bloom-prediction-card--compact .bloom-fertility-disclaimer {
+  display: none;
+}
+
 .duck-observations {
   display: flex;
   flex-direction: column;
@@ -105,6 +147,20 @@
 
 .bloom-anomaly-disclaimer {
   color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.bloom-fertility-disclaimer {
+  color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
+}
+
+.bloom-delay-alert {
+  margin-bottom: var(--space-4);
+}
+
+.calendar-fertility-disclaimer {
+  text-align: left;
 }
 
 .cycle-comparison-table-wrap {
@@ -506,9 +562,10 @@
 
 .care-mode-page .care-mode-exit:hover:not(:disabled),
 .care-mode-page .care-breathe-panel .btn-bloom:hover:not(:disabled) {
-  background: rgba(255, 204, 189, 0.45);
-  border-color: rgba(255, 204, 189, 0.95);
+  background: var(--palette-peach-light);
+  border-color: var(--palette-peach);
   color: var(--color-text);
+  box-shadow: 3px 3px 0 rgba(255, 178, 143, 0.45);
 }
 
 .care-breathe-panel {

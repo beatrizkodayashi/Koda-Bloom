@@ -1,5 +1,5 @@
-import { DEFAULTS } from '../config/app.js';
-import { addDays, diffDays, todayString } from '../utils/dates.js';
+import { DEFAULTS, PERIOD_DELAY_DISCLAIMER } from '../config/app.js';
+import { addDays, diffDays, formatDisplayDate, todayString } from '../utils/dates.js';
 
 /**
  * Funções puras para cálculo de ciclo menstrual.
@@ -105,6 +105,59 @@ export function daysUntilNextPeriod(lastPeriodStart, averageCycleLength = DEFAUL
 
 export function hasEnoughDataForPrediction(cycleStarts, minCycles = DEFAULTS.MIN_CYCLES_FOR_PREDICTION) {
   return cycleStarts.length >= minCycles;
+}
+
+export function getPeriodContextForDate(logDate, periodEntries, avgPeriod = DEFAULTS.AVERAGE_PERIOD_LENGTH) {
+  for (const entry of periodEntries) {
+    const end = entry.end_date || addDays(entry.start_date, avgPeriod - 1);
+    if (logDate >= entry.start_date && logDate <= end) {
+      return {
+        inPeriod: true,
+        entry,
+        isStartDay: logDate === entry.start_date,
+        isEndDay: entry.end_date === logDate,
+      };
+    }
+  }
+  return { inPeriod: false, entry: null, isStartDay: false, isEndDay: false };
+}
+
+export function getSpottingDates(dailyLogs, periodEntries, avgPeriod = DEFAULTS.AVERAGE_PERIOD_LENGTH) {
+  const dates = new Set();
+  dailyLogs.forEach((log) => {
+    if (!log.flow) return;
+    const ctx = getPeriodContextForDate(log.log_date, periodEntries, avgPeriod);
+    if (!ctx.inPeriod) dates.add(log.log_date);
+  });
+  return dates;
+}
+
+/** Atraso menstrual estimado (não é diagnóstico) */
+export function buildPeriodDelayAlert(profile, periodStarts, periodEntries, referenceDate = todayString()) {
+  if (!periodStarts.length) return null;
+
+  const avgCycle = profile?.average_cycle_length || DEFAULTS.AVERAGE_CYCLE_LENGTH;
+  const avgPeriod = profile?.average_period_length || DEFAULTS.AVERAGE_PERIOD_LENGTH;
+  const lastStart = periodStarts[0];
+
+  if (getPeriodContextForDate(referenceDate, periodEntries, avgPeriod).inPeriod) {
+    return null;
+  }
+
+  const daysUntil = daysUntilNextPeriod(lastStart, avgCycle, referenceDate);
+  if (daysUntil == null || daysUntil >= 0) return null;
+
+  const daysLate = Math.abs(daysUntil);
+  const predictedDate = predictNextPeriod(lastStart, avgCycle);
+
+  return {
+    daysLate,
+    predictedDate,
+    icon: 'calendar',
+    title: 'Menstruação atrasada?',
+    body: `Sua próxima menstruação estava estimada para ${formatDisplayDate(predictedDate)}. Já se passaram ${daysLate} dia${daysLate > 1 ? 's' : ''} desde então.`,
+    disclaimer: PERIOD_DELAY_DISCLAIMER,
+  };
 }
 
 export function getPredictionConfidence(stats) {

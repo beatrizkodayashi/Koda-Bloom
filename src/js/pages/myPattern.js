@@ -6,6 +6,7 @@ import { getDailyLogs } from '../services/dailyLogService.js';
 import { buildMyPattern } from '../services/bloomPhase1Service.js';
 import { renderAppShell, mountAppNavigation } from '../components/bottomNavigation.js';
 import { renderMyPatternPage, mountDuckExplain } from '../components/bloomPhase1.js';
+import { renderPageBackButton, mountPageBackButton } from '../components/pageBackButton.js';
 import { isAuthConfigured } from '../services/authService.js';
 
 export async function renderMyPattern(container) {
@@ -26,11 +27,12 @@ export async function renderMyPattern(container) {
   }
 
   const pattern = buildMyPattern(profile, periodStarts, dailyLogs);
-  const content = renderMyPatternPage(pattern);
+  const content = renderMyPatternPage(pattern) + renderPageBackButton();
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
   mountDuckExplain(container);
+  mountPageBackButton(container, ROUTES.INSIGHTS);
 
   container.querySelector('#btn-pattern-register')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));
   container.querySelector('#btn-pattern-checkin')?.addEventListener('click', () => navigate(ROUTES.REGISTRAR));

@@ -465,6 +465,7 @@
   padding: 1.5rem 1.25rem 2rem;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
   animation: duck-explain-slide 0.25s ease;
+  text-align: center;
 }
 
 @keyframes duck-explain-slide {
@@ -505,11 +506,18 @@
   font-size: 0.95rem;
   line-height: 1.55;
   margin-bottom: 1rem;
+  text-align: center;
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .duck-explain-disclaimer {
   color: var(--text-muted, #6c757d);
   text-align: center;
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 body.duck-explain-open {
