@@ -2,7 +2,7 @@ import '../css/main.css';
 
 import { ROUTES } from './config/app.js';
 import { registerRoute, initRouter, renderRoute, navigate } from './router.js';
-import { setState, getState } from './state/store.js';
+import { setState, getState, subscribe } from './state/store.js';
 import { getSession, onAuthStateChange, isAuthConfigured } from './services/authService.js';
 import { getProfile, upsertProfile } from './services/cycleService.js';
 import { takePendingGender } from './utils/genderLanguage.js';
@@ -30,7 +30,28 @@ import { renderContraceptive } from './pages/contraceptive.js';
 import { renderIntimateHealth } from './pages/intimateHealth.js';
 import { getPreferences, getDefaultPreferences } from './services/dailyLogService.js';
 
+function waitForAuthReady(timeoutMs = 8000) {
+  if (!getState().isLoading) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      unsub();
+      resolve();
+    }, timeoutMs);
+
+    const unsub = subscribe((state) => {
+      if (!state.isLoading) {
+        clearTimeout(timer);
+        unsub();
+        resolve();
+      }
+    });
+  });
+}
+
 async function requireAuth(container, renderFn) {
+  await waitForAuthReady();
+
   const { user } = getState();
   if (!user) {
     navigate(ROUTES.LOGIN, true);
@@ -122,8 +143,9 @@ async function bootstrap() {
     initDuckHelpChat();
     registerRoutes();
     initRouter();
-    await initAuth();
+    const authReady = initAuth();
     await renderRoute();
+    authReady.catch((err) => console.error('Falha ao iniciar autenticação:', err));
   } catch (err) {
     console.error(err);
     if (app) {

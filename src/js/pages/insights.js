@@ -116,6 +116,7 @@ export async function renderInsights(container) {
     <div class="card-stack">
       ${renderAnomalyAlert(anomaly)}
       ${journey ? renderCycleJourneyCard(journey) : ''}
+      ${renderPhase2ToolsCard()}
       ${selfCompare ? renderPhaseSelfComparisonCard(selfCompare) : ''}
       ${intimateTimelineCard}
       ${renderMyPatternPromoCard(profileSummary)}
@@ -130,8 +131,6 @@ export async function renderInsights(container) {
         avgPeriod: insights.averagePeriod,
         simulation,
       }) : ''}
-
-      ${renderPhase2ToolsCard()}
 
       ${renderCard('Isso é normal para mim?', `
         <p class="mb-3 text-muted"><small>Consulte seu histórico pessoal sobre qualquer sintoma.</small></p>

@@ -1702,6 +1702,36 @@
   font-size: 1rem;
 }
 
+.profile-pattern-card--panel {
+  cursor: default;
+  text-align: left;
+}
+
+.profile-pattern-card--panel:hover,
+.profile-pattern-card--panel:active {
+  transform: none;
+  box-shadow: var(--card-shadow);
+}
+
+.profile-pattern-card-panel {
+  position: relative;
+}
+
+.profile-pattern-card-body {
+  padding: 0 1.1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.profile-pattern-card-body .contraceptive-status-grid {
+  margin-top: 0.15rem;
+}
+
+.profile-pattern-card-action {
+  align-self: flex-start;
+}
+
 .profile-cycle-regular .chip-grid {
   margin-top: var(--space-2);
 }

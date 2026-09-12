@@ -212,56 +212,106 @@ function renderForgotHelpCard() {
   `, { className: 'card-bloom-soft' });
 }
 
+function renderPatternPanelCard({
+  duckSrc = '/pato_medico.png',
+  eyebrowIcon = 'capsule',
+  eyebrowLabel = 'Registrar',
+  title,
+  text = '',
+  meta = '',
+  metaTone = '',
+  bodyHtml = '',
+  className = '',
+}) {
+  const metaClass = metaTone ? ` profile-pattern-card-meta--${metaTone}` : '';
+
+  return `
+    <div class="profile-pattern-card profile-pattern-card--panel register-contraceptive-card ${className}">
+      <span class="profile-pattern-card-glow" aria-hidden="true"></span>
+      <div class="profile-pattern-card-panel">
+        <div class="profile-pattern-card-inner">
+          <span class="profile-pattern-card-duck">
+            <img src="${duckSrc}" alt="" width="72" height="72" decoding="async" />
+          </span>
+          <span class="profile-pattern-card-copy">
+            <span class="profile-pattern-card-eyebrow">${renderIcon(eyebrowIcon, 'bloom-icon bloom-icon--sm')} ${eyebrowLabel}</span>
+            <span class="profile-pattern-card-title">${title}</span>
+            ${text ? `<span class="profile-pattern-card-text">${text}</span>` : ''}
+            ${meta ? `<span class="profile-pattern-card-meta${metaClass}">${meta}</span>` : ''}
+          </span>
+        </div>
+        ${bodyHtml ? `<div class="profile-pattern-card-body">${bodyHtml}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderDailyStatusChips(todayLog, gridId = 'reg-contraceptive-status') {
+  return `
+    <div class="chip-grid contraceptive-status-grid" id="${gridId}">
+      ${INTAKE_STATUS.filter((s) => s.value !== 'skipped').map(
+        (status) =>
+          `<button type="button" class="chip contraceptive-status-chip${todayLog?.status === status.value ? ' selected' : ''}" data-status="${status.value}">${status.label}</button>`
+      ).join('')}
+    </div>
+  `;
+}
+
+function renderManageMethodButton(id = 'btn-reg-contraceptive-manage') {
+  return `
+    <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm profile-pattern-card-action" id="${id}">
+      Gerenciar método
+    </button>
+  `;
+}
 export function renderRegisterContraceptiveSection(ctx) {
   const { profile, meta, todayLog, streak, replacementInfo } = ctx;
 
   if (!profile) {
-    return renderCard('Anticoncepcional', `
-      <p class="text-muted mb-3"><small>Configure seu método para registrar tomadas aqui no Registro.</small></p>
-      <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm" id="btn-reg-contraceptive-setup">
-        ${renderIcon('capsule', 'bloom-icon bloom-icon--sm')} Configurar método
-      </button>
-    `, { className: 'card-bloom-soft register-contraceptive-card' });
+    return renderPatternPanelCard({
+      title: 'Anticoncepcional',
+      text: 'Configure seu método para registrar tomadas aqui no Registro.',
+      bodyHtml: `
+        <button type="button" class="btn-bloom btn-bloom-primary btn-bloom-sm profile-pattern-card-action" id="btn-reg-contraceptive-setup">
+          ${renderIcon('capsule', 'bloom-icon bloom-icon--sm')} Configurar método
+        </button>
+      `,
+    });
   }
 
   if (meta?.schedule === 'daily') {
     const statusMeta = todayLog ? getStatusMeta(todayLog.status) : null;
+    const metaLine = [
+      meta.label,
+      `lembrete às ${profile.reminder_time || '21:00'}`,
+      streak ? `${streak} dia${streak === 1 ? '' : 's'} seguidos` : '',
+    ].filter(Boolean).join(' · ');
 
-    return renderCard('Anticoncepcional', `
-      <div class="register-contraceptive-card-inner">
-        <div class="contraceptive-today-head">
-          <div>
-            <p class="contraceptive-today-label mb-1">${statusMeta ? statusMeta.label : 'Como foi a tomada?'}</p>
-            <p class="text-muted mb-0"><small>${meta.label} · lembrete às ${profile.reminder_time || '21:00'}</small></p>
-          </div>
-          ${streak ? `<span class="phase2-badge phase2-badge--ok">${streak} dia${streak === 1 ? '' : 's'} seguidos</span>` : ''}
-        </div>
-        <div class="chip-grid contraceptive-status-grid mt-4" id="reg-contraceptive-status">
-          ${INTAKE_STATUS.filter((s) => s.value !== 'skipped').map(
-            (status) =>
-              `<button type="button" class="chip contraceptive-status-chip${todayLog?.status === status.value ? ' selected' : ''}" data-status="${status.value}">${status.label}</button>`
-          ).join('')}
-        </div>
-        <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm mt-3" id="btn-reg-contraceptive-manage">Gerenciar método</button>
-      </div>
-    `, { className: 'card-bloom-soft register-contraceptive-card' });
+    return renderPatternPanelCard({
+      title: 'Anticoncepcional',
+      text: statusMeta ? statusMeta.label : 'Como foi a tomada?',
+      meta: metaLine,
+      metaTone: statusMeta?.tone === 'ok' ? 'ok' : statusMeta?.tone === 'warn' ? 'warn' : 'muted',
+      bodyHtml: `
+        ${renderDailyStatusChips(todayLog)}
+        ${renderManageMethodButton()}
+      `,
+    });
   }
 
-  return renderCard('Anticoncepcional', `
-    <div class="register-contraceptive-card-inner">
-      <p class="mb-2"><strong>${meta?.label || 'Seu método'}</strong></p>
-      ${
-        replacementInfo
-          ? `<p class="mb-2">Troca estimada: ${replacementInfo.dueLabel}${
-              replacementInfo.daysUntil >= 0
-                ? ` · em ${replacementInfo.daysUntil} dia${replacementInfo.daysUntil === 1 ? '' : 's'}`
-                : ' · revisar com profissional'
-            }</p>`
-          : '<p class="mb-2 text-muted"><small>Adicione a data de troca nas configurações.</small></p>'
-      }
-      <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm mt-2" id="btn-reg-contraceptive-manage">Gerenciar método</button>
-    </div>
-  `, { className: 'card-bloom-soft register-contraceptive-card' });
+  const replacementMeta = replacementInfo
+    ? `Troca estimada: ${replacementInfo.dueLabel}${
+        replacementInfo.daysUntil >= 0
+          ? ` · em ${replacementInfo.daysUntil} dia${replacementInfo.daysUntil === 1 ? '' : 's'}`
+          : ' · revisar com profissional'
+      }`
+    : 'Adicione a data de troca nas configurações.';
+
+  return renderPatternPanelCard({
+    title: meta?.label || 'Anticoncepcional',
+    text: replacementMeta,
+    bodyHtml: renderManageMethodButton(),
+  });
 }
 
 export function mountRegisterContraceptiveHandlers(container, { onStatusSelect, onNavigateManage }) {

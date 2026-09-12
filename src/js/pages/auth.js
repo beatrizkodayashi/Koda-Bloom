@@ -9,6 +9,14 @@ import { isValidEmail, isValidPassword } from '../utils/validators.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { renderPasswordField, mountPasswordToggles } from '../components/passwordField.js';
 
+function formatAuthError(err, fallback) {
+  const message = err?.message || '';
+  if (/failed to fetch|fetch failed|network/i.test(message)) {
+    return 'Não foi possível conectar ao Supabase. Confira VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env e reinicie o servidor.';
+  }
+  return message || fallback;
+}
+
 function renderAuthMascot({ message, mascot = 'duck' } = {}) {
   if (mascot === 'laptop') {
     return `
@@ -93,7 +101,7 @@ export function renderLogin(container) {
       showToast('Login realizado!', 'success');
       navigate(ROUTES.APP);
     } catch (err) {
-      errorEl.textContent = err.message || 'Erro ao entrar. Verifique suas credenciais.';
+      errorEl.textContent = formatAuthError(err, 'Erro ao entrar. Verifique suas credenciais.');
       errorEl.hidden = false;
     }
   });
@@ -207,7 +215,7 @@ export function renderSignup(container) {
         navigate(ROUTES.ONBOARDING);
       }
     } catch (err) {
-      errorEl.textContent = err.message || 'Erro ao criar conta.';
+      errorEl.textContent = formatAuthError(err, 'Erro ao criar conta.');
       errorEl.hidden = false;
     }
   });
@@ -252,7 +260,7 @@ export function renderResetPassword(container) {
       successEl.textContent = 'Se o e-mail existir, você receberá um link em breve.';
       successEl.hidden = false;
     } catch (err) {
-      errorEl.textContent = err.message || 'Erro ao enviar e-mail.';
+      errorEl.textContent = formatAuthError(err, 'Erro ao enviar e-mail.');
       errorEl.hidden = false;
     }
   });

@@ -51,6 +51,10 @@
   gap: var(--space-3);
 }
 
+.register-contraceptive-card.profile-pattern-card--panel .chip {
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .calendar-contraceptive-actions {
   display: flex;
   flex-wrap: wrap;

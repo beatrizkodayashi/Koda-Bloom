@@ -1,7 +1,5 @@
 import { renderBloomPromoCard } from './bloomPromoCard.js';
 import { APP_NAME } from '../config/app.js';
-import { formatDaysUntil } from '../utils/formatters.js';
-import { maskPeriodText } from '../utils/discreteMode.js';
 import { mergeModulePreferences } from '../config/modules.js';
 
 function renderBars(count, max, char) {
@@ -9,88 +7,21 @@ function renderBars(count, max, char) {
   return `<span class="dash-summary-bars" aria-hidden="true">${char.repeat(count)}${'·'.repeat(Math.max(0, max - count))}</span>`;
 }
 
-function getContraceptivePromo(summary) {
-  if (summary.configured === false) {
-    return {
-      duckSrc: '/pato_laptop.png',
-      text: 'Configure seu método para eu te lembrar no dia a dia.',
-      meta: summary.todayLabel || 'Configurar método',
-      metaTone: 'muted',
-    };
-  }
-
-  if (summary.todayLabel === 'Pendente') {
-    return {
-      duckSrc: '/pato_medico.png',
-      text: 'Um toque rápido no registro e pronto.',
-      meta: 'Pendente',
-      metaTone: 'warn',
-    };
-  }
-
-  if (summary.statusTone === 'ok') {
-    return {
-      duckSrc: '/pato_comemorando.png',
-      text: 'Você já registrou hoje. Toque para ver ou ajustar.',
-      meta: summary.todayLabel,
-      metaTone: 'ok',
-    };
-  }
-
-  if (summary.statusTone === 'warn') {
-    return {
-      duckSrc: '/pato_triste.png',
-      text: 'Veja o registro de hoje e ajuste se precisar.',
-      meta: summary.todayLabel,
-      metaTone: 'warn',
-    };
-  }
-
-  return {
-    duckSrc: '/pato_medico.png',
-    text: 'Acompanhe seu método com calma, no seu ritmo.',
-    meta: summary.todayLabel,
-    metaTone: summary.statusTone || 'muted',
-  };
-}
-
 export function renderDashboardTodaySection(ctx) {
-  const cards = [];
-
-  if (ctx.modules.showContraceptive) {
-    const summary = ctx.contraceptive || { todayLabel: 'Pendente', statusTone: 'warn', configured: true };
-    const promo = getContraceptivePromo(summary);
-
-    cards.push(renderBloomPromoCard({
-      id: 'btn-dash-contraceptive',
-      duckSrc: promo.duckSrc,
-      eyebrowIcon: 'capsule',
-      eyebrowLabel: 'Hoje',
-      title: 'Anticoncepcional',
-      text: promo.text,
-      meta: promo.meta,
-      metaTone: promo.metaTone,
-    }));
-  }
-
-  if (ctx.modules.showSexual) {
-    cards.push(renderBloomPromoCard({
-      id: 'btn-dash-relations',
-      duckSrc: '/pato_cheirando_rosa.png',
-      eyebrowIcon: 'heart-soft',
-      eyebrowLabel: 'Hoje',
-      title: ctx.discrete ? 'Registros' : 'Relação',
-      text: 'Registre quando quiser, no seu tempo.',
-      meta: 'Abrir registro',
-    }));
-  }
-
-  if (!cards.length) return '';
+  if (!ctx.modules.showSexual) return '';
 
   return `
     <section class="dash-today-section" aria-label="Atalhos de hoje">
       <div class="dash-today-promos">
-        ${cards.join('')}
+        ${renderBloomPromoCard({
+          id: 'btn-dash-relations',
+          duckSrc: '/pato_cheirando_rosa.png',
+          eyebrowIcon: 'heart-soft',
+          eyebrowLabel: 'Hoje',
+          title: ctx.discrete ? 'Registros' : 'Relação',
+          text: 'Registre quando quiser, no seu tempo.',
+          meta: 'Abrir registro',
+        })}
       </div>
     </section>
   `;
@@ -144,24 +75,12 @@ export function renderDashboardHero(ctx) {
   const name = ctx.name === 'você' ? '' : ctx.name;
   const title = name ? `${ctx.greeting}, ${name}` : ctx.greeting;
 
-  let cycleLine = '';
-  if (ctx.cycleDay) {
-    cycleLine = `<p class="dash-cycle-line">Dia ${ctx.cycleDay} do ciclo</p>`;
-    if (ctx.daysUntil != null) {
-      cycleLine += `<p class="dash-cycle-sub text-muted">${maskPeriodText(
-        `Próxima menstruação estimada ${formatDaysUntil(ctx.daysUntil)}.`,
-        'O Bloom está acompanhando seu ritmo.'
-      )}</p>`;
-    }
-  }
-
   return `
     <section class="dash-hero">
       <div class="page-header">
         <h1>${title}</h1>
         <p>${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       </div>
-      ${cycleLine ? `<div class="dash-cycle-brief">${cycleLine}</div>` : ''}
       <div class="duck-companion">
         <img src="/pato_comemorando.png" alt="${APP_NAME}" class="bloom-mascot-img" width="200" height="200" decoding="async" />
         <p class="mascot-caption">${ctx.bloomMessage}</p>

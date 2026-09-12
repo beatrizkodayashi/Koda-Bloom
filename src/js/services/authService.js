@@ -37,10 +37,23 @@ export async function resetPassword(email) {
   if (error) throw error;
 }
 
+function withTimeout(promise, ms, message) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(message)), ms);
+    }),
+  ]);
+}
+
 export async function getSession() {
   if (!isSupabaseConfigured) return null;
   const supabase = getSupabaseOrThrow();
-  const { data, error } = await supabase.auth.getSession();
+  const { data, error } = await withTimeout(
+    supabase.auth.getSession(),
+    8000,
+    'Tempo esgotado ao verificar sessão'
+  );
   if (error) throw error;
   return data.session;
 }
