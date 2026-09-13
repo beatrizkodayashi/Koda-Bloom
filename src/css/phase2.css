@@ -14,6 +14,21 @@
   height: auto;
 }
 
+.doctor-report-mascot {
+  width: min(11rem, 44vw);
+  max-width: none;
+}
+
+.doctor-report-empty-mascot {
+  width: min(7.5rem, 32vw);
+  height: auto;
+}
+
+.normalcy-page-mascot {
+  width: min(15rem, 52vw);
+  max-width: none;
+}
+
 .phase2-page {
   gap: 1rem;
 }

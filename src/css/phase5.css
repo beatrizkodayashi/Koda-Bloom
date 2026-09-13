@@ -1,5 +1,15 @@
 /* Bloom Fase E — Saúde íntima */
 
+.intimate-health-mascot {
+  width: min(13rem, 48vw);
+  max-width: none;
+}
+
+.intimate-health-empty-mascot {
+  width: min(10rem, 38vw);
+  height: auto;
+}
+
 .calendar-intimate-card,
 .calendar-contraceptive-card,
 .register-intimate-card,

@@ -1,5 +1,6 @@
 import { renderCard } from './card.js';
 import { renderIcon } from './icons.js';
+import { initBloomPickers } from './bloomDateField.js';
 import { APP_NAME, HEALTH_DISCLAIMER } from '../config/app.js';
 import { renderPageBackButton } from './pageBackButton.js';
 import {
@@ -11,18 +12,33 @@ import {
 } from '../services/contraceptiveService.js';
 import { todayString } from '../utils/dates.js';
 
-export function renderContraceptiveSetupPage() {
+const CONTRACEPTIVE_DUCK_ICON = '/pato%20calendario%20remedio.png';
+
+function renderContraceptiveHero({ subtitle, caption }) {
   return `
-    <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact">
-      <div class="page-header">
-        <h1>Anticoncepcional</h1>
-        <p>Escolha seu método para registrar lembretes e histórico, no seu tempo.</p>
-      </div>
-      <div class="duck-companion">
-        <img src="/pato_medico.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="160" height="160" decoding="async" />
-        <p class="mascot-caption">Sem pressa. Você pode mudar o método quando quiser.</p>
+    <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact page-mascot-section--contraceptive">
+      <div class="contraceptive-hero-row">
+        <div class="contraceptive-hero-copy">
+          <div class="page-header">
+            <h1>Anticoncepcional</h1>
+            <p>${subtitle}</p>
+          </div>
+          <p class="mascot-caption">${caption}</p>
+        </div>
+        <div class="duck-companion contraceptive-hero-duck">
+          <img src="${CONTRACEPTIVE_DUCK_ICON}" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools contraceptive-hero-mascot" width="280" height="280" decoding="async" />
+        </div>
       </div>
     </section>
+  `;
+}
+
+export function renderContraceptiveSetupPage() {
+  return `
+    ${renderContraceptiveHero({
+      subtitle: 'Escolha seu método para registrar lembretes e histórico, no seu tempo.',
+      caption: 'Sem pressa. Você pode mudar o método quando quiser.',
+    })}
 
     <div class="card-stack phase2-page contraceptive-page">
       ${renderCard('Seu método', `
@@ -78,16 +94,10 @@ export function renderContraceptivePage(ctx) {
   const isDaily = meta?.schedule === 'daily';
 
   return `
-    <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact">
-      <div class="page-header">
-        <h1>Anticoncepcional</h1>
-        <p>${meta?.label || 'Seu método'} · acompanhamento no seu ritmo</p>
-      </div>
-      <div class="duck-companion">
-        <img src="/pato_medico.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="160" height="160" decoding="async" />
-        <p class="mascot-caption">${isDaily ? 'Um toque registra sua tomada de hoje.' : 'Acompanhe prazos e consultas no seu tempo.'}</p>
-      </div>
-    </section>
+    ${renderContraceptiveHero({
+      subtitle: `${meta?.label || 'Seu método'} · acompanhamento no seu ritmo`,
+      caption: isDaily ? 'Um toque registra sua tomada de hoje.' : 'Acompanhe prazos e consultas no seu tempo.',
+    })}
 
     <div class="card-stack phase2-page contraceptive-page">
       ${isDaily ? renderDailyTodayCard(todayLog, streak, profile) : renderLongActingCard(profile, replacementInfo)}
@@ -213,7 +223,7 @@ function renderForgotHelpCard() {
 }
 
 function renderPatternPanelCard({
-  duckSrc = '/pato_medico.png',
+  duckSrc = CONTRACEPTIVE_DUCK_ICON,
   eyebrowIcon = 'capsule',
   eyebrowLabel = 'Registrar',
   title,
@@ -228,19 +238,19 @@ function renderPatternPanelCard({
   return `
     <div class="profile-pattern-card profile-pattern-card--panel register-contraceptive-card ${className}">
       <span class="profile-pattern-card-glow" aria-hidden="true"></span>
-      <div class="profile-pattern-card-panel">
-        <div class="profile-pattern-card-inner">
-          <span class="profile-pattern-card-duck">
-            <img src="${duckSrc}" alt="" width="72" height="72" decoding="async" />
-          </span>
-          <span class="profile-pattern-card-copy">
+      <div class="profile-pattern-card-panel register-contraceptive-card-panel">
+        <div class="register-contraceptive-card-layout">
+          <div class="register-contraceptive-card-stack">
             <span class="profile-pattern-card-eyebrow">${renderIcon(eyebrowIcon, 'bloom-icon bloom-icon--sm')} ${eyebrowLabel}</span>
             <span class="profile-pattern-card-title">${title}</span>
             ${text ? `<span class="profile-pattern-card-text">${text}</span>` : ''}
             ${meta ? `<span class="profile-pattern-card-meta${metaClass}">${meta}</span>` : ''}
+            ${bodyHtml || ''}
+          </div>
+          <span class="profile-pattern-card-duck register-contraceptive-card-duck" aria-hidden="true">
+            <img src="${duckSrc}" alt="" width="220" height="220" decoding="async" />
           </span>
         </div>
-        ${bodyHtml ? `<div class="profile-pattern-card-body">${bodyHtml}</div>` : ''}
       </div>
     </div>
   `;
@@ -351,6 +361,7 @@ export function mountMethodSetupHandlers(container, onSelect, onSubmit) {
       if (extra) {
         extra.hidden = false;
         extra.innerHTML = renderSetupExtraFields(selectedMethod);
+        initBloomPickers(extra);
       }
       onSelect?.(selectedMethod);
     });

@@ -26,7 +26,6 @@ import {
 import {
   renderRegisterIntimateSection,
   mountRegisterIntimateHandlers,
-  bindIntimateFormChips,
   readIntimateFormState,
 } from '../components/bloomIntimateHealth.js';
 import { getMoodOptions, periodContinueLabel } from '../utils/genderLanguage.js';
@@ -245,10 +244,6 @@ export async function renderTracking(container) {
 
   container.innerHTML = renderAppShell(content);
   mountAppNavigation(container);
-
-  if (showIntimateHealth) {
-    bindIntimateFormChips(container, 'reg-intimate');
-  }
 
   if (showContraceptive && contraceptiveCtx) {
     mountRegisterContraceptiveHandlers(container, {

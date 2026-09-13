@@ -35,7 +35,7 @@ function renderDisabledPage() {
     <div class="card-stack phase2-page">
       ${renderCard('', `
         <div class="phase2-empty text-center py-4">
-          <img src="/pato_medico.png" alt="" width="72" height="72" class="mb-3" />
+          <img src="/pato%20calendario%20remedio.png" alt="" width="72" height="72" class="mb-3" />
           <p class="mb-3">Esta área está oculta no registro. Reative em <strong>Perfil → O que você acompanha</strong>.</p>
           <button type="button" class="btn-bloom btn-bloom-primary" id="btn-go-profile-modules">Ir para o perfil</button>
         </div>

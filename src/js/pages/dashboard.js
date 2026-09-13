@@ -15,6 +15,7 @@ import { buildDashboardContext } from '../services/bloomDashboardService.js';
 import {
   setExplainContext,
   mountDuckExplain,
+  renderDuckExplainTrigger,
 } from '../components/bloomPhase1.js';
 import {
   renderDashboardHero,
@@ -32,7 +33,6 @@ import { maskPhaseLabel, maskPeriodText } from '../utils/discreteMode.js';
 import { todayString } from '../utils/dates.js';
 import { isAuthConfigured } from '../services/authService.js';
 import { renderRestModeBanner, mountRestModeBanner } from '../services/careModeService.js';
-import { renderIcon } from '../components/icons.js';
 
 export async function renderDashboard(container) {
   const { user, profile } = getState();
@@ -106,9 +106,7 @@ export async function renderDashboard(container) {
             ${!enoughData ? '<p class="text-muted mt-3 mb-0"><small>Ainda precisamos de mais registros para melhorar suas estimativas.</small></p>' : ''}
           </div>
           <div class="cycle-today-footer">
-            <button type="button" class="btn btn-sm btn-outline-bloom duck-explain-trigger" data-explain="cycle_day">
-              ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Bloom, me explica
-            </button>
+            ${renderDuckExplainTrigger('cycle_day')}
           </div>
         </div>
       `, { className: 'card-bloom-soft' }) : renderCard('Primeiro registro', `

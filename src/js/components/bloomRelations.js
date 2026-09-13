@@ -11,8 +11,10 @@ import {
 } from '../services/sexualLogService.js';
 import { todayString } from '../utils/dates.js';
 
-export function getRelationsPageTitle(discrete = false) {
-  return discrete ? 'Registros' : 'Relação';
+const RELATIONS_DUCK_ICON = '/patotimido.png';
+
+export function getRelationsPageTitle() {
+  return 'Relações';
 }
 
 function renderFeelingChip(opt, selected = false) {
@@ -47,39 +49,44 @@ export function renderRelationsDisabledPage() {
 
 export function renderRelationsLockPage() {
   return `
-    <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact">
-      <div class="page-header">
-        <h1>Área protegida</h1>
-        <p>Digite seu PIN de 4 dígitos para continuar.</p>
+    <div class="relations-lock-page">
+      <section class="relations-lock-hero">
+        <img src="/pato%20chave.png" alt="${APP_NAME}" class="relations-lock-mascot" decoding="async" />
+        <div class="relations-lock-copy">
+          <h1>Área protegida</h1>
+          <p>Digite seu PIN de 4 dígitos para continuar.</p>
+        </div>
+      </section>
+
+      <div class="card-stack relations-lock-stack">
+        ${renderCard('', `
+          <form id="relations-unlock-form" class="relations-pin-form">
+            <div class="form-bloom relations-pin-field">
+              <label for="relations-pin">PIN</label>
+              <input type="tel" id="relations-pin" class="bloom-input relations-pin-input" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" required />
+            </div>
+            <button type="submit" class="btn-bloom btn-bloom-primary w-100">Entrar</button>
+          </form>
+          <p class="relations-pin-help text-muted mb-0"><small>Esqueceu o PIN? Remova-o em Perfil → Privacidade.</small></p>
+        `, { plain: true, className: 'card-bloom-soft relations-lock-card' })}
       </div>
-    </section>
-    <div class="card-stack phase2-page relations-page">
-      ${renderCard('Desbloquear', `
-        <form id="relations-unlock-form" class="relations-pin-form">
-          <div class="form-bloom">
-            <label for="relations-pin">PIN</label>
-            <input type="tel" id="relations-pin" class="bloom-input relations-pin-input" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" required />
-          </div>
-          <button type="submit" class="btn-bloom btn-bloom-primary w-100 mt-3">Entrar</button>
-        </form>
-        <p class="text-muted mb-0 mt-3"><small>Esqueceu o PIN? Remova-o em Perfil → Privacidade.</small></p>
-      `, { className: 'card-bloom-soft' })}
+
+      ${renderPageBackButton()}
     </div>
-    ${renderPageBackButton()}
   `;
 }
 
 export function renderRelationsPage({ logs, discrete = false, userId }) {
-  const title = getRelationsPageTitle(discrete);
+  const title = getRelationsPageTitle();
 
   return `
-    <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact">
+    <section class="page-mascot-section page-mascot-section--tools page-mascot-section--compact page-mascot-section--relations">
       <div class="page-header">
         <h1>${title}</h1>
         <p>Seus registros ficam privados. Só preencha o que quiser compartilhar com você mesma.</p>
       </div>
       <div class="duck-companion">
-        <img src="/pato_cheirando_rosa.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="160" height="160" decoding="async" />
+        <img src="${RELATIONS_DUCK_ICON}" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools relations-page-mascot" width="280" height="280" decoding="async" />
         <p class="mascot-caption">Sem pressa. Um toque já basta para registrar.</p>
       </div>
     </section>

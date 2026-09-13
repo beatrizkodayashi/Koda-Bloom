@@ -12,6 +12,8 @@ import {
 } from '../services/intimateHealthService.js';
 import { todayString } from '../utils/dates.js';
 
+const INTIMATE_HEALTH_DUCK_ICON = '/Pato_PunhosFeliz.png';
+
 function renderSymptomChips(selected = [], idPrefix = 'intimate') {
   return INTIMATE_SYMPTOMS.map(
     (symptom) =>
@@ -132,7 +134,7 @@ export function renderIntimateHealthPage(ctx) {
         <p>Observe corrimento e conforto sem pressa.</p>
       </div>
       <div class="duck-companion">
-        <img src="/pato_cheirando_rosa.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="160" height="160" decoding="async" />
+        <img src="${INTIMATE_HEALTH_DUCK_ICON}" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools intimate-health-mascot" width="240" height="240" decoding="async" />
         <p class="mascot-caption">Registre só o que fizer sentido para você hoje.</p>
       </div>
     </section>

@@ -3,6 +3,7 @@
  */
 
 import { renderRouteSkeleton } from './components/skeleton.js';
+import { closeAllBloomPickers, initBloomPickers } from './components/bloomDateField.js';
 import { scrollToTop } from './utils/scroll.js';
 
 const routes = new Map();
@@ -22,6 +23,8 @@ export function navigate(path, replace = false) {
 }
 
 export async function renderRoute(path = location.pathname) {
+  closeAllBloomPickers();
+
   if (currentCleanup) {
     currentCleanup();
     currentCleanup = null;
@@ -58,6 +61,7 @@ export async function renderRoute(path = location.pathname) {
 
   try {
     const result = await matched.handler(app, path);
+    initBloomPickers(app);
     if (typeof result === 'function') {
       currentCleanup = result;
     }

@@ -199,6 +199,7 @@ export async function renderCalendar(container) {
       const hasLog = logDateSet.has(dateStr);
       const contraceptiveLog = contraceptiveLogMap[dateStr];
       const ariaParts = [`${d} de ${monthNames[viewMonth]}`];
+      if (dateStr === today) ariaParts.push('hoje');
       if (hasLog) ariaParts.push('com registro');
       if (contraceptiveLog) {
         ariaParts.push(`anticoncepcional: ${getStatusMeta(contraceptiveLog.status)?.label || 'registrado'}`);
@@ -213,6 +214,7 @@ export async function renderCalendar(container) {
         <div class="calendar-grid-footer">
           <div class="calendar-legend">
             <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
+            <span class="legend-item"><span class="legend-dot legend-dot-today"></span> Hoje</span>
             <span class="legend-item"><span class="legend-dot legend-dot-period"></span> Menstruação</span>
             <span class="legend-item"><span class="legend-dot legend-dot-spotting"></span> Sangramento fora do período</span>
             <span class="legend-item"><span class="legend-dot legend-dot-predicted"></span> Previsão</span>
@@ -241,7 +243,7 @@ export async function renderCalendar(container) {
       </div>
       <div class="calendar-hero">
         <div class="calendar-hero-mascot">
-          <img src="/pato_calendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar-hero" width="128" height="128" decoding="async" />
+          <img src="/patocalendario.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--calendar-hero" width="128" height="128" decoding="async" />
         </div>
         <div class="calendar-hero-panel">
           ${renderStreakCard({ streak })}

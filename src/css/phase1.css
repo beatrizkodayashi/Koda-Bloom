@@ -442,6 +442,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  padding: 0;
 }
 
 .duck-explain-modal[hidden] {
@@ -451,73 +452,172 @@
 .duck-explain-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(74, 50, 56, 0.28);
+  backdrop-filter: blur(2px);
 }
 
 .duck-explain-sheet {
   position: relative;
   width: 100%;
-  max-width: 480px;
-  max-height: 85vh;
-  overflow-y: auto;
-  background: var(--palette-cream, #fffbde);
-  border-radius: 1.25rem 1.25rem 0 0;
-  padding: 1.5rem 1.25rem 2rem;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
-  animation: duck-explain-slide 0.25s ease;
+  max-width: 26rem;
+  max-height: 88vh;
+  overflow: hidden auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 74, 66, 0.12) transparent;
+  background: linear-gradient(
+    180deg,
+    var(--palette-peach-light) 0%,
+    var(--palette-cream-soft) 42%,
+    var(--color-background) 100%
+  );
+  border: none;
+  border-radius: 1.35rem 1.35rem 0 0;
+  padding: 1.35rem 1.25rem 1.75rem;
+  box-shadow: 0 -8px 32px rgba(74, 50, 56, 0.14);
+  animation: duck-explain-slide 0.28s ease;
   text-align: center;
+}
+
+.duck-explain-sheet::-webkit-scrollbar {
+  width: 4px;
+}
+
+.duck-explain-sheet::-webkit-scrollbar-thumb {
+  background: rgba(107, 74, 66, 0.12);
+  border-radius: var(--radius-full);
+}
+
+.duck-explain-glow {
+  position: absolute;
+  top: -2.5rem;
+  right: -1.5rem;
+  width: 9rem;
+  height: 9rem;
+  background: radial-gradient(circle, rgba(255, 173, 187, 0.45) 0%, rgba(255, 204, 189, 0.12) 55%, transparent 72%);
+  pointer-events: none;
 }
 
 @keyframes duck-explain-slide {
   from {
     transform: translateY(100%);
+    opacity: 0.92;
   }
   to {
     transform: translateY(0);
+    opacity: 1;
   }
 }
 
 .duck-explain-close {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  z-index: 1;
-  border: none;
-  background: transparent;
-  font-size: 1.5rem;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: rgba(255, 251, 222, 0.82);
+  font-size: 1.2rem;
   line-height: 1;
-  color: var(--text-muted, #6c757d);
+  color: var(--palette-brown);
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.duck-explain-close:hover {
+  border-color: var(--palette-pink);
+  background: var(--palette-cream-soft);
+  transform: scale(1.04);
+}
+
+.duck-explain-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.duck-explain-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25rem auto 0.85rem;
+  padding: 0.85rem 0.75rem 0.35rem;
 }
 
 .duck-explain-duck {
-  text-align: center;
-  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 11.5rem;
+  height: 11.5rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 251, 222, 0.42);
+  border: 1.5px solid rgba(255, 178, 143, 0.32);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 8px 22px rgba(255, 178, 143, 0.14);
+}
+
+.duck-explain-duck img {
+  width: 9.5rem;
+  height: 9.5rem;
+  object-fit: contain;
+  display: block;
+}
+
+.duck-explain-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--palette-brown);
+  opacity: 0.82;
 }
 
 .duck-explain-title {
-  font-size: 1.15rem;
+  font-size: 1.28rem;
+  font-weight: 800;
+  line-height: 1.25;
   text-align: center;
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.85rem;
+  color: var(--color-text);
+}
+
+.duck-explain-body-wrap {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0.85rem;
 }
 
 .duck-explain-body {
-  font-size: 0.95rem;
-  line-height: 1.55;
-  margin-bottom: 1rem;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin: 0;
   text-align: center;
-  max-width: 22rem;
-  margin-left: auto;
-  margin-right: auto;
+  color: var(--color-text);
 }
 
 .duck-explain-disclaimer {
-  color: var(--text-muted, #6c757d);
+  color: var(--color-text-muted);
   text-align: center;
-  max-width: 22rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0;
+  padding: 0 0.35rem;
+}
+
+.duck-explain-disclaimer small {
+  font-size: 0.75rem;
+  line-height: 1.45;
 }
 
 body.duck-explain-open {
@@ -527,10 +627,23 @@ body.duck-explain-open {
 @media (min-width: 576px) {
   .duck-explain-modal {
     align-items: center;
+    padding: 1rem;
   }
 
   .duck-explain-sheet {
-    border-radius: 1.25rem;
-    margin: 1rem;
+    border-radius: var(--radius-card);
+    border: none;
+    max-width: 24rem;
+    padding: 1.5rem 1.35rem 1.65rem;
+  }
+
+  .duck-explain-duck {
+    width: 12.5rem;
+    height: 12.5rem;
+  }
+
+  .duck-explain-duck img {
+    width: 10.5rem;
+    height: 10.5rem;
   }
 }

@@ -10,7 +10,17 @@ const PHASE_ICONS = {
   luteal: 'moon',
 };
 
+const DUCK_EXPLAIN_ICON = '/pato%20nerd.png';
+
 let explainContext = {};
+
+export function renderDuckExplainTrigger(topic = 'body') {
+  return `
+    <button type="button" class="btn btn-sm btn-outline-bloom duck-explain-trigger" data-explain="${topic}">
+      ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Bloom, me explica
+    </button>
+  `;
+}
 
 export function setExplainContext(ctx) {
   explainContext = ctx || {};
@@ -57,9 +67,7 @@ export function renderCycleJourneyCard(journey) {
         </p>
       </div>
       <div class="cycle-journey-footer">
-        <button type="button" class="btn btn-sm btn-outline-bloom duck-explain-trigger" data-explain="body">
-          ${renderIcon('thought', 'bloom-icon bloom-icon--sm')} Bloom, me explica
-        </button>
+        ${renderDuckExplainTrigger('body')}
       </div>
     </div>
   `,
@@ -298,7 +306,15 @@ function formatDays(n) {
 
 function ensureExplainModal() {
   let modal = document.getElementById('duck-explain-modal');
-  if (modal) return modal;
+  if (modal && !modal.querySelector('.duck-explain-hero')) {
+    modal.remove();
+    modal = null;
+  }
+
+  if (modal) {
+    modal.querySelector('.duck-explain-duck img')?.setAttribute('src', DUCK_EXPLAIN_ICON);
+    return modal;
+  }
 
   modal = document.createElement('div');
   modal.id = 'duck-explain-modal';
@@ -307,12 +323,18 @@ function ensureExplainModal() {
   modal.innerHTML = `
     <div class="duck-explain-backdrop" data-close-explain></div>
     <div class="duck-explain-sheet" role="dialog" aria-labelledby="duck-explain-title" aria-modal="true">
+      <span class="duck-explain-glow" aria-hidden="true"></span>
       <button type="button" class="duck-explain-close" data-close-explain aria-label="Fechar">&times;</button>
-      <div class="duck-explain-duck">
-        <img src="/pato_padrao.png" alt="" width="56" height="56" />
+      <div class="duck-explain-hero">
+        <div class="duck-explain-duck">
+          <img src="${DUCK_EXPLAIN_ICON}" alt="" decoding="async" />
+        </div>
       </div>
+      <p class="duck-explain-eyebrow">Bloom explica</p>
       <h2 id="duck-explain-title" class="duck-explain-title"></h2>
-      <p class="duck-explain-body"></p>
+      <div class="duck-explain-body-wrap">
+        <p class="duck-explain-body"></p>
+      </div>
       <p class="duck-explain-disclaimer mb-0"><small></small></p>
     </div>
   `;

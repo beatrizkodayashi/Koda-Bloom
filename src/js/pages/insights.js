@@ -108,7 +108,7 @@ export async function renderInsights(container) {
       </div>
 
       <div class="duck-companion">
-        <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--insights" width="275" height="275" decoding="async" />
+        <img src="/pato%20grafico.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--insights" width="275" height="275" decoding="async" />
         <p class="mascot-caption">Quanto mais você registra, mais eu entendo seu ritmo, no seu tempo.</p>
       </div>
     </section>

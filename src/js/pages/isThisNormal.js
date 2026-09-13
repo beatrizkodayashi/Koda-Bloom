@@ -37,7 +37,7 @@ export async function renderIsThisNormal(container) {
           <p>Consulta seu histórico, não substitui orientação médica.</p>
         </div>
         <div class="duck-companion">
-          <img src="/pato_padrao.png" alt="" class="bloom-mascot-img bloom-mascot-img--tools" width="140" height="140" decoding="async" />
+          <img src="/pato%20pijama.png" alt="" class="bloom-mascot-img bloom-mascot-img--tools normalcy-page-mascot" width="260" height="260" decoding="async" />
         </div>
       </section>
       <div class="card-stack phase2-page">

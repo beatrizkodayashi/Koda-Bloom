@@ -9,6 +9,8 @@ import {
 
 export { renderPageBackButton, mountPageBackButton as mountMobileBackButton } from './pageBackButton.js';
 
+const DOCTOR_REPORT_DUCK_ICON = '/patomedico.png';
+
 export function renderNecessairePage(data) {
   const summary = getNecessaireSummary(data);
 
@@ -19,7 +21,7 @@ export function renderNecessairePage(data) {
         <p>Sua nécessaire menstrual virtual, pronta para viagens e dias imprevisíveis.</p>
       </div>
       <div class="duck-companion">
-        <img src="/pato_bolsinha.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="180" height="180" decoding="async" />
+        <img src="/pato%20bolsa.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="180" height="180" decoding="async" />
         <p class="mascot-caption">${summary.complete ? 'Tudo conferido! Você está preparada.' : 'Marque o que já está na bolsinha.'}</p>
       </div>
     </section>
@@ -185,7 +187,7 @@ export function renderDoctorReportPage(report) {
       <div class="card-stack phase2-page">
         ${renderCard('', `
           <div class="phase2-empty text-center py-4">
-            <img src="/pato_caderno.png" alt="" width="72" height="72" class="mb-3" />
+            <img src="${DOCTOR_REPORT_DUCK_ICON}" alt="" width="120" height="120" class="doctor-report-empty-mascot mb-3" />
             <p class="mb-0 text-muted">Registre pelo menos um ciclo para gerar o relatório.</p>
           </div>
         `, { plain: true, className: 'card-bloom-soft' })}
@@ -201,7 +203,7 @@ export function renderDoctorReportPage(report) {
         <p>Resumo organizado dos seus registros</p>
       </div>
       <div class="duck-companion">
-        <img src="/pato_laptop.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools" width="160" height="160" decoding="async" />
+        <img src="${DOCTOR_REPORT_DUCK_ICON}" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--tools doctor-report-mascot" width="200" height="200" decoding="async" />
       </div>
     </section>
 

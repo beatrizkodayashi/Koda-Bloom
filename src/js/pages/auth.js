@@ -9,6 +9,9 @@ import { isValidEmail, isValidPassword } from '../utils/validators.js';
 import { renderDuckCompanion } from '../components/duckCompanion.js';
 import { renderPasswordField, mountPasswordToggles } from '../components/passwordField.js';
 
+const SIGNUP_DUCK_ICON = '/Pato_BoasVindas.png';
+const LOGIN_DUCK_ICON = '/Pato_Abraço.png';
+
 function formatAuthError(err, fallback) {
   const message = err?.message || '';
   if (/failed to fetch|fetch failed|network/i.test(message)) {
@@ -18,10 +21,19 @@ function formatAuthError(err, fallback) {
 }
 
 function renderAuthMascot({ message, mascot = 'duck' } = {}) {
-  if (mascot === 'laptop') {
+  if (mascot === 'abraco') {
     return `
       <div class="duck-companion auth-mascot">
-        <img src="/pato_laptop.png" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--auth" width="160" height="160" decoding="async" />
+        <img src="${LOGIN_DUCK_ICON}" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--auth auth-hero-mascot" width="260" height="260" decoding="async" />
+        ${message ? `<p class="mascot-caption">${message}</p>` : ''}
+      </div>
+    `;
+  }
+
+  if (mascot === 'boasvindas') {
+    return `
+      <div class="duck-companion auth-mascot">
+        <img src="${SIGNUP_DUCK_ICON}" alt="${APP_NAME}" class="bloom-mascot-img bloom-mascot-img--auth auth-hero-mascot" width="260" height="260" decoding="async" />
         ${message ? `<p class="mascot-caption">${message}</p>` : ''}
       </div>
     `;
@@ -31,11 +43,11 @@ function renderAuthMascot({ message, mascot = 'duck' } = {}) {
 }
 
 function renderAuthLayout(title, subtitle, formHtml, linksHtml, authOptions = {}) {
-  const { message, mascot = 'duck' } = authOptions;
+  const { message, mascot = 'duck', centeredTitle = false } = authOptions;
 
   return `
     <div class="auth-page gradient-bg floral-pattern">
-      <div class="auth-card card-bloom card-bloom--plain">
+      <div class="auth-card card-bloom card-bloom--plain${centeredTitle ? ' auth-card--accent' : ''}">
         ${renderAuthMascot({ message, mascot })}
         <h1>${title}</h1>
         <p class="subtitle">${subtitle}</p>
@@ -68,7 +80,7 @@ export function renderLogin(container) {
       <span>Não tem conta? <a href="${ROUTES.SIGNUP}" id="link-signup">Cadastre-se</a></span><br>
       <a href="${ROUTES.LANDING}" id="link-home">← Voltar</a>
     </div>`,
-    { message: 'Oi! Que bom ter você de volta.', mascot: 'laptop' }
+    { message: 'Oi! Que bom ter você de volta.', mascot: 'abraco', centeredTitle: true }
   );
 
   mountPasswordToggles(container);
@@ -129,8 +141,7 @@ export function renderSignup(container) {
         autocomplete: 'new-password',
       })}
       <div class="form-bloom">
-        <p class="auth-field-label">Como prefere ser tratade no app?</p>
-        <p class="text-muted mb-2"><small>Homens trans também menstruam. Usamos isso só na linguagem, no seu tempo.</small></p>
+        <p class="auth-field-label">Linguagem do app</p>
         <div class="chip-grid auth-gender-chips" id="gender-chips">
           ${GENDER_OPTIONS.map((opt) =>
             `<button type="button" class="chip" data-gender="${opt.value}">${opt.label}</button>`
@@ -144,7 +155,7 @@ export function renderSignup(container) {
       <span>Já tem conta? <a href="${ROUTES.LOGIN}" id="link-login">Entrar</a></span><br>
       <a href="${ROUTES.LANDING}" id="link-home">← Voltar</a>
     </div>`,
-    { message: 'Vamos começar com calma?', mascot: 'laptop' }
+    { message: 'Vamos começar com calma?', mascot: 'boasvindas', centeredTitle: true }
   );
 
   mountPasswordToggles(container);
@@ -192,7 +203,7 @@ export function renderSignup(container) {
     }
 
     if (!gender) {
-      errorEl.textContent = 'Escolha como prefere ser tratade no app.';
+      errorEl.textContent = 'Selecione uma opção de linguagem.';
       errorEl.hidden = false;
       return;
     }

@@ -447,6 +447,22 @@
   margin-bottom: var(--space-2);
 }
 
+.auth-card--accent h1 {
+  text-align: center;
+}
+
+.auth-card--accent {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 182, 200, 0.62) 0%,
+    rgba(255, 251, 222, 0.88) 45%,
+    rgba(255, 204, 189, 0.55) 100%
+  );
+  border: 2.5px solid var(--card-outline);
+  border-radius: var(--radius-card);
+  box-shadow: var(--card-shadow);
+}
+
 .auth-card .subtitle {
   color: var(--color-text-muted);
   margin-bottom: var(--space-6);
@@ -829,6 +845,11 @@
   width: min(160px, 55vw);
 }
 
+.auth-hero-mascot {
+  width: min(15rem, 52vw);
+  max-width: none;
+}
+
 .landing-hero-mascot {
   justify-self: center;
 }
@@ -1002,7 +1023,7 @@
   font-size: var(--font-size-sm);
   cursor: pointer;
   border: 2px solid transparent;
-  background: var(--palette-cream-muted);
+  background: color-mix(in srgb, var(--palette-peach-light) 20%, var(--palette-cream-muted) 80%);
   color: var(--color-text);
   position: relative;
   min-height: 44px;
@@ -1102,22 +1123,6 @@
   cursor: default;
 }
 
-.calendar-day.today {
-  border: 3px solid var(--color-accent-heart);
-  background: rgba(255, 251, 222, 0.82);
-  box-shadow: none;
-}
-
-.calendar-day.today .calendar-day-number {
-  color: var(--color-accent-heart);
-}
-
-@media (min-width: 1024px) {
-  .calendar-day-heart {
-    font-size: 1.05rem;
-  }
-}
-
 .calendar-day.selected {
   background: rgba(255, 178, 143, 0.55);
   border-color: var(--card-outline);
@@ -1134,6 +1139,32 @@
 .calendar-day.predicted-period { background: rgba(255, 251, 222, 0.85); border: 1px dashed var(--palette-pink); }
 .calendar-day.fertile { background: rgba(255, 204, 189, 0.55); }
 .calendar-day.ovulation { background: rgba(255, 178, 143, 0.55); }
+
+.calendar-day.today,
+.calendar-day.today.period,
+.calendar-day.today.has-log,
+.calendar-day.today.predicted-period,
+.calendar-day.today.fertile,
+.calendar-day.today.ovulation,
+.calendar-day.today.spotting-outside {
+  background: var(--palette-peach-light);
+  border: 2.5px solid var(--palette-peach);
+  box-shadow:
+    0 0 0 2px var(--color-surface),
+    0 0 0 4px rgba(255, 178, 143, 0.42);
+  z-index: 3;
+}
+
+.calendar-day.today .calendar-day-number {
+  color: var(--palette-brown);
+  font-weight: 800;
+}
+
+@media (min-width: 1024px) {
+  .calendar-day-heart {
+    font-size: 1.05rem;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .calendar-day:not(.other-month):hover,
@@ -1246,7 +1277,10 @@
   }
 
   .calendar-day.today {
-    border-width: 2px;
+    border-width: 2.5px;
+    box-shadow:
+      0 0 0 1px var(--color-surface),
+      0 0 0 3px rgba(255, 178, 143, 0.42);
   }
 
   .calendar-day-heart {
@@ -1328,6 +1362,11 @@
 }
 
 .legend-dot-period { background: rgba(255, 173, 187, 0.75); }
+.legend-dot-today {
+  background: var(--palette-peach-light);
+  border: 2px solid var(--palette-peach);
+  box-shadow: 0 0 0 1px var(--color-surface);
+}
 .legend-dot-spotting { background: rgba(232, 141, 159, 0.55); border: 1px dotted rgba(232, 141, 159, 0.85); }
 .legend-dot-predicted { background: rgba(255, 251, 222, 0.9); border: 1px dashed var(--palette-pink); }
 .legend-dot-fertile { background: rgba(255, 204, 189, 0.75); }
@@ -1606,7 +1645,7 @@
   padding: 0;
   border: 2.5px solid var(--card-outline);
   border-radius: var(--radius-card);
-  background: linear-gradient(135deg, rgba(255, 182, 200, 0.22) 0%, rgba(255, 251, 222, 0.95) 55%, rgba(255, 204, 189, 0.18) 100%);
+  background: linear-gradient(135deg, rgba(255, 182, 200, 0.5) 0%, rgba(255, 251, 222, 0.78) 45%, rgba(255, 204, 189, 0.44) 100%);
   box-shadow: var(--card-shadow);
   cursor: pointer;
   text-align: left;
@@ -1628,11 +1667,11 @@
 
 .profile-pattern-card-glow {
   position: absolute;
-  top: -2rem;
-  right: -1rem;
-  width: 8rem;
-  height: 8rem;
-  background: radial-gradient(circle, rgba(255, 182, 200, 0.45) 0%, transparent 70%);
+  top: -2.25rem;
+  right: -1.25rem;
+  width: 9.5rem;
+  height: 9.5rem;
+  background: radial-gradient(circle, rgba(255, 182, 200, 0.65) 0%, rgba(255, 204, 189, 0.22) 52%, transparent 72%);
   pointer-events: none;
 }
 
