@@ -3,6 +3,8 @@ node_modules/
 
 # Build
 dist/
+.next/
+out/
 
 # Environment
 .env
@@ -25,3 +27,6 @@ Thumbs.db
 
 # Vite
 *.local
+
+# Legacy snapshot (kept in git until migration review)
+# _legacy/

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateStreak, formatStreakLabel } from '../src/js/utils/streak.js';
+import { calculateStreak, formatStreakLabel } from '../src/lib/utils/streak';
 
 describe('streak', () => {
   describe('calculateStreak', () => {

@@ -1,0 +1,15 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '../styles/bloom.css';
+
+@theme inline {
+  --font-sans: var(--font-family);
+  --color-bloom-pink: #ffadbb;
+  --color-bloom-peach: #ffb28f;
+  --color-bloom-cream: #fffbde;
+  --color-bloom-brown: #6b4a42;
+  --color-bloom-text: #4a3238;
+  --color-bloom-muted: #8f6b72;
+  --radius-bloom: 1.375rem;
+}

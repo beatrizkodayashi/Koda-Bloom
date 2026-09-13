@@ -3,7 +3,7 @@ import {
   findAnswerByText,
   getAnswerById,
   getSuggestedQuestions,
-} from '../src/js/services/helpChatService.js';
+} from '../src/lib/services/helpChatService';
 
 describe('helpChatService', () => {
   it('retorna sugestões de perguntas', () => {

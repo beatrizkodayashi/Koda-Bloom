@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MOOD_ICONS, renderIcon } from '../src/js/components/icons.js';
+import { MOOD_ICONS, renderIcon } from '../src/lib/icons';
 
 describe('icons', () => {
   it('define SVG para cada humor', () => {

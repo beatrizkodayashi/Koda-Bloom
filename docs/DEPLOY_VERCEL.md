@@ -13,7 +13,7 @@ Plataforma de hospedagem otimizada para sites estáticos e SPAs. Conecta ao GitH
 
 1. Clique em **Add New** → **Project**
 2. Selecione o repositório `Koda-Bloom`
-3. A Vercel detecta Vite automaticamente
+3. A Vercel detecta Next.js automaticamente
 
 ## Passo 3: Configurar build
 
@@ -21,9 +21,8 @@ Confirme:
 
 | Campo | Valor |
 |-------|-------|
-| Framework Preset | Vite |
+| Framework Preset | Next.js |
 | Build Command | `npm run build` |
-| Output Directory | `dist` |
 | Install Command | `npm install` |
 
 ## Passo 4: Variáveis de ambiente
@@ -32,10 +31,10 @@ Na seção **Environment Variables**, adicione:
 
 | Name | Value |
 |------|-------|
-| `VITE_SUPABASE_URL` | URL do projeto Supabase |
-| `VITE_SUPABASE_ANON_KEY` | Chave anon public do Supabase |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Chave anon public do Supabase |
 
-> Use os mesmos valores do `.env` local.
+> Use os mesmos valores do `.env.local`.
 
 ## Passo 5: Deploy
 
@@ -75,7 +74,7 @@ Cada push na branch `main` gera um novo deploy automaticamente.
 
 | Problema | Solução |
 |----------|---------|
-| Página 404 ao recarregar | Confirme que `vercel.json` existe com rewrite para `index.html` |
+| Página 404 ao recarregar | Next.js já trata rotas; não use rewrite SPA para `index.html` |
 | Auth não funciona em produção | Adicione URL de produção no Supabase Redirect URLs |
 | Build falha | Rode `npm run build` localmente e corrija erros |
 | Variáveis não aplicadas | Redeploy após adicionar env vars |
