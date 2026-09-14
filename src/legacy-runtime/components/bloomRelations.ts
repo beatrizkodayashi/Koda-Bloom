@@ -48,6 +48,72 @@ export function renderRelationsDisabledPage() {
   `;
 }
 
+const PIN_KEYBOARD_CLASS = 'pin-keyboard-open';
+
+export function bindRelationsPinKeyboardLift(container) {
+  const input = container.querySelector('#relations-pin');
+  const page = container.querySelector('.relations-lock-page');
+  const scroller = container.querySelector('.app-main') || page;
+  if (!input || !page || !scroller) return () => {};
+
+  const mobileMq = window.matchMedia('(max-width: 1023px)');
+  const vv = window.visualViewport;
+  let frame = 0;
+
+  const isPinFocused = () => mobileMq.matches && document.activeElement === input;
+
+  const clearLift = () => {
+    scroller.style.transform = '';
+    document.documentElement.classList.remove(PIN_KEYBOARD_CLASS);
+  };
+
+  const applyLift = () => {
+    if (!isPinFocused()) {
+      clearLift();
+      return;
+    }
+
+    document.documentElement.classList.add(PIN_KEYBOARD_CLASS);
+    scroller.style.transform = '';
+
+    const visualBottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
+    const fieldBottom = input.getBoundingClientRect().bottom;
+    const lift = Math.round(fieldBottom + 16 - visualBottom);
+    if (lift > 0) {
+      scroller.style.transform = `translateY(${-lift}px)`;
+    }
+  };
+
+  const scheduleLift = () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(applyLift);
+    });
+  };
+
+  const onBlur = () => {
+    requestAnimationFrame(() => {
+      if (!isPinFocused()) clearLift();
+    });
+  };
+
+  input.addEventListener('focus', scheduleLift);
+  input.addEventListener('blur', onBlur);
+  vv?.addEventListener('resize', scheduleLift);
+  vv?.addEventListener('scroll', scheduleLift);
+  window.addEventListener('resize', scheduleLift);
+
+  return () => {
+    cancelAnimationFrame(frame);
+    input.removeEventListener('focus', scheduleLift);
+    input.removeEventListener('blur', onBlur);
+    vv?.removeEventListener('resize', scheduleLift);
+    vv?.removeEventListener('scroll', scheduleLift);
+    window.removeEventListener('resize', scheduleLift);
+    clearLift();
+  };
+}
+
 export function renderRelationsLockPage() {
   return `
     <div class="relations-lock-page">

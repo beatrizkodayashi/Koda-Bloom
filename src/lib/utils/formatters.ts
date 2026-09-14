@@ -21,6 +21,7 @@ export function formatDaysUntil(count) {
   if (count === 0) return 'hoje';
   if (count === 1) return 'daqui a 1 dia';
   if (count > 0) return `daqui a aproximadamente ${count} dias`;
+  if (count === -1) return 'há 1 dia';
   return `há ${Math.abs(count)} dias`;
 }
 

@@ -41,16 +41,16 @@ export const ROUTES = {
 };
 
 export const NAV_ITEMS = [
-  { path: '/app/calendario', label: 'Calendário', icon: 'calendar' },
-  { path: '/app/hoje', label: 'Hoje', icon: 'energy' },
-  { path: '/app/registrar', label: 'Registrar', icon: 'sparkles', highlight: true },
+  { path: '/app/calendario', label: 'Calendário', icon: 'calendar-silhouette' },
+  { path: '/app/hoje', label: 'Hoje', icon: 'flower-silhouette' },
+  { path: '/app/registrar', label: 'Registrar', icon: 'register-silhouette', highlight: true },
   {
     path: '/app/relacoes',
     label: 'Relação',
     icon: 'heart',
   },
-  { path: '/app/insights', label: 'Insights', icon: 'target' },
-  { path: '/app/perfil', label: 'Perfil', icon: 'duck' },
+  { path: '/app/insights', label: 'Insights', icon: 'chart-silhouette' },
+  { path: '/app/perfil', label: 'Perfil', icon: 'duck-silhouette' },
 ];
 
 /** Valores padrão antes do onboarding */

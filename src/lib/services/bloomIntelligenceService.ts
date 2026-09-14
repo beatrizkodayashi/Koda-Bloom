@@ -15,6 +15,7 @@ import { moodLabel, formatDays, phaseLabel } from '@/lib/utils/formatters';
 
 const SYMPTOM_LABELS = Object.fromEntries(SYMPTOMS.map((s) => [s.value, s.label]));
 const SENSITIVE_MOODS = new Set(['sensivel', 'irritada', 'ansiosa', 'triste', 'cansada']);
+export const BODY_MAP_FULL_MARKS = 30;
 
 function getLogsBetween(logs, startInclusive, endExclusive) {
   return logs.filter((log) => log.log_date >= startInclusive && log.log_date < endExclusive);
@@ -500,9 +501,11 @@ export function buildSymptomBodyMap(logs) {
     { id: 'general', label: 'Geral', symptoms: ['fadiga', 'desejo_comida'], icon: 'flower' },
   ];
 
-  const recentLogs = logs.slice(0, 35);
+  const monthPrefix = todayString().slice(0, 7);
+  const monthLogs = logs.filter((log) => String(log.log_date || '').startsWith(monthPrefix));
+
   return zones.map((zone) => {
-    const hits = recentLogs.filter((log) =>
+    const hits = monthLogs.filter((log) =>
       (log.daily_symptoms || []).some((s) => zone.symptoms.includes(s.symptom))
     ).length;
     return { ...zone, intensity: hits, active: hits > 0 };

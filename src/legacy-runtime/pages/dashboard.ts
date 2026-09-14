@@ -24,6 +24,7 @@ import {
 } from '@/legacy-runtime/components/dashboardToday';
 import { renderAppShell, mountAppNavigation } from '@/legacy-runtime/components/bottomNavigation';
 import { renderCard } from '@/legacy-runtime/components/card';
+import { renderIcon } from '@/legacy-runtime/components/icons';
 import {
   renderCareModeButton,
   renderPeriodDelayAlert,
@@ -101,16 +102,16 @@ export async function renderDashboard(container) {
         <div class="cycle-today-card">
           <div class="cycle-today-main">
             <span class="badge-bloom badge-phase-${phase === 'menstruation' ? 'menstruation' : phase === 'follicular' ? 'follicular' : phase === 'ovulation' ? 'ovulation' : 'luteal'}">${maskPhaseLabel(phaseLabel(phase))}</span>
-            <h2 class="mt-3 mb-2">Dia ${cycleDay} do seu ciclo</h2>
-            ${periodLine ? `<p class="text-muted mb-0">${periodLine}</p>` : ''}
-            ${showFertilityNote ? `<div class="mt-2">${renderFertilityDisclaimer()}</div>` : ''}
-            ${!enoughData ? '<p class="text-muted mt-3 mb-0"><small>Ainda precisamos de mais registros para melhorar suas estimativas.</small></p>' : ''}
+            <h2 class="cycle-today-day">Dia ${cycleDay} do seu ciclo</h2>
+            ${periodLine ? `<p class="cycle-today-period">${periodLine}</p>` : ''}
+            ${showFertilityNote ? `<div class="cycle-today-note">${renderFertilityDisclaimer()}</div>` : ''}
+            ${!enoughData ? '<p class="cycle-today-hint">Ainda precisamos de mais registros para melhorar suas estimativas.</p>' : ''}
           </div>
           <div class="cycle-today-footer">
             ${renderDuckExplainTrigger('cycle_day')}
           </div>
         </div>
-      `, { className: 'card-bloom-soft' }) : renderCard('Primeiro registro', `
+      `, { className: 'card-bloom-soft cycle-today-panel' }) : renderCard('Primeiro registro', `
         <div class="empty-state py-2">
           <p class="text-muted">Vamos registrar seu ciclo para começar as estimativas.</p>
           <button type="button" class="btn-bloom btn-bloom-primary mt-3" id="btn-first-log">Registrar menstruação</button>
@@ -120,15 +121,17 @@ export async function renderDashboard(container) {
       ${renderDashboardTodaySection(dashCtx)}
     </div>
 
-    ${renderCareModeButton()}
-
-    <div class="d-flex gap-3 mt-4">
-      <button type="button" class="btn-bloom btn-bloom-primary flex-fill" id="btn-checkin">
-        <i class="bi bi-plus-circle" aria-hidden="true"></i> Check-in de hoje
-      </button>
-      <button type="button" class="btn-bloom btn-bloom-secondary" id="btn-calendar">
-        <i class="bi bi-calendar3" aria-hidden="true"></i>
-      </button>
+    <div class="dash-home-actions">
+      ${renderCareModeButton()}
+      <div class="dash-checkin-row">
+        <button type="button" class="btn-bloom btn-bloom-primary dash-checkin-btn" id="btn-checkin">
+          <span class="dash-checkin-plus" aria-hidden="true">+</span>
+          Check-in de hoje
+        </button>
+        <button type="button" class="btn-bloom btn-bloom-secondary dash-calendar-btn" id="btn-calendar" aria-label="Abrir calendário">
+          ${renderIcon('calendar', 'bloom-icon bloom-icon--sm')}
+        </button>
+      </div>
     </div>
 
     <p class="health-disclaimer mt-4">${HEALTH_DISCLAIMER}</p>

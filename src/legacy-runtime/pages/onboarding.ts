@@ -10,6 +10,7 @@ import { todayString } from '@/lib/utils/dates';
 import { onboardingWelcomeLine, welcomeWord } from '@/lib/utils/genderLanguage';
 import { PROFILE_TRACK_MODULES, MODULE_DEFAULTS } from '@/lib/config/modules';
 import { renderModulePickerChips } from '@/legacy-runtime/components/dashboardToday';
+import { initBloomPickers } from '@/legacy-runtime/components/bloomDateField';
 
 const STEPS = [
   { id: 'welcome', title: 'Boas-vindas' },
@@ -154,6 +155,7 @@ export async function renderOnboarding(container) {
     `;
 
     bindStepEvents();
+    initBloomPickers(container);
   }
 
   function bindStepEvents() {

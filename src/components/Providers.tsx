@@ -6,6 +6,7 @@ import { BloomProvider, useBloom } from '@/components/BloomProvider';
 import { DuckHelpChat } from '@/components/DuckHelpChat';
 import { ToastHost } from '@/components/toast';
 import { ROUTES } from '@/lib/config/app';
+import { hideNextDevBadgeOnMobile } from '@/lib/utils/hideNextDevBadge';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -33,6 +34,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  useEffect(() => hideNextDevBadgeOnMobile(), []);
+
   return (
     <BloomProvider>
       <ToastHost />

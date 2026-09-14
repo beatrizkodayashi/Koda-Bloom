@@ -322,56 +322,76 @@
   text-align: right;
 }
 
+.symptom-body-card .card-bloom-body {
+  padding: var(--space-4);
+}
+
+.symptom-body-map-hint {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
 .symptom-body-map {
-  max-width: 22rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.card-bloom-body .symptom-body-map.row {
-  --bs-gutter-x: var(--space-3);
-  margin-left: 0;
-  margin-right: 0;
-}
-
-@media (min-width: 576px) {
-  .symptom-body-map {
-    max-width: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .symptom-body-zone {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  min-height: 5.5rem;
-  padding: var(--space-3) var(--space-2);
-  border-radius: var(--radius-lg);
-  border: 2px solid rgba(255, 178, 143, 0.55);
-  background: rgba(255, 173, 187, calc(0.15 + var(--zone-intensity, 1) * 0.08));
-  transition: transform var(--transition-fast);
-}
-
-.symptom-body-zone--active {
-  transform: translateY(-1px);
+  gap: var(--space-3);
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1.5px solid rgba(255, 178, 143, 0.45);
+  background: rgba(255, 173, 187, calc(0.12 + var(--zone-intensity, 1) * 0.06));
 }
 
 .symptom-body-zone-icon {
   line-height: 0;
 }
 
+.symptom-body-zone-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
 .symptom-body-zone-label {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   font-weight: 700;
-  text-align: center;
+  line-height: 1.2;
+}
+
+.symptom-body-zone-bar {
+  display: block;
+  height: 0.35rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 251, 222, 0.7);
+  overflow: hidden;
+}
+
+.symptom-body-zone-bar-fill {
+  display: block;
+  height: 100%;
+  width: var(--zone-fill, 20%);
+  border-radius: inherit;
+  background: var(--color-accent-heart);
 }
 
 .symptom-body-zone-count {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   color: var(--color-accent-heart);
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .bloom-tips {
@@ -419,17 +439,26 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  background: linear-gradient(135deg, rgba(255, 173, 187, 0.85), rgba(255, 220, 190, 0.95));
-  border: 2px solid var(--card-outline-soft);
-  font-size: var(--font-size-lg);
+  gap: 0.65rem;
+  width: 100%;
+  background: linear-gradient(135deg, #ffc2ce 0%, #ffd7c4 100%);
+  border: 2.5px solid var(--card-outline);
+  border-radius: var(--radius-full);
+  font-size: 1.05rem;
   font-weight: 700;
-  padding: var(--space-4);
-  box-shadow: 3px 3px 0 rgba(255, 178, 143, 0.45);
+  padding: 0.85rem 1.25rem;
+  box-shadow: var(--card-shadow);
+}
+
+.btn-bloom-care:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .care-btn-duck {
   flex-shrink: 0;
+  width: 2.15rem;
+  height: 2.15rem;
   object-fit: contain;
 }
 
@@ -518,7 +547,7 @@
   padding: var(--space-3) var(--space-4);
   border: 2px solid rgba(255, 204, 189, 0.85);
   border-radius: var(--radius-xl);
-  background: rgba(255, 251, 222, 0.92);
+  background: color-mix(in srgb, var(--palette-peach) 20%, rgba(255, 251, 222, 0.92));
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text);
@@ -553,8 +582,11 @@
 }
 
 .care-mode-page .care-mode-exit,
-.care-mode-page .care-breathe-panel .btn-bloom {
-  background: rgba(255, 251, 222, 0.92);
+.care-mode-page .care-breathe-panel .btn-bloom,
+.care-mode-option.card-bloom-check,
+.care-mode-option.card-bloom-check:hover,
+.care-mode-option.card-bloom-check:has(.bloom-checkbox-input:checked) {
+  background: color-mix(in srgb, var(--palette-peach) 20%, rgba(255, 251, 222, 0.92));
   color: var(--color-text);
   border: 2px solid rgba(255, 204, 189, 0.85);
   box-shadow: 2px 2px 0 rgba(255, 204, 189, 0.35);
@@ -562,10 +594,10 @@
 
 .care-mode-page .care-mode-exit:hover:not(:disabled),
 .care-mode-page .care-breathe-panel .btn-bloom:hover:not(:disabled) {
-  background: var(--palette-peach-light);
-  border-color: var(--palette-peach);
+  background: color-mix(in srgb, var(--palette-peach) 20%, rgba(255, 251, 222, 0.92));
+  border-color: rgba(255, 204, 189, 0.85);
   color: var(--color-text);
-  box-shadow: 3px 3px 0 rgba(255, 178, 143, 0.45);
+  box-shadow: 2px 2px 0 rgba(255, 204, 189, 0.35);
 }
 
 .care-breathe-panel {

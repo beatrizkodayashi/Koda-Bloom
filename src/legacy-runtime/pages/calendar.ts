@@ -31,6 +31,7 @@ import {
   renderFertilityDisclaimer,
 } from '@/legacy-runtime/components/bloomIntelligence';
 import { renderAppShell, mountAppNavigation } from '@/legacy-runtime/components/bottomNavigation';
+import { renderIcon } from '@/legacy-runtime/components/icons';
 import { calculateStreak } from '@/lib/utils/streak';
 import {
   formatDateString,
@@ -167,7 +168,7 @@ export async function renderCalendar(container) {
     if (!hasLog && !extraDots.length) return '';
 
     return `<span class="calendar-day-body" aria-hidden="true">
-      ${hasLog ? '<span class="calendar-day-heart-wrap"><i class="bi bi-heart-fill calendar-day-heart" title="Com registro"></i></span>' : ''}
+      ${hasLog ? `<span class="calendar-day-heart-wrap">${renderIcon('heart-fill', 'calendar-day-heart')}</span>` : ''}
       ${extraDots.length ? `<span class="calendar-day-dots">${extraDots.join('')}</span>` : ''}
     </span>`;
   }
@@ -214,7 +215,7 @@ export async function renderCalendar(container) {
     html += `
         <div class="calendar-grid-footer">
           <div class="calendar-legend">
-            <span class="legend-item"><i class="bi bi-heart-fill calendar-legend-heart" aria-hidden="true"></i> Com registro</span>
+            <span class="legend-item">${renderIcon('heart-fill', 'calendar-legend-heart')} Com registro</span>
             <span class="legend-item"><span class="legend-dot legend-dot-today"></span> Hoje</span>
             <span class="legend-item"><span class="legend-dot legend-dot-period"></span> Menstruação</span>
             <span class="legend-item"><span class="legend-dot legend-dot-spotting"></span> Sangramento fora do período</span>
@@ -232,7 +233,10 @@ export async function renderCalendar(container) {
   }
 
   const predictionCard = prediction && enoughData && !isRestModeActive()
-    ? renderPredictionConfidenceCard(prediction, { compact: true })
+    ? renderPredictionConfidenceCard(prediction, { compact: true, delay: periodDelay })
+    : '';
+  const mobileDelayFallback = periodDelay && !isRestModeActive() && !predictionCard
+    ? `<p class="calendar-prediction-delay-note calendar-prediction-delay-note--standalone">O dia previsto já passou e a menstruação está atrasada${periodDelay.daysLate ? ` há ${periodDelay.daysLate} dia${periodDelay.daysLate > 1 ? 's' : ''}` : ''}.</p>`
     : '';
 
   const content = `
@@ -249,11 +253,12 @@ export async function renderCalendar(container) {
         <div class="calendar-hero-panel">
           ${renderStreakCard({ streak })}
           ${predictionCard}
+          ${mobileDelayFallback}
         </div>
       </div>
     </div>
 
-    ${periodDelay && !isRestModeActive() ? renderPeriodDelayAlert(periodDelay) : ''}
+    ${periodDelay && !isRestModeActive() ? `<div class="calendar-delay-alert">${renderPeriodDelayAlert(periodDelay)}</div>` : ''}
 
     ${renderCard('Seu mês', renderCalendarGrid(), { className: 'calendar-card' })}
     <div id="day-detail" hidden></div>
@@ -299,7 +304,7 @@ export async function renderCalendar(container) {
         detail.hidden = false;
         detail.innerHTML = renderCard(
           new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }),
-          `${log ? `<p><i class="bi bi-heart-fill text-danger" aria-hidden="true"></i> Registro encontrado${log.mood ? ` , humor: ${log.mood}` : ''}${log.flow ? ` , fluxo: ${log.flow}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
+          `${log ? `<p>${renderIcon('heart-fill', 'calendar-legend-heart')} Registro encontrado${log.mood ? ` , humor: ${log.mood}` : ''}${log.flow ? ` , fluxo: ${log.flow}` : ''}.</p>` : `<p>Nenhum registro neste dia.</p>`}
           ${isSpotting ? '<p class="text-muted mb-0"><small>Sangramento registrado fora da menstruação.</small></p>' : ''}
           ${contraceptiveLog ? `<p class="text-muted mb-0"><small><span class="calendar-day-dot calendar-day-dot--contraceptive ${getContraceptiveDayClass(contraceptiveLog.status) || 'contraceptive-taken'}"></span> Anticoncepcional: ${getStatusMeta(contraceptiveLog.status)?.label || 'registrado'}.</small></p>` : ''}
           ${intimateLog ? `<p class="text-muted mb-0"><small>Saúde íntima: ${summarizeIntimateLog(intimateLog)}.</small></p>` : ''}

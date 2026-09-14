@@ -86,18 +86,26 @@ export function renderIntimateTimeline(timeline) {
 export function renderRegisterIntimateSection(ctx) {
   const summary = summarizeIntimateLog(ctx.todayLog);
 
-  return renderCard('Saúde íntima', `
-    <div class="register-intimate-card-inner">
-      <div class="intimate-today-head">
-        <div>
-          <p class="intimate-today-label mb-1">${ctx.todayLog ? summary : 'Como você está?'}</p>
-          <p class="text-muted mb-0"><small>Corrimento e sintomas, no seu tempo.</small></p>
+  return `
+    <div class="profile-pattern-card profile-pattern-card--panel register-intimate-card">
+      <span class="profile-pattern-card-glow" aria-hidden="true"></span>
+      <div class="profile-pattern-card-panel register-intimate-card-panel">
+        <div class="register-intimate-card-layout">
+          <div class="register-intimate-card-stack">
+            <span class="profile-pattern-card-eyebrow">${renderIcon('heart-soft', 'bloom-icon bloom-icon--sm')} Registrar</span>
+            <span class="profile-pattern-card-title">Saúde íntima</span>
+            <span class="profile-pattern-card-text">Corrimento e sintomas, no seu tempo.</span>
+            <span class="profile-pattern-card-meta profile-pattern-card-meta--muted">${ctx.todayLog ? summary : 'Como você está?'}</span>
+            ${renderTodayForm(ctx.todayLog, 'reg-intimate')}
+            <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm profile-pattern-card-action" id="btn-reg-intimate-manage">Ver histórico</button>
+          </div>
+          <span class="profile-pattern-card-duck register-intimate-card-duck" aria-hidden="true">
+            <img src="${INTIMATE_HEALTH_DUCK_ICON}" alt="" width="220" height="220" decoding="async" />
+          </span>
         </div>
       </div>
-      ${renderTodayForm(ctx.todayLog, 'reg-intimate')}
-      <button type="button" class="btn-bloom btn-bloom-ghost btn-bloom-sm mt-3" id="btn-reg-intimate-manage">Ver linha do tempo</button>
     </div>
-  `, { className: 'card-bloom-soft register-intimate-card' });
+  `;
 }
 
 export function readIntimateFormState(container, idPrefix = 'reg-intimate') {
@@ -145,8 +153,6 @@ export function renderIntimateHealthPage(ctx) {
         ${renderTodayForm(ctx.todayLog, 'page-intimate')}
         <button type="button" class="btn-bloom btn-bloom-primary w-100 mt-4" id="btn-page-intimate-save">Salvar hoje</button>
       `, { className: 'card-bloom-soft' })}
-
-      ${renderIntimateTimeline(ctx.timeline)}
 
       ${ctx.logs.length ? renderCard('Histórico recente', `
         <div class="intimate-history">

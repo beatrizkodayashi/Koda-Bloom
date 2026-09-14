@@ -19,17 +19,21 @@ import {
   renderRelationsLockPage,
   renderRelationsPage,
   mountChipGroup,
+  bindRelationsPinKeyboardLift,
 } from '@/legacy-runtime/components/bloomRelations';
 import { mountRelationsPrivacyHandlers } from '@/legacy-runtime/components/privacySettings';
 import { mountPageBackButton } from '@/legacy-runtime/components/pageBackButton';
 import { renderAppShell, mountAppNavigation } from '@/legacy-runtime/components/bottomNavigation';
 import { showToast } from '@/legacy-runtime/components/toast';
+import { initBloomPickers } from '@/legacy-runtime/components/bloomDateField';
 
 function buildProtectionPayload(type) {
   if (!type) return { protection_used: null, protection_type: null };
   if (type === 'nenhum') return { protection_used: false, protection_type: 'nenhum' };
   return { protection_used: true, protection_type: type };
 }
+
+let detachPinKeyboardLift = null;
 
 function bindRelationsEvents(container, userId, repaint) {
   mountPageBackButton(container);
@@ -129,11 +133,15 @@ function bindRelationsEvents(container, userId, repaint) {
 async function paint(container) {
   const userId = getIntimateUserId();
   const discrete = isDiscreteMode();
+  detachPinKeyboardLift?.();
+  detachPinKeyboardLift = null;
 
   if (hasIntimatePin(userId) && !isIntimateAreaUnlocked(userId)) {
     container.innerHTML = renderAppShell(renderRelationsLockPage());
     mountAppNavigation(container);
     bindRelationsEvents(container, userId, () => paint(container));
+    initBloomPickers(container);
+    detachPinKeyboardLift = bindRelationsPinKeyboardLift(container);
     return;
   }
 
@@ -149,6 +157,7 @@ async function paint(container) {
   );
   mountAppNavigation(container);
   bindRelationsEvents(container, userId, () => paint(container));
+  initBloomPickers(container);
 }
 
 export async function renderRelations(container) {
@@ -156,6 +165,8 @@ export async function renderRelations(container) {
   await paint(container);
 
   return () => {
+    detachPinKeyboardLift?.();
+    detachPinKeyboardLift = null;
     if (hasIntimatePin(userId)) {
       lockIntimateArea(userId);
     }

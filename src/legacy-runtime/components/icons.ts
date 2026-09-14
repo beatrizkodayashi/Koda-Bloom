@@ -86,6 +86,52 @@ export const BLOOM_ICONS = {
     <circle cx="14" cy="8" r="0.9" fill="#3D2C33"/>
     <path d="M15.5 9.5l2.5 1.5-1.5.5-1 1.5z" fill="#FFB28F" stroke="#FFADBB" stroke-width="1" stroke-linejoin="round"/>
   </svg>`,
+  'duck-silhouette': `<svg ${SVG_BASE}>
+    <ellipse cx="13.5" cy="15.6" rx="7.2" ry="5.1" fill="#FFADBB"/>
+    <ellipse cx="19.7" cy="13.15" rx="2.5" ry="2.1" fill="#FFADBB"/>
+    <circle cx="8.05" cy="9" r="4.45" fill="#FFADBB"/>
+    <ellipse cx="3.35" cy="10.1" rx="2.25" ry="1.22" fill="#FFADBB"/>
+    <ellipse cx="3.95" cy="12.2" rx="1.6" ry="0.74" fill="#FFADBB"/>
+  </svg>`,
+  'chart-silhouette': `<svg ${SVG_BASE}>
+    <rect x="2.6" y="11.2" width="3.1" height="9.6" rx="0.55" fill="#FFADBB"/>
+    <rect x="6.7" y="3.8" width="3.1" height="17" rx="0.55" fill="#FFADBB"/>
+    <rect x="10.8" y="7.6" width="3.1" height="13.2" rx="0.55" fill="#FFADBB"/>
+    <rect x="14.9" y="13.4" width="3.1" height="7.4" rx="0.55" fill="#FFADBB"/>
+    <path d="M15.4 9.2 21.1 3.6" fill="none" stroke="#FFADBB" stroke-width="1.85" stroke-linecap="round"/>
+    <path d="M17.55 3.35 21.2 3.45 20.55 6.95" fill="none" stroke="#FFADBB" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+  'calendar-silhouette': `<svg ${SVG_BASE}>
+    <rect x="3.3" y="5.15" width="17.4" height="16.1" rx="3.4" fill="none" stroke="#FFADBB" stroke-width="2"/>
+    <path d="M3.3 9.75h17.4" stroke="#FFADBB" stroke-width="2"/>
+    <path d="M8.05 2.55v5.5M15.95 2.55v5.5" fill="none" stroke="#FFADBB" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="11.15" cy="13.15" r="0.95" fill="#FFADBB"/>
+    <circle cx="14.4" cy="13.15" r="0.95" fill="#FFADBB"/>
+    <circle cx="17.65" cy="13.15" r="0.95" fill="#FFADBB"/>
+    <circle cx="7.9" cy="16.1" r="0.95" fill="#FFADBB"/>
+    <circle cx="11.15" cy="16.1" r="0.95" fill="#FFADBB"/>
+    <circle cx="14.4" cy="16.1" r="0.95" fill="#FFADBB"/>
+    <circle cx="17.65" cy="16.1" r="0.95" fill="#FFADBB"/>
+    <circle cx="7.9" cy="19.05" r="0.95" fill="#FFADBB"/>
+    <circle cx="11.15" cy="19.05" r="0.95" fill="#FFADBB"/>
+    <circle cx="14.4" cy="19.05" r="0.95" fill="#FFADBB"/>
+  </svg>`,
+  'register-silhouette': `<svg ${SVG_BASE}>
+    <rect x="3.2" y="6.05" width="12.7" height="15.2" rx="2.35" fill="none" stroke="#FFADBB" stroke-width="1.9"/>
+    <path d="M7.15 2.55h5.5c1.15 0 2.1.95 2.1 2.1v3.55H5.05V4.65c0-1.15.95-2.1 2.1-2.1z" fill="none" stroke="#FFADBB" stroke-width="1.9"/>
+    <path d="M14.85 4.35h2.05" fill="none" stroke="#FFADBB" stroke-width="1.9" stroke-linecap="round"/>
+    <path d="M6.35 11.15h5.7M6.35 14.25h4.05M6.35 17.35h3.2" fill="none" stroke="#FFADBB" stroke-width="1.85" stroke-linecap="round"/>
+    <path d="M13.55 19.35 20.2 8.55l2.05 1.25-6.65 10.8-2.55.55.5-2.8z" fill="none" stroke="#FFADBB" stroke-width="1.85" stroke-linejoin="round"/>
+    <path d="M15.35 16.45 18.85 10.75" fill="none" stroke="#FFADBB" stroke-width="1.55" stroke-linecap="round"/>
+  </svg>`,
+  'flower-silhouette': `<svg ${SVG_BASE}>
+    <circle cx="12" cy="12.35" r="4.05" fill="none" stroke="#FFADBB" stroke-width="1.85"/>
+    <circle cx="12" cy="5.65" r="4.05" fill="none" stroke="#FFADBB" stroke-width="1.85"/>
+    <circle cx="5.55" cy="10.15" r="4.05" fill="none" stroke="#FFADBB" stroke-width="1.85"/>
+    <circle cx="18.45" cy="10.15" r="4.05" fill="none" stroke="#FFADBB" stroke-width="1.85"/>
+    <circle cx="7.6" cy="18.2" r="4.05" fill="none" stroke="#FFADBB" stroke-width="1.85"/>
+    <circle cx="16.4" cy="18.2" r="4.05" fill="none" stroke="#FFADBB" stroke-width="1.85"/>
+  </svg>`,
   'duck-thought': `<svg ${SVG_BASE}>
     <ellipse cx="9" cy="15" rx="5.5" ry="4" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.25"/>
     <circle cx="9" cy="10.5" r="4" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.25"/>
@@ -99,6 +145,9 @@ export const BLOOM_ICONS = {
   </svg>`,
   heart: `<svg ${SVG_BASE}>
     <path d="M12 20s-6.5-4.2-8.5-8.2C2.2 8.8 4.2 5.5 7.5 5.5c1.8 0 3.2 1 4.5 2.5C13.3 6.5 14.7 5.5 16.5 5.5 19.8 5.5 21.8 8.8 20.5 11.8 18.5 15.8 12 20 12 20z" fill="#FFADBB" stroke="#FFB28F" stroke-width="1.25" stroke-linejoin="round"/>
+  </svg>`,
+  'heart-fill': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
   </svg>`,
   'heart-soft': `<svg ${SVG_BASE}>
     <path d="M12 19s-5.5-3.5-7.2-7C3.5 9.2 5.2 6.5 8 6.5c1.5 0 2.7.8 4 2 1.3-1.2 2.5-2 4-2 2.8 0 4.5 2.7 3.2 5.5C17.5 15.5 12 19 12 19z" fill="#FFFBDE" stroke="#FFADBB" stroke-width="1.5" stroke-linejoin="round"/>

@@ -153,14 +153,57 @@
 .cycle-today-card {
   display: flex;
   flex-direction: column;
-  min-height: 9rem;
+  gap: 1.15rem;
+}
+
+.dash-main-stack > .cycle-today-panel {
+  max-width: 32rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cycle-today-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.cycle-today-day {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.cycle-today-period {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+.cycle-today-note,
+.cycle-today-hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
 .cycle-today-footer {
   display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  padding-top: 1rem;
+  justify-content: center;
+}
+
+.cycle-today-footer .duck-explain-trigger {
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--color-text);
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  min-height: 2.25rem;
 }
 
 .btn-outline-bloom {
@@ -621,7 +664,7 @@
 }
 
 body.duck-explain-open {
-  overflow: hidden;
+  overflow: auto;
 }
 
 @media (min-width: 576px) {

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { ROUTES } from '@/lib/config/app';
-import { navigate } from '@/lib/navigation';
+import { navigateBack } from '@/lib/navigation';
 
 export function renderPageBackButton(label = 'Voltar') {
   return `
@@ -14,10 +14,6 @@ export function renderPageBackButton(label = 'Voltar') {
 
 export function mountPageBackButton(container, fallbackRoute = ROUTES.INSIGHTS) {
   container.querySelector('#page-back-btn')?.addEventListener('click', () => {
-    if (window.history.length > 1) {
-      history.back();
-      return;
-    }
-    navigate(fallbackRoute);
+    navigateBack(fallbackRoute);
   });
 }

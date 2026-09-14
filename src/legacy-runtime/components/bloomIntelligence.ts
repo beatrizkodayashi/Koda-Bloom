@@ -2,6 +2,7 @@
 import { renderCard } from '@/legacy-runtime/components/card';
 import { APP_NAME, FERTILITY_DISCLAIMER } from '@/lib/config/app';
 import { renderIcon } from '@/legacy-runtime/components/icons';
+import { BODY_MAP_FULL_MARKS } from '@/lib/services/bloomIntelligenceService';
 
 function retroItem(iconId, text) {
   return `<li class="cycle-retro-item">${renderIcon(iconId, 'bloom-icon bloom-icon--sm')}<span>${text}</span></li>`;
@@ -34,7 +35,10 @@ export function renderPeriodDelayAlert(delay) {
 export function renderPredictionConfidenceCard(prediction, options = {}) {
   if (!prediction) return '';
 
-  const { compact = false } = options;
+  const { compact = false, delay = null } = options;
+  const delayNote = delay
+    ? `<p class="calendar-prediction-delay-note">O dia previsto já passou e a menstruação está atrasada${delay.daysLate ? ` há ${delay.daysLate} dia${delay.daysLate > 1 ? 's' : ''}` : ''}.</p>`
+    : '';
 
   if (compact) {
     return `
@@ -44,6 +48,7 @@ export function renderPredictionConfidenceCard(prediction, options = {}) {
             <span class="calendar-prediction-chip-eyebrow">${renderIcon('heart-soft', 'bloom-icon bloom-icon--sm')} Próxima menstruação</span>
             <p class="calendar-prediction-chip-headline">${prediction.headline}</p>
             <p class="calendar-prediction-chip-date">${prediction.formattedDate}</p>
+            ${delayNote}
           </div>
           <span class="calendar-prediction-chip-badge" aria-label="Confiança da previsão">${prediction.percent}%</span>
         </div>
@@ -224,27 +229,30 @@ export function renderSimulatorResult(simulation) {
 }
 
 export function renderSymptomBodyMap(bodyMap) {
-  const active = bodyMap.filter((z) => z.active);
+  const active = bodyMap.filter((z) => z.active).sort((a, b) => b.intensity - a.intensity);
   if (!active.length) {
     return renderCard('Mapa de sintomas', `
       <p class="text-muted mb-0">Registre sintomas no check-in e eu mostro onde seu corpo mais pediu atenção neste ciclo.</p>
     `);
   }
 
+  const maxIntensity = BODY_MAP_FULL_MARKS;
+
   return renderCard('Onde você sentiu sintomas?', `
-    <p class="text-muted mb-0 text-center"><small>Com base nos seus registros recentes.</small></p>
-    <div class="row row-cols-2 row-cols-sm-3 g-3 mt-4 mx-0 justify-content-center symptom-body-map">
+    <p class="symptom-body-map-hint">Marcações deste mês. A barra enche com ${BODY_MAP_FULL_MARKS} registros e zera no mês seguinte.</p>
+    <ul class="symptom-body-map">
       ${active.map((zone) => `
-        <div class="col">
-          <div class="symptom-body-zone symptom-body-zone--active" style="--zone-intensity: ${Math.min(zone.intensity, 5)}">
-            <span class="symptom-body-zone-icon">${renderIcon(zone.icon, 'bloom-icon bloom-icon--md')}</span>
+        <li class="symptom-body-zone" style="--zone-intensity: ${Math.min(zone.intensity, 5)}; --zone-fill: ${Math.min((zone.intensity / maxIntensity) * 100, 100)}%">
+          <span class="symptom-body-zone-icon">${renderIcon(zone.icon, 'bloom-icon bloom-icon--sm')}</span>
+          <span class="symptom-body-zone-copy">
             <span class="symptom-body-zone-label">${zone.label}</span>
-            <span class="symptom-body-zone-count">${zone.intensity}×</span>
-          </div>
-        </div>
+            <span class="symptom-body-zone-bar" aria-hidden="true"><span class="symptom-body-zone-bar-fill"></span></span>
+          </span>
+          <span class="symptom-body-zone-count">${zone.intensity}/${BODY_MAP_FULL_MARKS}</span>
+        </li>
       `).join('')}
-    </div>
-  `, { className: 'card-bloom-soft' });
+    </ul>
+  `, { className: 'card-bloom-soft symptom-body-card' });
 }
 
 export function renderPersonalizedTips(tips) {
@@ -281,8 +289,8 @@ export function renderSmartFollowUpBanner(followUp) {
 
 export function renderCareModeButton() {
   return `
-    <button type="button" class="btn-bloom btn-bloom-care w-100 mt-4" id="btn-care-mode">
-      <img src="/pato_triste.png" alt="" width="28" height="28" class="care-btn-duck" decoding="async" />
+    <button type="button" class="btn-bloom btn-bloom-care" id="btn-care-mode">
+      <img src="/pato_triste.png" alt="" width="36" height="36" class="care-btn-duck" decoding="async" />
       Hoje não tô bem
     </button>
   `;

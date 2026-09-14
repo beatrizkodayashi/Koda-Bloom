@@ -24,6 +24,7 @@ import { renderAppShell, mountAppNavigation } from '@/legacy-runtime/components/
 import { renderCard } from '@/legacy-runtime/components/card';
 import { showToast } from '@/legacy-runtime/components/toast';
 import { todayString } from '@/lib/utils/dates';
+import { initBloomPickers } from '@/legacy-runtime/components/bloomDateField';
 
 function renderDisabledPage() {
   return `
@@ -150,6 +151,7 @@ async function paint(container) {
     container.innerHTML = renderAppShell(renderContraceptiveSetupPage());
     mountAppNavigation(container);
     bindSetupEvents(container, userId, () => paint(container));
+    initBloomPickers(container);
     return;
   }
 
@@ -157,6 +159,7 @@ async function paint(container) {
   container.innerHTML = renderAppShell(renderContraceptivePage(ctx));
   mountAppNavigation(container);
   bindMainEvents(container, userId, () => paint(container));
+  initBloomPickers(container);
 }
 
 export async function renderContraceptive(container) {

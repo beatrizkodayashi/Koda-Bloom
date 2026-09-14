@@ -78,7 +78,7 @@
   left: auto;
   width: min(calc(100vw - var(--space-8)), 380px);
   max-height: min(70dvh, 560px);
-  display: flex;
+  display: none;
   flex-direction: column;
   background: rgba(255, 251, 222, 0.98);
   backdrop-filter: blur(12px);
@@ -86,7 +86,15 @@
   border-radius: var(--radius-card);
   box-shadow: var(--card-shadow);
   overflow: hidden;
+}
+
+.duck-help-panel.is-open {
+  display: flex;
   animation: duck-help-in var(--transition-base) ease;
+}
+
+.duck-help-panel[hidden] {
+  display: none !important;
 }
 
 @keyframes duck-help-in {
@@ -127,6 +135,9 @@
   min-height: 36px;
   width: 36px;
   padding: 0;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
 }
 
 .duck-help-messages {

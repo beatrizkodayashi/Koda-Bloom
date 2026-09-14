@@ -60,22 +60,42 @@
   flex-shrink: 0;
 }
 
+.bloom-picker-input {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0);
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  pointer-events: none;
+  opacity: 0;
+}
+
 .bloom-picker-popover {
   position: absolute;
   top: calc(100% + 0.35rem);
   left: 0;
+  right: auto;
   z-index: 1601;
   width: 15.25rem;
   max-width: min(15.25rem, calc(100vw - 1.5rem));
   padding: 0.6rem 0.65rem 0.55rem;
-  background-color: var(--color-background);
+  background-color: #fff9eb;
   background-image: linear-gradient(
     180deg,
-    var(--palette-pink) 0%,
+    #ffadbb 0%,
     #ffc9d4 22%,
-    var(--palette-peach-light) 46%,
-    var(--palette-cream-soft) 72%,
-    var(--color-background) 100%
+    #ffccbd 46%,
+    #fffbde 72%,
+    #fff9eb 100%
   );
   border: 2px solid var(--card-outline);
   border-radius: var(--radius-md);
@@ -95,12 +115,17 @@
 .card-bloom:has(.bloom-picker.is-open),
 .card-bloom-body:has(.bloom-picker.is-open),
 .form-bloom:has(.bloom-picker.is-open),
-.relations-details:has(.bloom-picker.is-open) {
+.relations-details,
+.relations-full-form,
+.relations-full-form .form-bloom,
+.relations-page .card-bloom:has(.relations-details) {
   overflow: visible;
 }
 
-.card-bloom:has(.bloom-picker.is-open) {
-  z-index: 1500;
+@media (min-width: 1024px) {
+  .card-bloom:has(.bloom-picker.is-open) {
+    z-index: 1500;
+  }
 }
 
 .bloom-picker-header {
@@ -275,4 +300,99 @@
 .form-bloom .bloom-picker-trigger,
 .form-bloom .bloom-time-select {
   width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .card-bloom:has(.bloom-picker.is-open),
+  .card-bloom-soft:has(.bloom-picker.is-open) {
+    z-index: auto;
+  }
+
+  .card-bloom-soft:has(.bloom-picker.is-open) {
+    background: #fffbde;
+  }
+
+  .form-bloom:has(.bloom-picker.is-open) {
+    position: relative;
+    z-index: 5;
+  }
+
+  .form-bloom:has(.bloom-picker.is-open) ~ * {
+    position: relative;
+    z-index: 0;
+  }
+
+  .bloom-picker.is-open {
+    z-index: 5;
+  }
+
+  .bloom-picker-popover {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 6;
+    padding: 0.4rem 0.45rem 0.35rem;
+    opacity: 1;
+    isolation: isolate;
+    background-color: #fff9eb;
+    background-image: linear-gradient(
+      180deg,
+      #ffadbb 0%,
+      #ffc9d4 18%,
+      #ffccbd 42%,
+      #fffbde 70%,
+      #fff9eb 100%
+    );
+    box-shadow: 0 8px 18px rgba(74, 50, 56, 0.18);
+  }
+
+  .bloom-picker-header {
+    margin-bottom: 0.35rem;
+  }
+
+  .bloom-picker-month {
+    font-size: 0.875rem;
+  }
+
+  .bloom-picker-nav {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .bloom-picker-weekdays,
+  .bloom-picker-calendar {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
+    margin-inline: 0;
+    gap: 0.18rem;
+  }
+
+  .bloom-picker-weekdays {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .bloom-picker-day {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    font-size: 0.78rem;
+    background: #fff6e0;
+  }
+
+  .bloom-picker-calendar {
+    width: 100%;
+    background: #fffbde;
+    padding: 0.2rem;
+  }
+
+  .bloom-picker-footer {
+    margin-top: 0.35rem;
+    padding-top: 0.3rem;
+  }
+
+  .bloom-picker-action {
+    font-size: 0.8rem;
+  }
 }

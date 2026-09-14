@@ -166,6 +166,17 @@
   gap: var(--space-2);
 }
 
+@media (max-width: 1023px) {
+  .privacy-status {
+    margin-bottom: var(--space-5);
+  }
+
+  .privacy-actions {
+    margin-top: var(--space-1);
+    gap: var(--space-3);
+  }
+}
+
 .relations-history-feeling-row {
   display: inline-flex;
   align-items: center;
@@ -196,5 +207,26 @@
   .nav-card-body--compact .bottom-nav-item {
     font-size: 0.625rem;
     padding-inline: 0.125rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  html.pin-keyboard-open .bottom-nav-wrap {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(110%);
+  }
+
+  html.pin-keyboard-open .relations-lock-mascot {
+    width: min(6.75rem, 30vw);
+  }
+
+  html.pin-keyboard-open .relations-lock-page {
+    gap: var(--space-3);
+  }
+
+  html.pin-keyboard-open .relations-pin-help,
+  html.pin-keyboard-open .relations-lock-page .page-back-wrap {
+    display: none;
   }
 }

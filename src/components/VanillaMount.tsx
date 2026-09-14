@@ -1,6 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import {
+  closeAllBloomPickers,
+  initBloomPickers,
+} from '@/legacy-runtime/components/bloomDateField';
+import { applyRouteScroll } from '@/lib/utils/scrollMemory';
 
 type PageRenderer = (container: HTMLElement) => void | (() => void) | Promise<void | (() => void)>;
 
@@ -23,13 +28,16 @@ export function VanillaMount({ render }: VanillaMountProps) {
       const result = await render(node);
       if (cancelled) return;
       cleanup = typeof result === 'function' ? result : undefined;
-
-      const { initBloomPickers } = await import('@/legacy-runtime/components/bloomDateField');
-      if (!cancelled) initBloomPickers(node as unknown as Document);
+      initBloomPickers(node);
+      applyRouteScroll();
     })();
 
     return () => {
       cancelled = true;
+      closeAllBloomPickers();
+      document.body.classList.remove('duck-explain-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
       if (typeof cleanup === 'function') cleanup();
       node.innerHTML = '';
     };

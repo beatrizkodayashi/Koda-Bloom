@@ -40,16 +40,12 @@ export function renderBottomNavigation() {
   getNavItems().forEach((item) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = `bottom-nav-item${item.highlight ? ' highlight' : ''}${isActive(item.path) ? ' active' : ''}`;
+    btn.className = `bottom-nav-item${isActive(item.path) ? ' active' : ''}`;
     btn.setAttribute('aria-label', resolveNavLabel(item));
     btn.setAttribute('aria-current', isActive(item.path) ? 'page' : 'false');
 
     const icon = renderIcon(item.icon, 'bloom-icon');
-    if (item.highlight) {
-      btn.innerHTML = `<span class="nav-icon-wrap">${icon}</span><span>${resolveNavLabel(item)}</span>`;
-    } else {
-      btn.innerHTML = `${icon}<span>${resolveNavLabel(item)}</span>`;
-    }
+    btn.innerHTML = `${icon}<span>${resolveNavLabel(item)}</span>`;
 
     btn.addEventListener('click', () => navigate(item.path));
     body.appendChild(btn);

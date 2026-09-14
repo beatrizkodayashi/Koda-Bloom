@@ -1,7 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useSyncExternalStore, type ReactNode } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore, type ReactNode } from 'react';
 import { getSession, onAuthStateChange } from '@/lib/services/authService';
 import { getProfile, upsertProfile } from '@/lib/services/cycleService';
 import { getDefaultPreferences, getPreferences } from '@/lib/services/dailyLogService';
@@ -15,6 +15,7 @@ import {
 } from '@/lib/services/intimateLockService';
 import { getState, setState, subscribe } from '@/lib/state/store';
 import { setNavigateImpl } from '@/lib/navigation';
+import { bindScrollMemory, notifyPopNavigation, notifyPushNavigation } from '@/lib/utils/scrollMemory';
 import { takePendingGender } from '@/lib/utils/genderLanguage';
 import { ROUTES } from '@/lib/config/app';
 import type { BloomState } from '@/lib/types';
@@ -29,12 +30,15 @@ export function useBloom() {
 
 export function BloomProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const pathStackRef = useRef<string[]>([]);
   const state = useBloom();
 
   const navigate = useCallback(
     (path: string, replace = false) => {
-      if (replace) router.replace(path);
-      else router.push(path);
+      notifyPushNavigation();
+      if (replace) router.replace(path, { scroll: false });
+      else router.push(path, { scroll: false });
     },
     [router]
   );
@@ -42,6 +46,29 @@ export function BloomProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setNavigateImpl(navigate);
   }, [navigate]);
+
+  useEffect(() => {
+    bindScrollMemory();
+  }, []);
+
+  useEffect(() => {
+    const stack = pathStackRef.current;
+    const previous = stack[stack.length - 1];
+    const parent = stack[stack.length - 2];
+
+    if (parent === pathname) {
+      notifyPopNavigation();
+      pathStackRef.current = stack.slice(0, -1);
+      document.body.classList.remove('duck-explain-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+      return;
+    }
+
+    if (previous !== pathname) {
+      pathStackRef.current = [...stack, pathname];
+    }
+  }, [pathname]);
 
   useEffect(() => {
     initCareModeEffects();
