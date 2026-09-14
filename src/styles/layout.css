@@ -2008,6 +2008,8 @@
 
 .dash-home-actions .btn-bloom-care {
   width: 100%;
+  color: var(--color-text);
+  -webkit-text-fill-color: var(--color-text);
 }
 
 .dash-checkin-row {

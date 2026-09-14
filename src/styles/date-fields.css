@@ -1,5 +1,18 @@
 /* Campos de data e hora — compactos, paleta Bloom */
 
+.bloom-picker-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  pointer-events: auto;
+  background: rgba(74, 50, 56, 0.16);
+  touch-action: manipulation;
+}
+
+.bloom-picker-layer[hidden] {
+  display: none !important;
+}
+
 .bloom-picker {
   position: relative;
   width: 100%;
@@ -84,7 +97,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
   top: calc(100% + 0.35rem);
   left: 0;
   right: auto;
-  z-index: 1601;
+  z-index: 1100;
   width: 15.25rem;
   max-width: min(15.25rem, calc(100vw - 1.5rem));
   padding: 0.6rem 0.65rem 0.55rem;
@@ -141,6 +154,76 @@ input[type='date']::-webkit-calendar-picker-indicator {
   font-weight: 700;
   color: var(--color-text);
   text-transform: lowercase;
+}
+
+.bloom-picker-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.bloom-picker-caption-btn,
+.bloom-picker-month-btn,
+.bloom-picker-year-btn {
+  margin: 0;
+  border: 1.5px solid transparent;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.bloom-picker-caption-btn {
+  flex: 1;
+  min-width: 0;
+  min-height: 1.75rem;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.8125rem;
+  text-transform: lowercase;
+}
+
+.bloom-picker-month-grid,
+.bloom-picker-year-grid {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.bloom-picker-month-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bloom-picker-year-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-height: 12.5rem;
+  overflow: auto;
+}
+
+.bloom-picker-month-btn,
+.bloom-picker-year-btn {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.2rem;
+  background: #fff6e0;
+  font-size: 0.78rem;
+  text-transform: lowercase;
+}
+
+.bloom-picker-caption-btn:hover,
+.bloom-picker-month-btn:hover,
+.bloom-picker-year-btn:hover {
+  border-color: var(--palette-pink);
+  background: var(--palette-cream-soft);
+}
+
+.bloom-picker-month-btn.is-selected,
+.bloom-picker-year-btn.is-selected {
+  background: var(--palette-pink);
+  border-color: var(--card-outline);
 }
 
 .bloom-picker-nav {
@@ -200,6 +283,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
   font-weight: 600;
   cursor: pointer;
   padding: 0;
+  touch-action: manipulation;
 }
 
 .bloom-picker-day--spacer {
@@ -322,16 +406,8 @@ input[type='date']::-webkit-calendar-picker-indicator {
     z-index: 0;
   }
 
-  .bloom-picker.is-open {
-    z-index: 5;
-  }
-
   .bloom-picker-popover {
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    z-index: 6;
+    z-index: 1100;
     padding: 0.4rem 0.45rem 0.35rem;
     opacity: 1;
     isolation: isolate;
@@ -351,8 +427,15 @@ input[type='date']::-webkit-calendar-picker-indicator {
     margin-bottom: 0.35rem;
   }
 
-  .bloom-picker-month {
+  .bloom-picker-month,
+  .bloom-picker-caption-btn {
     font-size: 0.875rem;
+  }
+
+  .bloom-picker-month-btn,
+  .bloom-picker-year-btn {
+    min-height: 2.5rem;
+    font-size: 0.85rem;
   }
 
   .bloom-picker-nav {

@@ -18,6 +18,8 @@ const WEEKDAY_LABELS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
 let activePicker = null;
 const pickersByInput = new WeakMap();
+let pickerObserver = null;
+let pickerLayer = null;
 
 function dispatchValueEvents(input) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -65,6 +67,69 @@ function syncTimeInput(hourSelect, minuteSelect, input) {
   dispatchValueEvents(input);
 }
 
+function eventEl(event) {
+  const target = event.target;
+  if (target instanceof Element) return target;
+  return target instanceof Node ? target.parentElement : null;
+}
+
+function yearBounds(picker) {
+  const now = new Date().getFullYear();
+  let minYear = now - 20;
+  let maxYear = now + 10;
+
+  if (picker.min) {
+    try {
+      minYear = parseDateString(picker.min).getFullYear();
+    } catch {
+      // keep default
+    }
+  }
+  if (picker.max) {
+    try {
+      maxYear = parseDateString(picker.max).getFullYear();
+    } catch {
+      // keep default
+    }
+  }
+
+  if (picker.viewYear < minYear) minYear = picker.viewYear;
+  if (picker.viewYear > maxYear) maxYear = picker.viewYear;
+  return { minYear, maxYear };
+}
+
+function pausePickerObserver() {
+  pickerObserver?.disconnect();
+}
+
+function resumePickerObserver() {
+  pickerObserver?.observe(document.documentElement, { childList: true, subtree: true });
+}
+
+function getPickerLayer() {
+  if (pickerLayer?.isConnected) return pickerLayer;
+  pickerLayer = document.createElement('div');
+  pickerLayer.id = 'bloom-picker-layer';
+  pickerLayer.className = 'bloom-picker-layer';
+  pickerLayer.hidden = true;
+  pickerLayer.addEventListener('pointerdown', (event) => {
+    if (event.target === pickerLayer) closeOpenPicker();
+  });
+  document.body.append(pickerLayer);
+  return pickerLayer;
+}
+
+function shiftMonth(picker, delta) {
+  picker.viewMonth += delta;
+  if (picker.viewMonth < 0) {
+    picker.viewMonth = 11;
+    picker.viewYear -= 1;
+  } else if (picker.viewMonth > 11) {
+    picker.viewMonth = 0;
+    picker.viewYear += 1;
+  }
+}
+
 function renderCalendarDays(picker) {
   const { viewYear, viewMonth, input, min, max } = picker;
   const firstDay = new Date(viewYear, viewMonth, 1).getDay();
@@ -91,13 +156,53 @@ function renderCalendarDays(picker) {
   return cells.join('');
 }
 
+function renderYearButtons(picker) {
+  const { minYear, maxYear } = yearBounds(picker);
+  const buttons = [];
+  for (let year = maxYear; year >= minYear; year -= 1) {
+    const selected = year === picker.viewYear ? ' is-selected' : '';
+    buttons.push(
+      `<button type="button" class="bloom-picker-year-btn${selected}" data-set-year="${year}">${year}</button>`
+    );
+  }
+  return buttons.join('');
+}
+
 function paintCalendar(picker) {
-  const { popover, viewYear, viewMonth, input } = picker;
+  const { popover, input, viewYear, viewMonth } = picker;
+  const mode = picker.viewMode || 'days';
+
+  if (mode === 'months') {
+    popover.innerHTML = `
+      <div class="bloom-picker-header">
+        <button type="button" class="bloom-picker-nav" data-shift-year="-1" aria-label="Ano anterior">‹</button>
+        <button type="button" class="bloom-picker-caption-btn" data-view="years">${viewYear}</button>
+        <button type="button" class="bloom-picker-nav" data-shift-year="1" aria-label="Próximo ano">›</button>
+      </div>
+      <div class="bloom-picker-month-grid">
+        ${MONTH_NAMES.map((label, index) => {
+          const selected = index === viewMonth ? ' is-selected' : '';
+          return `<button type="button" class="bloom-picker-month-btn${selected}" data-set-month="${index}">${label}</button>`;
+        }).join('')}
+      </div>
+    `;
+    return;
+  }
+
+  if (mode === 'years') {
+    popover.innerHTML = `
+      <div class="bloom-picker-header">
+        <button type="button" class="bloom-picker-caption-btn" data-view="months">${viewYear}</button>
+      </div>
+      <div class="bloom-picker-year-grid">${renderYearButtons(picker)}</div>
+    `;
+    return;
+  }
 
   popover.innerHTML = `
     <div class="bloom-picker-header">
       <button type="button" class="bloom-picker-nav" data-nav="-1" aria-label="Mês anterior">‹</button>
-      <span class="bloom-picker-month">${MONTH_NAMES[viewMonth]} ${viewYear}</span>
+      <button type="button" class="bloom-picker-caption-btn" data-view="months">${MONTH_NAMES[viewMonth]} ${viewYear}</button>
       <button type="button" class="bloom-picker-nav" data-nav="1" aria-label="Próximo mês">›</button>
     </div>
     <div class="bloom-picker-weekdays" aria-hidden="true">
@@ -113,26 +218,78 @@ function paintCalendar(picker) {
   `;
 }
 
+function resetPopoverPosition(popover) {
+  popover.style.position = '';
+  popover.style.top = '';
+  popover.style.left = '';
+  popover.style.right = '';
+  popover.style.bottom = '';
+  popover.style.width = '';
+  popover.style.maxWidth = '';
+  popover.style.zIndex = '';
+}
+
 function updatePopoverPlacement(picker) {
   const { trigger, popover, wrapper } = picker;
   if (popover.hidden || !trigger.isConnected) return;
 
   const triggerRect = trigger.getBoundingClientRect();
-  const popoverHeight = popover.offsetHeight || 260;
-  const spaceBelow = window.innerHeight - triggerRect.bottom;
   const isMobile = window.matchMedia('(max-width: 1023px)').matches;
   const navClearance = isMobile ? 104 : 12;
-  wrapper.classList.toggle('bloom-picker--above', spaceBelow < popoverHeight + navClearance);
+  const width = isMobile
+    ? Math.min(triggerRect.width, window.innerWidth - 16)
+    : Math.min(244, Math.max(triggerRect.width, 196));
+  const left = Math.min(
+    Math.max(8, triggerRect.left),
+    Math.max(8, window.innerWidth - width - 8)
+  );
+
+  popover.style.position = 'absolute';
+  popover.style.left = `${left}px`;
+  popover.style.right = 'auto';
+  popover.style.width = `${width}px`;
+  popover.style.maxWidth = `${width}px`;
+  popover.style.zIndex = '2';
+
+  const estimatedHeight = popover.offsetHeight || 280;
+  const spaceBelow = window.innerHeight - triggerRect.bottom - navClearance;
+  const openAbove = spaceBelow < estimatedHeight;
+  wrapper.classList.toggle('bloom-picker--above', openAbove);
+
+  if (openAbove) {
+    popover.style.top = 'auto';
+    popover.style.bottom = `${window.innerHeight - triggerRect.top + 6}px`;
+  } else {
+    popover.style.bottom = 'auto';
+    popover.style.top = `${triggerRect.bottom + 6}px`;
+  }
+}
+
+function applyPickedDate(picker, value) {
+  picker.input.value = value;
+  syncDateTrigger(picker.input, picker.trigger);
+  dispatchValueEvents(picker.input);
+  closePicker(picker);
+}
+
+function refreshPickerView(picker) {
+  paintCalendar(picker);
+  updatePopoverPlacement(picker);
 }
 
 function closePicker(picker) {
   if (!picker) return;
+  picker.viewMode = 'days';
   picker.popover.hidden = true;
   picker.wrapper.classList.remove('is-open', 'bloom-picker--above');
   picker.trigger.setAttribute('aria-expanded', 'false');
-  picker.popover.style.top = '';
-  picker.popover.style.left = '';
+  resetPopoverPosition(picker.popover);
+  if (picker.popover.parentElement !== picker.wrapper) {
+    picker.wrapper.append(picker.popover);
+  }
+  if (pickerLayer) pickerLayer.hidden = true;
   if (activePicker === picker) activePicker = null;
+  resumePickerObserver();
 }
 
 function closeOpenPicker() {
@@ -149,18 +306,89 @@ function openPicker(picker) {
   const view = viewFromValue(picker.input.value);
   picker.viewYear = view.viewYear;
   picker.viewMonth = view.viewMonth;
+  picker.viewMode = 'days';
 
-  closeOpenPicker();
+  if (activePicker && activePicker !== picker) closePicker(activePicker);
+
+  pausePickerObserver();
   activePicker = picker;
-  paintCalendar(picker);
-  if (picker.popover.parentElement !== picker.wrapper) {
-    picker.wrapper.append(picker.popover);
-  }
+  const layer = getPickerLayer();
+  layer.hidden = false;
+  layer.append(picker.popover);
   picker.popover.hidden = false;
   picker.wrapper.classList.add('is-open');
   picker.trigger.setAttribute('aria-expanded', 'true');
-  updatePopoverPlacement(picker);
+  refreshPickerView(picker);
   requestAnimationFrame(() => updatePopoverPlacement(picker));
+}
+
+function handlePickerActivate(picker, event) {
+  const el = eventEl(event);
+  if (!el || !picker.popover.contains(el)) return false;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const viewBtn = el.closest('[data-view]');
+  if (viewBtn) {
+    picker.viewMode = viewBtn.dataset.view;
+    refreshPickerView(picker);
+    return true;
+  }
+
+  const monthBtn = el.closest('[data-set-month]');
+  if (monthBtn) {
+    picker.viewMonth = Number(monthBtn.dataset.setMonth);
+    picker.viewMode = 'days';
+    refreshPickerView(picker);
+    return true;
+  }
+
+  const yearBtn = el.closest('[data-set-year]');
+  if (yearBtn) {
+    picker.viewYear = Number(yearBtn.dataset.setYear);
+    picker.viewMode = 'months';
+    refreshPickerView(picker);
+    return true;
+  }
+
+  const yearShift = el.closest('[data-shift-year]');
+  if (yearShift) {
+    picker.viewYear += Number(yearShift.dataset.shiftYear);
+    refreshPickerView(picker);
+    return true;
+  }
+
+  const navBtn = el.closest('[data-nav]');
+  if (navBtn) {
+    shiftMonth(picker, Number(navBtn.dataset.nav));
+    refreshPickerView(picker);
+    return true;
+  }
+
+  const dayBtn = el.closest('[data-date]');
+  if (dayBtn && !dayBtn.disabled) {
+    applyPickedDate(picker, dayBtn.dataset.date);
+    return true;
+  }
+
+  const action = el.closest('[data-action]')?.dataset.action;
+  if (action === 'today') {
+    const today = todayString();
+    if (!isDateDisabled(today, picker.min, picker.max)) {
+      applyPickedDate(picker, today);
+    } else {
+      closePicker(picker);
+    }
+    return true;
+  }
+
+  if (action === 'clear') {
+    applyPickedDate(picker, '');
+    return true;
+  }
+
+  return false;
 }
 
 function bindPopoverEvents(picker) {
@@ -168,51 +396,13 @@ function bindPopoverEvents(picker) {
     event.stopPropagation();
   });
 
+  picker.popover.addEventListener('pointerup', (event) => {
+    if (event.pointerType === 'mouse') return;
+    handlePickerActivate(picker, event);
+  });
+
   picker.popover.addEventListener('click', (event) => {
-    event.stopPropagation();
-
-    const navBtn = event.target.closest('[data-nav]');
-    if (navBtn) {
-      picker.viewMonth += Number(navBtn.dataset.nav);
-      if (picker.viewMonth < 0) {
-        picker.viewMonth = 11;
-        picker.viewYear -= 1;
-      } else if (picker.viewMonth > 11) {
-        picker.viewMonth = 0;
-        picker.viewYear += 1;
-      }
-      paintCalendar(picker);
-      updatePopoverPlacement(picker);
-      return;
-    }
-
-    const dayBtn = event.target.closest('[data-date]');
-    if (dayBtn && !dayBtn.disabled) {
-      picker.input.value = dayBtn.dataset.date;
-      syncDateTrigger(picker.input, picker.trigger);
-      dispatchValueEvents(picker.input);
-      closePicker(picker);
-      return;
-    }
-
-    const action = event.target.closest('[data-action]')?.dataset.action;
-    if (action === 'today') {
-      const today = todayString();
-      if (!isDateDisabled(today, picker.min, picker.max)) {
-        picker.input.value = today;
-        syncDateTrigger(picker.input, picker.trigger);
-        dispatchValueEvents(picker.input);
-      }
-      closePicker(picker);
-      return;
-    }
-
-    if (action === 'clear') {
-      picker.input.value = '';
-      syncDateTrigger(picker.input, picker.trigger);
-      dispatchValueEvents(picker.input);
-      closePicker(picker);
-    }
+    handlePickerActivate(picker, event);
   });
 }
 
@@ -276,6 +466,7 @@ function enhanceDateInput(input) {
     max,
     viewYear,
     viewMonth,
+    viewMode: 'days',
   };
 
   pickersByInput.set(input, picker);
@@ -417,6 +608,7 @@ function bindGlobalPickerChrome() {
     if (!activePicker) return;
     const target = event.target;
     if (!(target instanceof Node)) return;
+    if (pickerLayer?.contains(target)) return;
     if (activePicker.wrapper.contains(target) || activePicker.popover.contains(target)) return;
     closeOpenPicker();
   });
@@ -437,7 +629,7 @@ function bindGlobalPickerChrome() {
   );
 
   let scheduled = false;
-  const observer = new MutationObserver(() => {
+  pickerObserver = new MutationObserver(() => {
     if (scheduled) return;
     scheduled = true;
     requestAnimationFrame(() => {
@@ -446,5 +638,5 @@ function bindGlobalPickerChrome() {
       if (activePicker && !activePicker.trigger.isConnected) closePicker(activePicker);
     });
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  pickerObserver.observe(document.documentElement, { childList: true, subtree: true });
 }

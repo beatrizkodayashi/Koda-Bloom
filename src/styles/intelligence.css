@@ -444,6 +444,8 @@
   background: linear-gradient(135deg, #ffc2ce 0%, #ffd7c4 100%);
   border: 2.5px solid var(--card-outline);
   border-radius: var(--radius-full);
+  color: var(--color-text);
+  -webkit-text-fill-color: var(--color-text);
   font-size: 1.05rem;
   font-weight: 700;
   padding: 0.85rem 1.25rem;
