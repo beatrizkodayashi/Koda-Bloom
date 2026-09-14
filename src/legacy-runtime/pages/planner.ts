@@ -14,7 +14,7 @@ import { renderAppShell, mountAppNavigation } from '@/legacy-runtime/components/
 import { showToast } from '@/legacy-runtime/components/toast';
 import { todayString } from '@/lib/utils/dates';
 import { isAuthConfigured } from '@/lib/services/authService';
-import { initBloomPickers } from '@/legacy-runtime/components/bloomDateField';
+import { initBloomPickers, syncBloomPicker } from '@/legacy-runtime/components/bloomDateField';
 
 function paint(container, userId, profile, periodStarts) {
   const events = getPlannedEvents(userId);
@@ -24,6 +24,8 @@ function paint(container, userId, profile, periodStarts) {
   mountMobileBackButton(container);
   bindEvents(container, userId, profile, periodStarts, paint);
   initBloomPickers(container);
+  syncBloomPicker(container.querySelector('#evt-start'));
+  syncBloomPicker(container.querySelector('#evt-end'));
 }
 
 function bindEvents(container, userId, profile, periodStarts, repaint) {

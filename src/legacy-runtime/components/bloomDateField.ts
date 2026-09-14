@@ -20,6 +20,8 @@ let activePicker = null;
 const pickersByInput = new WeakMap();
 let pickerObserver = null;
 let pickerLayer = null;
+let lastActivateAt = 0;
+let suppressClickUntil = 0;
 
 function dispatchValueEvents(input) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -31,7 +33,7 @@ function formatTriggerLabel(value) {
   try {
     return formatDisplayDate(value, { year: true });
   } catch {
-    return 'Escolher data';
+    return value;
   }
 }
 
@@ -106,13 +108,75 @@ function getPickerLayer() {
   pickerLayer.id = 'bloom-picker-layer';
   pickerLayer.className = 'bloom-picker-layer';
   pickerLayer.hidden = true;
-  pickerLayer.addEventListener('pointerdown', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    closeOpenPicker();
-  });
+  pickerLayer.setAttribute('aria-hidden', 'true');
   document.body.append(pickerLayer);
   return pickerLayer;
+}
+
+function eventPath(event) {
+  if (typeof event.composedPath === 'function') {
+    const path = event.composedPath();
+    if (path?.length) return path;
+  }
+  return event.target ? [event.target] : [];
+}
+
+function controlFromEvent(event) {
+  if (!activePicker) return null;
+  for (const node of eventPath(event)) {
+    const element = node instanceof Element
+      ? node
+      : node instanceof Text
+        ? node.parentElement
+        : null;
+    if (!element || !activePicker.popover.contains(element)) continue;
+    const control = element.closest('button');
+    if (control && activePicker.popover.contains(control)) return control;
+  }
+  return null;
+}
+
+function isInsideOpenPicker(event) {
+  if (!activePicker) return false;
+  for (const node of eventPath(event)) {
+    if (node === activePicker.popover || node === activePicker.trigger || node === activePicker.wrapper) {
+      return true;
+    }
+    if (node instanceof Node && (activePicker.popover.contains(node) || activePicker.trigger.contains(node))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function handleGlobalPickerEvent(event) {
+  if (event.type === 'click' && Date.now() < suppressClickUntil) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
+
+  if (!activePicker) return;
+
+  const control = controlFromEvent(event);
+  if (control) {
+    const now = Date.now();
+    if (now - lastActivateAt < 400) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    lastActivateAt = now;
+    suppressClickUntil = now + 600;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    activatePickerControl(activePicker, control);
+    return;
+  }
+
+  if (event.type === 'touchend' || event.type === 'pointerup') return;
+  if (isInsideOpenPicker(event)) return;
+  closeOpenPicker();
 }
 
 function shiftMonth(picker, delta) {
@@ -124,6 +188,10 @@ function shiftMonth(picker, delta) {
     picker.viewMonth = 0;
     picker.viewYear += 1;
   }
+}
+
+function pickerControl(className, attrs, label) {
+  return `<button type="button" class="${className}" onclick="void(0)" ${attrs}>${label}</button>`;
 }
 
 function renderCalendarDays(picker) {
@@ -142,10 +210,15 @@ function renderCalendarDays(picker) {
     const classes = ['bloom-picker-day'];
     if (dateStr === input.value) classes.push('is-selected');
     if (dateStr === today) classes.push('is-today');
-    if (isDateDisabled(dateStr, min, max)) classes.push('is-disabled');
+    const disabled = isDateDisabled(dateStr, min, max);
+    if (disabled) classes.push('is-disabled');
 
     cells.push(
-      `<button type="button" class="${classes.join(' ')}" data-date="${dateStr}"${isDateDisabled(dateStr, min, max) ? ' disabled' : ''}>${day}</button>`
+      pickerControl(
+        classes.join(' '),
+        `data-date="${dateStr}"${disabled ? ' aria-disabled="true"' : ''}`,
+        String(day)
+      )
     );
   }
 
@@ -158,7 +231,7 @@ function renderYearButtons(picker) {
   for (let year = maxYear; year >= minYear; year -= 1) {
     const selected = year === picker.viewYear ? ' is-selected' : '';
     buttons.push(
-      `<button type="button" class="bloom-picker-year-btn${selected}" data-set-year="${year}">${year}</button>`
+      pickerControl(`bloom-picker-year-btn${selected}`, `data-set-year="${year}"`, String(year))
     );
   }
   return buttons.join('');
@@ -171,30 +244,30 @@ function paintCalendar(picker) {
   if (mode === 'months') {
     popover.innerHTML = `
       <div class="bloom-picker-header">
-        <button type="button" class="bloom-picker-nav" data-shift-year="-1" aria-label="Ano anterior">‹</button>
-        <button type="button" class="bloom-picker-caption-btn" data-view="years">${viewYear}</button>
-        <button type="button" class="bloom-picker-nav" data-shift-year="1" aria-label="Próximo ano">›</button>
+        ${pickerControl('bloom-picker-nav', 'data-shift-year="-1" aria-label="Ano anterior"', '‹')}
+        ${pickerControl('bloom-picker-caption-btn', 'data-view="years"', String(viewYear))}
+        ${pickerControl('bloom-picker-nav', 'data-shift-year="1" aria-label="Próximo ano"', '›')}
       </div>
       <div class="bloom-picker-month-grid">
         ${MONTH_NAMES.map((label, index) => {
           const selected = index === viewMonth ? ' is-selected' : '';
-          return `<button type="button" class="bloom-picker-month-btn${selected}" data-set-month="${index}">${label}</button>`;
+          return pickerControl(`bloom-picker-month-btn${selected}`, `data-set-month="${index}"`, label);
         }).join('')}
       </div>
     `;
   } else if (mode === 'years') {
     popover.innerHTML = `
       <div class="bloom-picker-header">
-        <button type="button" class="bloom-picker-caption-btn" data-view="months">${viewYear}</button>
+        ${pickerControl('bloom-picker-caption-btn', 'data-view="months"', String(viewYear))}
       </div>
       <div class="bloom-picker-year-grid">${renderYearButtons(picker)}</div>
     `;
   } else {
     popover.innerHTML = `
       <div class="bloom-picker-header">
-        <button type="button" class="bloom-picker-nav" data-nav="-1" aria-label="Mês anterior">‹</button>
-        <button type="button" class="bloom-picker-caption-btn" data-view="months">${MONTH_NAMES[viewMonth]} ${viewYear}</button>
-        <button type="button" class="bloom-picker-nav" data-nav="1" aria-label="Próximo mês">›</button>
+        ${pickerControl('bloom-picker-nav', 'data-nav="-1" aria-label="Mês anterior"', '‹')}
+        ${pickerControl('bloom-picker-caption-btn', 'data-view="months"', `${MONTH_NAMES[viewMonth]} ${viewYear}`)}
+        ${pickerControl('bloom-picker-nav', 'data-nav="1" aria-label="Próximo mês"', '›')}
       </div>
       <div class="bloom-picker-weekdays" aria-hidden="true">
         ${WEEKDAY_LABELS.map((label) => `<span>${label}</span>`).join('')}
@@ -203,13 +276,12 @@ function paintCalendar(picker) {
         ${renderCalendarDays(picker)}
       </div>
       <div class="bloom-picker-footer">
-        ${!input.required ? '<button type="button" class="bloom-picker-action" data-action="clear">Limpar</button>' : '<span></span>'}
-        <button type="button" class="bloom-picker-action bloom-picker-action--primary" data-action="today">Hoje</button>
+        ${!input.required ? pickerControl('bloom-picker-action', 'data-action="clear"', 'Limpar') : '<span></span>'}
+        ${pickerControl('bloom-picker-action bloom-picker-action--primary', 'data-action="today"', 'Hoje')}
       </div>
     `;
   }
 
-  bindPaintedControls(picker);
 }
 
 function resetPopoverPosition(popover) {
@@ -231,28 +303,37 @@ function updatePopoverPlacement(picker) {
   const isMobile = window.matchMedia('(max-width: 1023px)').matches;
   const navClearance = isMobile ? 104 : 12;
   const width = isMobile
-    ? Math.min(triggerRect.width, window.innerWidth - 16)
+    ? Math.min(320, window.innerWidth - 24)
     : Math.min(244, Math.max(triggerRect.width, 196));
-  const left = Math.min(
-    Math.max(8, triggerRect.left),
-    Math.max(8, window.innerWidth - width - 8)
-  );
+  const left = isMobile
+    ? Math.max(12, Math.round((window.innerWidth - width) / 2))
+    : Math.min(
+        Math.max(8, triggerRect.left),
+        Math.max(8, window.innerWidth - width - 8)
+      );
 
   popover.style.position = 'fixed';
   popover.style.left = `${left}px`;
   popover.style.right = 'auto';
   popover.style.width = `${width}px`;
   popover.style.maxWidth = `${width}px`;
-  popover.style.zIndex = '10051';
+  popover.style.zIndex = '2147483000';
 
-  const estimatedHeight = popover.offsetHeight || 280;
+  const estimatedHeight = popover.offsetHeight || 320;
   const spaceBelow = window.innerHeight - triggerRect.bottom - navClearance;
-  const openAbove = spaceBelow < estimatedHeight;
+  const openAbove = !isMobile && spaceBelow < estimatedHeight;
   wrapper.classList.toggle('bloom-picker--above', openAbove);
 
   if (openAbove) {
     popover.style.top = 'auto';
     popover.style.bottom = `${window.innerHeight - triggerRect.top + 6}px`;
+  } else if (isMobile) {
+    const top = Math.min(
+      triggerRect.bottom + 8,
+      Math.max(12, window.innerHeight - estimatedHeight - navClearance)
+    );
+    popover.style.bottom = 'auto';
+    popover.style.top = `${top}px`;
   } else {
     popover.style.bottom = 'auto';
     popover.style.top = `${triggerRect.bottom + 6}px`;
@@ -314,6 +395,7 @@ function openPicker(picker) {
   document.body.append(picker.popover);
   picker.popover.classList.add('is-ported');
   picker.popover.hidden = false;
+  picker.popover.style.pointerEvents = 'auto';
   picker.wrapper.classList.add('is-open');
   picker.trigger.setAttribute('aria-expanded', 'true');
   refreshPickerView(picker);
@@ -321,8 +403,8 @@ function openPicker(picker) {
 }
 
 function activatePickerControl(picker, btn) {
-  if (activePicker !== picker) return;
-  if (btn.hasAttribute('disabled')) return;
+  if (!picker || (activePicker && activePicker !== picker)) return;
+  if (btn.hasAttribute('disabled') || btn.getAttribute('aria-disabled') === 'true') return;
 
   const date = btn.getAttribute('data-date');
   if (date) {
@@ -379,24 +461,17 @@ function activatePickerControl(picker, btn) {
   }
 }
 
-function bindPaintedControls(picker) {
-  picker.popover.querySelectorAll('button').forEach((btn) => {
-    const activate = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      activatePickerControl(picker, btn);
-    };
-    btn.addEventListener('pointerdown', (event) => {
-      event.stopPropagation();
-      activatePickerControl(picker, btn);
-    });
-    btn.addEventListener('click', activate);
-  });
-}
-
 function bindPopoverEvents(picker) {
-  picker.popover.addEventListener('pointerdown', (event) => {
+  picker.popover.addEventListener('click', (event) => {
+    const control = event.target?.closest?.('button');
+    if (!control || !picker.popover.contains(control)) return;
+    event.preventDefault();
     event.stopPropagation();
+    const now = Date.now();
+    if (now - lastActivateAt < 400) return;
+    lastActivateAt = now;
+    suppressClickUntil = now + 600;
+    activatePickerControl(picker, control);
   });
 }
 
@@ -414,7 +489,7 @@ function neutralizeNativeDatePicker(input) {
     // some browsers block type swaps; CSS still hides the native control
   }
 
-  if (value && input.value !== value) input.value = value;
+  if (value) input.value = value;
 
   if (typeof input.showPicker === 'function') {
     input.showPicker = () => {};
@@ -598,14 +673,9 @@ function bindGlobalPickerChrome() {
   document.addEventListener('click', interceptNativeDateInteraction, true);
   document.addEventListener('focusin', interceptNativeDateInteraction, true);
 
-  document.addEventListener('pointerdown', (event) => {
-    if (!activePicker) return;
-    const target = event.target;
-    if (!(target instanceof Node)) return;
-    if (pickerLayer?.contains(target)) return;
-    if (activePicker.wrapper.contains(target) || activePicker.popover.contains(target)) return;
-    closeOpenPicker();
-  });
+  document.addEventListener('click', handleGlobalPickerEvent, true);
+  document.addEventListener('pointerup', handleGlobalPickerEvent, true);
+  document.addEventListener('touchend', handleGlobalPickerEvent, { capture: true, passive: false });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeOpenPicker();

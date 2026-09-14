@@ -2,6 +2,7 @@
 import { renderCard } from '@/legacy-runtime/components/card';
 import { renderIcon } from '@/legacy-runtime/components/icons';
 import { APP_NAME, HEALTH_DISCLAIMER } from '@/lib/config/app';
+import { todayString } from '@/lib/utils/dates';
 import { renderPageBackButton } from '@/legacy-runtime/components/pageBackButton';
 import {
   NECESSAIRE_ITEMS,
@@ -106,11 +107,11 @@ export function renderPlannerPage(events, analyses) {
           <div class="planner-date-grid">
             <div class="form-bloom planner-field">
               <label for="evt-start">Início</label>
-              <input type="date" id="evt-start" required />
+              <input type="date" id="evt-start" value="${todayString()}" required />
             </div>
             <div class="form-bloom planner-field">
               <label for="evt-end">Fim</label>
-              <input type="date" id="evt-end" required />
+              <input type="date" id="evt-end" value="${todayString()}" required />
             </div>
           </div>
           <button type="submit" class="btn-bloom btn-bloom-primary w-100 planner-submit">Adicionar evento</button>

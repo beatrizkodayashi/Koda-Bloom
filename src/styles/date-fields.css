@@ -3,11 +3,11 @@
 .bloom-picker-layer {
   position: fixed;
   inset: 0;
-  z-index: 10050;
+  z-index: 2147482999;
   margin: 0;
   padding: 0;
   border: 0;
-  pointer-events: auto;
+  pointer-events: none !important;
   background: rgba(74, 50, 56, 0.16);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -19,8 +19,8 @@
 
 .bloom-picker-popover.is-ported {
   position: fixed !important;
-  z-index: 10051 !important;
-  pointer-events: auto;
+  z-index: 2147483000 !important;
+  pointer-events: auto !important;
 }
 
 .bloom-picker {
@@ -123,7 +123,14 @@ input[type='date']::-webkit-calendar-picker-indicator {
   border: 2px solid var(--card-outline);
   border-radius: var(--radius-md);
   box-shadow: 0 10px 28px rgba(74, 50, 56, 0.16);
-  pointer-events: auto;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+}
+
+.bloom-picker-popover button {
+  pointer-events: auto !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(255, 173, 187, 0.35);
 }
 
 .bloom-picker--above .bloom-picker-popover {
@@ -422,10 +429,12 @@ input[type='date']::-webkit-calendar-picker-indicator {
   }
 
   .bloom-picker-popover {
-    z-index: 1100;
+    z-index: 2147483000;
     padding: 0.4rem 0.45rem 0.35rem;
     opacity: 1;
-    isolation: isolate;
+    isolation: auto;
+    overflow: visible;
+    pointer-events: auto !important;
     background-color: #fff9eb;
     background-image: linear-gradient(
       180deg,
@@ -473,9 +482,9 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
   .bloom-picker-day {
     width: 100%;
-    min-width: 2.5rem;
+    min-width: 0;
     height: auto;
-    min-height: 2.5rem;
+    min-height: 2.75rem;
     aspect-ratio: 1;
     font-size: 0.78rem;
     background: #fff6e0;

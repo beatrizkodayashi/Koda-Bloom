@@ -61,11 +61,12 @@ export function getMonthYear(dateStr) {
 
 export function formatDisplayDate(dateStr, options = {}) {
   const date = parseDateString(dateStr);
+  const { year, ...rest } = options;
   return date.toLocaleDateString('pt-BR', {
     day: 'numeric',
     month: 'long',
-    year: options.year ? 'numeric' : undefined,
-    ...options,
+    ...(year ? { year: 'numeric' } : {}),
+    ...rest,
   });
 }
 
