@@ -381,7 +381,7 @@ export function syncBloomPicker(input) {
   }
 }
 
-export function initBloomPickers(root = document) {
+export function initBloomPickers(root: ParentNode = document) {
   bindGlobalPickerChrome();
   if (!root?.querySelectorAll) return;
   root.querySelectorAll('input[type="date"]:not([data-bloom-picker])').forEach(enhanceDateInput);
