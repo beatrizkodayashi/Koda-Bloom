@@ -4,13 +4,23 @@
   position: fixed;
   inset: 0;
   z-index: 10050;
+  margin: 0;
+  padding: 0;
+  border: 0;
   pointer-events: auto;
   background: rgba(74, 50, 56, 0.16);
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .bloom-picker-layer[hidden] {
   display: none !important;
+}
+
+.bloom-picker-popover.is-ported {
+  position: fixed !important;
+  z-index: 10051 !important;
+  pointer-events: auto;
 }
 
 .bloom-picker {
@@ -283,7 +293,12 @@ input[type='date']::-webkit-calendar-picker-indicator {
   font-weight: 600;
   cursor: pointer;
   padding: 0;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .bloom-picker-day--spacer {
@@ -458,7 +473,9 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
   .bloom-picker-day {
     width: 100%;
+    min-width: 2.5rem;
     height: auto;
+    min-height: 2.5rem;
     aspect-ratio: 1;
     font-size: 0.78rem;
     background: #fff6e0;

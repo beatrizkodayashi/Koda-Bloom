@@ -67,12 +67,6 @@ function syncTimeInput(hourSelect, minuteSelect, input) {
   dispatchValueEvents(input);
 }
 
-function eventEl(event) {
-  const target = event.target;
-  if (target instanceof Element) return target;
-  return target instanceof Node ? target.parentElement : null;
-}
-
 function yearBounds(picker) {
   const now = new Date().getFullYear();
   let minYear = now - 20;
@@ -113,7 +107,9 @@ function getPickerLayer() {
   pickerLayer.className = 'bloom-picker-layer';
   pickerLayer.hidden = true;
   pickerLayer.addEventListener('pointerdown', (event) => {
-    if (event.target === pickerLayer) closeOpenPicker();
+    event.preventDefault();
+    event.stopPropagation();
+    closeOpenPicker();
   });
   document.body.append(pickerLayer);
   return pickerLayer;
@@ -186,36 +182,34 @@ function paintCalendar(picker) {
         }).join('')}
       </div>
     `;
-    return;
-  }
-
-  if (mode === 'years') {
+  } else if (mode === 'years') {
     popover.innerHTML = `
       <div class="bloom-picker-header">
         <button type="button" class="bloom-picker-caption-btn" data-view="months">${viewYear}</button>
       </div>
       <div class="bloom-picker-year-grid">${renderYearButtons(picker)}</div>
     `;
-    return;
+  } else {
+    popover.innerHTML = `
+      <div class="bloom-picker-header">
+        <button type="button" class="bloom-picker-nav" data-nav="-1" aria-label="Mês anterior">‹</button>
+        <button type="button" class="bloom-picker-caption-btn" data-view="months">${MONTH_NAMES[viewMonth]} ${viewYear}</button>
+        <button type="button" class="bloom-picker-nav" data-nav="1" aria-label="Próximo mês">›</button>
+      </div>
+      <div class="bloom-picker-weekdays" aria-hidden="true">
+        ${WEEKDAY_LABELS.map((label) => `<span>${label}</span>`).join('')}
+      </div>
+      <div class="bloom-picker-calendar">
+        ${renderCalendarDays(picker)}
+      </div>
+      <div class="bloom-picker-footer">
+        ${!input.required ? '<button type="button" class="bloom-picker-action" data-action="clear">Limpar</button>' : '<span></span>'}
+        <button type="button" class="bloom-picker-action bloom-picker-action--primary" data-action="today">Hoje</button>
+      </div>
+    `;
   }
 
-  popover.innerHTML = `
-    <div class="bloom-picker-header">
-      <button type="button" class="bloom-picker-nav" data-nav="-1" aria-label="Mês anterior">‹</button>
-      <button type="button" class="bloom-picker-caption-btn" data-view="months">${MONTH_NAMES[viewMonth]} ${viewYear}</button>
-      <button type="button" class="bloom-picker-nav" data-nav="1" aria-label="Próximo mês">›</button>
-    </div>
-    <div class="bloom-picker-weekdays" aria-hidden="true">
-      ${WEEKDAY_LABELS.map((label) => `<span>${label}</span>`).join('')}
-    </div>
-    <div class="bloom-picker-calendar">
-      ${renderCalendarDays(picker)}
-    </div>
-    <div class="bloom-picker-footer">
-      ${!input.required ? '<button type="button" class="bloom-picker-action" data-action="clear">Limpar</button>' : '<span></span>'}
-      <button type="button" class="bloom-picker-action bloom-picker-action--primary" data-action="today">Hoje</button>
-    </div>
-  `;
+  bindPaintedControls(picker);
 }
 
 function resetPopoverPosition(popover) {
@@ -244,12 +238,12 @@ function updatePopoverPlacement(picker) {
     Math.max(8, window.innerWidth - width - 8)
   );
 
-  popover.style.position = 'absolute';
+  popover.style.position = 'fixed';
   popover.style.left = `${left}px`;
   popover.style.right = 'auto';
   popover.style.width = `${width}px`;
   popover.style.maxWidth = `${width}px`;
-  popover.style.zIndex = '2';
+  popover.style.zIndex = '10051';
 
   const estimatedHeight = popover.offsetHeight || 280;
   const spaceBelow = window.innerHeight - triggerRect.bottom - navClearance;
@@ -266,6 +260,7 @@ function updatePopoverPlacement(picker) {
 }
 
 function applyPickedDate(picker, value) {
+  if (activePicker !== picker) return;
   picker.input.value = value;
   syncDateTrigger(picker.input, picker.trigger);
   dispatchValueEvents(picker.input);
@@ -281,6 +276,7 @@ function closePicker(picker) {
   if (!picker) return;
   picker.viewMode = 'days';
   picker.popover.hidden = true;
+  picker.popover.classList.remove('is-ported');
   picker.wrapper.classList.remove('is-open', 'bloom-picker--above');
   picker.trigger.setAttribute('aria-expanded', 'false');
   resetPopoverPosition(picker.popover);
@@ -314,7 +310,9 @@ function openPicker(picker) {
   activePicker = picker;
   const layer = getPickerLayer();
   layer.hidden = false;
-  layer.append(picker.popover);
+  document.body.append(layer);
+  document.body.append(picker.popover);
+  picker.popover.classList.add('is-ported');
   picker.popover.hidden = false;
   picker.wrapper.classList.add('is-open');
   picker.trigger.setAttribute('aria-expanded', 'true');
@@ -322,57 +320,50 @@ function openPicker(picker) {
   requestAnimationFrame(() => updatePopoverPlacement(picker));
 }
 
-function handlePickerActivate(picker, event) {
-  const el = eventEl(event);
-  if (!el || !picker.popover.contains(el)) return false;
+function activatePickerControl(picker, btn) {
+  if (activePicker !== picker) return;
+  if (btn.hasAttribute('disabled')) return;
 
-  event.preventDefault();
-  event.stopPropagation();
-
-  const viewBtn = el.closest('[data-view]');
-  if (viewBtn) {
-    picker.viewMode = viewBtn.dataset.view;
-    refreshPickerView(picker);
-    return true;
+  const date = btn.getAttribute('data-date');
+  if (date) {
+    applyPickedDate(picker, date);
+    return;
   }
 
-  const monthBtn = el.closest('[data-set-month]');
-  if (monthBtn) {
-    picker.viewMonth = Number(monthBtn.dataset.setMonth);
+  const view = btn.getAttribute('data-view');
+  if (view) {
+    picker.viewMode = view;
+    refreshPickerView(picker);
+    return;
+  }
+
+  if (btn.hasAttribute('data-set-month')) {
+    picker.viewMonth = Number(btn.getAttribute('data-set-month'));
     picker.viewMode = 'days';
     refreshPickerView(picker);
-    return true;
+    return;
   }
 
-  const yearBtn = el.closest('[data-set-year]');
-  if (yearBtn) {
-    picker.viewYear = Number(yearBtn.dataset.setYear);
+  if (btn.hasAttribute('data-set-year')) {
+    picker.viewYear = Number(btn.getAttribute('data-set-year'));
     picker.viewMode = 'months';
     refreshPickerView(picker);
-    return true;
+    return;
   }
 
-  const yearShift = el.closest('[data-shift-year]');
-  if (yearShift) {
-    picker.viewYear += Number(yearShift.dataset.shiftYear);
+  if (btn.hasAttribute('data-shift-year')) {
+    picker.viewYear += Number(btn.getAttribute('data-shift-year'));
     refreshPickerView(picker);
-    return true;
+    return;
   }
 
-  const navBtn = el.closest('[data-nav]');
-  if (navBtn) {
-    shiftMonth(picker, Number(navBtn.dataset.nav));
+  if (btn.hasAttribute('data-nav')) {
+    shiftMonth(picker, Number(btn.getAttribute('data-nav')));
     refreshPickerView(picker);
-    return true;
+    return;
   }
 
-  const dayBtn = el.closest('[data-date]');
-  if (dayBtn && !dayBtn.disabled) {
-    applyPickedDate(picker, dayBtn.dataset.date);
-    return true;
-  }
-
-  const action = el.closest('[data-action]')?.dataset.action;
+  const action = btn.getAttribute('data-action');
   if (action === 'today') {
     const today = todayString();
     if (!isDateDisabled(today, picker.min, picker.max)) {
@@ -380,29 +371,32 @@ function handlePickerActivate(picker, event) {
     } else {
       closePicker(picker);
     }
-    return true;
+    return;
   }
 
   if (action === 'clear') {
     applyPickedDate(picker, '');
-    return true;
   }
+}
 
-  return false;
+function bindPaintedControls(picker) {
+  picker.popover.querySelectorAll('button').forEach((btn) => {
+    const activate = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      activatePickerControl(picker, btn);
+    };
+    btn.addEventListener('pointerdown', (event) => {
+      event.stopPropagation();
+      activatePickerControl(picker, btn);
+    });
+    btn.addEventListener('click', activate);
+  });
 }
 
 function bindPopoverEvents(picker) {
   picker.popover.addEventListener('pointerdown', (event) => {
     event.stopPropagation();
-  });
-
-  picker.popover.addEventListener('pointerup', (event) => {
-    if (event.pointerType === 'mouse') return;
-    handlePickerActivate(picker, event);
-  });
-
-  picker.popover.addEventListener('click', (event) => {
-    handlePickerActivate(picker, event);
   });
 }
 
@@ -620,13 +614,9 @@ function bindGlobalPickerChrome() {
   window.addEventListener('resize', () => {
     if (activePicker) updatePopoverPlacement(activePicker);
   });
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (activePicker) updatePopoverPlacement(activePicker);
-    },
-    true
-  );
+  window.addEventListener('orientationchange', () => {
+    if (activePicker) updatePopoverPlacement(activePicker);
+  });
 
   let scheduled = false;
   pickerObserver = new MutationObserver(() => {
