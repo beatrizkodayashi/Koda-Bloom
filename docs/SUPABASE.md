@@ -80,8 +80,8 @@ cp .env.example .env
 2. Preencha:
 
 ```
-VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ...sua-chave-anon
+NEXT_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...sua-chave-anon
 ```
 
 > **Importante:** a chave `anon` é pública e vai no bundle do frontend. Isso é seguro **desde que o RLS esteja ativo**. Nunca use a chave `service_role` no navegador.

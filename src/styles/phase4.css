@@ -1,0 +1,263 @@
+/* Bloom Fase D — Anticoncepcional */
+
+.page-mascot-section--contraceptive .contraceptive-hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-mascot-section--contraceptive .contraceptive-hero-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-mascot-section--contraceptive .contraceptive-hero-copy .page-header {
+  margin-bottom: 0.5rem;
+}
+
+.page-mascot-section--contraceptive .contraceptive-hero-copy .mascot-caption {
+  margin: 0;
+  text-align: left;
+}
+
+.page-mascot-section--contraceptive .contraceptive-hero-duck {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  align-items: flex-end;
+}
+
+.page-mascot-section--contraceptive .contraceptive-hero-mascot {
+  width: min(15rem, 52vw);
+  max-width: none;
+}
+
+.register-contraceptive-card-panel {
+  padding: 0.65rem 0.85rem;
+}
+
+.register-contraceptive-card-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.register-contraceptive-card-stack {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: min(1cm, 0.4cm);
+}
+
+.register-contraceptive-card-stack > * {
+  margin: 0;
+}
+
+.register-contraceptive-card .profile-pattern-card-text,
+.register-contraceptive-card .profile-pattern-card-meta {
+  margin-top: 0;
+}
+
+.register-contraceptive-card .profile-pattern-card-title {
+  line-height: 1.15;
+}
+
+.register-contraceptive-card .register-contraceptive-card-duck {
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.register-contraceptive-card .register-contraceptive-card-duck img {
+  width: min(15rem, 54vw);
+  height: auto;
+  display: block;
+}
+
+.register-contraceptive-card .chip-grid,
+.register-contraceptive-card .contraceptive-status-grid {
+  margin-top: 0;
+  gap: min(1cm, 0.4cm);
+  width: 100%;
+}
+
+.register-contraceptive-card .profile-pattern-card-action {
+  margin: 0;
+}
+
+.contraceptive-page .contraceptive-today-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.contraceptive-today-label {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+.contraceptive-status-grid {
+  gap: var(--space-2);
+}
+
+.contraceptive-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.contraceptive-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.contraceptive-history-item:last-child {
+  border-bottom: none;
+}
+
+.contraceptive-extra-fields .form-bloom + .form-bloom {
+  margin-top: var(--space-3);
+}
+
+.contraceptive-long-card p:last-child {
+  margin-bottom: 0;
+}
+
+.calendar-contraceptive-card-inner .contraceptive-today-head,
+.register-contraceptive-card-inner .contraceptive-today-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.register-contraceptive-card.profile-pattern-card--panel .chip {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.calendar-contraceptive-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (max-width: 1023px) {
+  .page-mascot-section--contraceptive .contraceptive-hero-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'copy duck'
+      'caption caption';
+    align-items: start;
+    gap: 0.65rem 0.75rem;
+  }
+
+  .page-mascot-section--contraceptive .contraceptive-hero-copy {
+    display: contents;
+  }
+
+  .page-mascot-section--contraceptive .contraceptive-hero-copy .page-header {
+    grid-area: copy;
+    margin-bottom: 0;
+  }
+
+  .page-mascot-section--contraceptive .contraceptive-hero-copy .mascot-caption {
+    grid-area: caption;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    text-align: left;
+  }
+
+  .page-mascot-section--contraceptive .contraceptive-hero-duck {
+    grid-area: duck;
+    margin: 0;
+  }
+
+  .page-mascot-section--contraceptive .contraceptive-hero-mascot {
+    width: min(8.5rem, 38vw);
+  }
+
+  .contraceptive-page .card-bloom-soft:has(.contraceptive-today) .card-bloom-header {
+    padding: 0.55rem 0.9rem;
+  }
+
+  .contraceptive-page .card-bloom-soft:has(.contraceptive-today) .card-bloom-body {
+    padding: 0.75rem 0.9rem 0.85rem;
+  }
+
+  .contraceptive-page .contraceptive-today-head {
+    gap: 0.35rem;
+  }
+
+  .contraceptive-page .contraceptive-today-label {
+    margin-bottom: 0.1rem !important;
+    line-height: 1.25;
+  }
+
+  .contraceptive-page .contraceptive-today-head .text-muted {
+    line-height: 1.3;
+  }
+
+  .contraceptive-page .contraceptive-today .chip-grid {
+    margin-top: 0.55rem !important;
+    gap: 0.5rem;
+  }
+
+  .register-contraceptive-card.profile-pattern-card--panel {
+    overflow: hidden;
+  }
+
+  .register-contraceptive-card-layout {
+    position: relative;
+    display: block;
+  }
+
+  .register-contraceptive-card-stack {
+    width: 100%;
+    padding-right: min(8.75rem, 40vw);
+    gap: 0.4rem;
+  }
+
+  .register-contraceptive-card .profile-pattern-card-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .register-contraceptive-card .register-contraceptive-card-duck {
+    position: absolute;
+    top: 0.1rem;
+    right: 0.05rem;
+    width: min(10.25rem, 42vw);
+    max-width: 44%;
+    max-height: calc(100% - 0.2rem);
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .register-contraceptive-card .register-contraceptive-card-duck img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    object-position: top right;
+  }
+
+  .register-contraceptive-card .chip-grid,
+  .register-contraceptive-card .contraceptive-status-grid {
+    width: 100%;
+  }
+
+  .register-contraceptive-card .profile-pattern-card-action {
+    width: auto;
+    max-width: 100%;
+  }
+}
+

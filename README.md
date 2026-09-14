@@ -10,10 +10,10 @@ Aplicativo web mobile-first para acompanhar o ciclo menstrual com carinho, clare
 
 <br />
 
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ESM-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap_5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 </div>
 
@@ -205,9 +205,9 @@ flowchart TB
 
 | Camada | Tecnologia |
 |--------|------------|
-| UI | HTML5, CSS3 customizado, Bootstrap 5 (grid/utilities) |
-| Lógica | JavaScript ES Modules (Vanilla SPA) |
-| Build | Vite 6 |
+| UI | Next.js App Router, React, Tailwind CSS + CSS Bloom |
+| Lógica | TypeScript |
+| Build | Next.js 15 |
 | Backend | Supabase (PostgreSQL, Auth, RLS) |
 | Gráficos | Chart.js |
 | Testes | Vitest |
@@ -216,14 +216,11 @@ flowchart TB
 ### Estrutura do projeto
 
 ```
-src/js/
-  config/        # Rotas, APP_NAME, Supabase
-  state/         # Store pub/sub
-  services/      # Auth, ciclo, logs, inteligência Bloom
-  components/    # Cards, nav, mascote, toast, fases 1 e 2
-  pages/         # Landing, auth, dashboard, calendário…
-  utils/         # Datas, validadores, modo discreto
-src/css/         # Design tokens + layout + fases
+src/app/         # Rotas App Router (landing, auth, app)
+src/components/  # Shell React, auth, chat, cards
+src/lib/         # Config, services, utils, Supabase
+src/styles/      # Design tokens e CSS Bloom
+src/legacy-runtime/ # Telas de domínio portadas
 public/          # Mascotes, favicon, assets estáticos
 supabase/        # Migrations SQL
 tests/           # Vitest
@@ -245,29 +242,29 @@ docs/            # Guias Supabase, deploy e arquitetura
 git clone https://github.com/beatrizkodayashi/Koda-Bloom.git
 cd Koda-Bloom
 npm install
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-Preencha no `.env`:
+Preencha no `.env.local`:
 
 ```env
-VITE_SUPABASE_URL=sua_url
-VITE_SUPABASE_ANON_KEY=sua_chave
+NEXT_PUBLIC_SUPABASE_URL=sua_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave
 ```
 
 ```bash
 npm run dev
 ```
 
-Abra **http://localhost:5173**
+Abra **http://localhost:3000**
 
 ### Scripts
 
 | Comando | Descrição |
 |---------|-----------|
-| `npm run dev` | Servidor de desenvolvimento (Vite) |
-| `npm run build` | Build de produção → `dist/` |
-| `npm run preview` | Preview do build local |
+| `npm run dev` | Servidor de desenvolvimento (Next.js) |
+| `npm run build` | Build de produção |
+| `npm start` | Sobe o build de produção |
 | `npm test` | Testes com Vitest |
 
 ### Supabase
@@ -275,7 +272,7 @@ Abra **http://localhost:5173**
 1. Crie um projeto no Supabase
 2. Execute `supabase/migrations/001_initial_schema.sql`
 3. Execute `supabase/migrations/002_rls_policies.sql`
-4. Configure as variáveis no `.env`
+4. Configure as variáveis no `.env.local`
 
 Guia completo: [`docs/SUPABASE.md`](docs/SUPABASE.md)
 

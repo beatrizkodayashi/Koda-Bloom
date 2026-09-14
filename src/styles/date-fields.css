@@ -1,0 +1,398 @@
+/* Campos de data e hora — compactos, paleta Bloom */
+
+.bloom-picker {
+  position: relative;
+  width: 100%;
+}
+
+.bloom-picker.is-open {
+  z-index: 1600;
+}
+
+.bloom-picker-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  min-height: 44px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--palette-cream-muted);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.bloom-picker-trigger:hover,
+.bloom-picker.is-open .bloom-picker-trigger {
+  border-color: var(--palette-pink);
+  background: var(--palette-cream-soft);
+}
+
+.bloom-picker-trigger:focus-visible {
+  outline: none;
+  border-color: var(--palette-pink);
+  box-shadow: 0 0 0 3px rgba(255, 173, 187, 0.35);
+}
+
+.bloom-picker-trigger.is-empty .bloom-picker-value {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.bloom-picker-value {
+  text-align: left;
+}
+
+.bloom-picker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--palette-brown, #6b4a42);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.bloom-picker-input {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0);
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.bloom-picker-popover {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: auto;
+  z-index: 1601;
+  width: 15.25rem;
+  max-width: min(15.25rem, calc(100vw - 1.5rem));
+  padding: 0.6rem 0.65rem 0.55rem;
+  background-color: #fff9eb;
+  background-image: linear-gradient(
+    180deg,
+    #ffadbb 0%,
+    #ffc9d4 22%,
+    #ffccbd 46%,
+    #fffbde 72%,
+    #fff9eb 100%
+  );
+  border: 2px solid var(--card-outline);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 28px rgba(74, 50, 56, 0.16);
+  pointer-events: auto;
+}
+
+.bloom-picker--above .bloom-picker-popover {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
+}
+
+.bloom-picker-popover[hidden] {
+  display: none !important;
+}
+
+.card-bloom:has(.bloom-picker.is-open),
+.card-bloom-body:has(.bloom-picker.is-open),
+.form-bloom:has(.bloom-picker.is-open),
+.relations-details,
+.relations-full-form,
+.relations-full-form .form-bloom,
+.relations-page .card-bloom:has(.relations-details) {
+  overflow: visible;
+}
+
+@media (min-width: 1024px) {
+  .card-bloom:has(.bloom-picker.is-open) {
+    z-index: 1500;
+  }
+}
+
+.bloom-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+  margin-bottom: 0.45rem;
+}
+
+.bloom-picker-month {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-transform: lowercase;
+}
+
+.bloom-picker-nav {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--palette-cream-muted);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.bloom-picker-nav:hover {
+  border-color: var(--palette-pink);
+  background: var(--palette-cream-soft);
+}
+
+.bloom-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1.65rem);
+  justify-content: center;
+  gap: 0.12rem;
+  margin-bottom: 0.25rem;
+  text-align: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.bloom-picker-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1.65rem);
+  justify-content: center;
+  gap: 0.12rem;
+  padding: 0.15rem;
+  border-radius: 0.4rem;
+  background: var(--palette-cream-soft);
+}
+
+.bloom-picker-day {
+  width: 1.65rem;
+  height: 1.65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid transparent;
+  border-radius: 0.45rem;
+  background: #fff6e0;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.bloom-picker-day--spacer {
+  background: var(--palette-cream-soft);
+  border: none;
+  pointer-events: none;
+}
+
+.bloom-picker-day:not(.bloom-picker-day--spacer):hover {
+  border-color: var(--palette-pink);
+  background: var(--palette-cream-soft);
+}
+
+.bloom-picker-day.is-today {
+  border-color: rgba(232, 141, 159, 0.85);
+}
+
+.bloom-picker-day.is-selected {
+  background: var(--palette-pink);
+  border-color: var(--card-outline);
+  color: var(--color-text);
+}
+
+.bloom-picker-day.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.bloom-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: 0.45rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(107, 74, 66, 0.14);
+}
+
+.bloom-picker-action {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.1rem 0.25rem;
+}
+
+.bloom-picker-action:hover {
+  color: var(--color-text);
+}
+
+.bloom-picker-action--primary {
+  color: var(--palette-brown, #6b4a42);
+  font-weight: 700;
+}
+
+.bloom-time-fields {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bloom-time-select {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  font-weight: 600;
+  background: var(--palette-cream-muted);
+  color: var(--color-text);
+  cursor: pointer;
+  min-height: 44px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b4a42' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.25rem;
+}
+
+.bloom-time-select:focus {
+  outline: none;
+  border-color: var(--palette-pink);
+  box-shadow: 0 0 0 3px rgba(255, 173, 187, 0.35);
+  background-color: var(--palette-cream-soft);
+}
+
+.bloom-time-separator {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.form-bloom .bloom-picker-trigger,
+.form-bloom .bloom-time-select {
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .card-bloom:has(.bloom-picker.is-open),
+  .card-bloom-soft:has(.bloom-picker.is-open) {
+    z-index: auto;
+  }
+
+  .card-bloom-soft:has(.bloom-picker.is-open) {
+    background: #fffbde;
+  }
+
+  .form-bloom:has(.bloom-picker.is-open) {
+    position: relative;
+    z-index: 5;
+  }
+
+  .form-bloom:has(.bloom-picker.is-open) ~ * {
+    position: relative;
+    z-index: 0;
+  }
+
+  .bloom-picker.is-open {
+    z-index: 5;
+  }
+
+  .bloom-picker-popover {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 6;
+    padding: 0.4rem 0.45rem 0.35rem;
+    opacity: 1;
+    isolation: isolate;
+    background-color: #fff9eb;
+    background-image: linear-gradient(
+      180deg,
+      #ffadbb 0%,
+      #ffc9d4 18%,
+      #ffccbd 42%,
+      #fffbde 70%,
+      #fff9eb 100%
+    );
+    box-shadow: 0 8px 18px rgba(74, 50, 56, 0.18);
+  }
+
+  .bloom-picker-header {
+    margin-bottom: 0.35rem;
+  }
+
+  .bloom-picker-month {
+    font-size: 0.875rem;
+  }
+
+  .bloom-picker-nav {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .bloom-picker-weekdays,
+  .bloom-picker-calendar {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
+    margin-inline: 0;
+    gap: 0.18rem;
+  }
+
+  .bloom-picker-weekdays {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .bloom-picker-day {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    font-size: 0.78rem;
+    background: #fff6e0;
+  }
+
+  .bloom-picker-calendar {
+    width: 100%;
+    background: #fffbde;
+    padding: 0.2rem;
+  }
+
+  .bloom-picker-footer {
+    margin-top: 0.35rem;
+    padding-top: 0.3rem;
+  }
+
+  .bloom-picker-action {
+    font-size: 0.8rem;
+  }
+}

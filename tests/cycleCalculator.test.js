@@ -11,7 +11,7 @@ import {
   daysUntilNextPeriod,
   hasEnoughDataForPrediction,
   getPredictionConfidence,
-} from '../src/js/services/cycleCalculator.js';
+} from '../src/lib/services/cycleCalculator';
 
 describe('cycleCalculator', () => {
   describe('calculateCycleLength', () => {

@@ -1,0 +1,140 @@
+/**
+ * Design tokens , paleta Bloom
+ * #FFB28F pêssego · #FFCCBD pêssego claro · #FFFBDE creme
+ * #FFADBB rosa · #FFE3FC lavanda
+ */
+
+:root {
+  /* Paleta base */
+  --palette-peach: #ffb28f;
+  --palette-peach-light: #ffccbd;
+  --palette-cream: #fffbde;
+  --palette-cream-soft: #fffbde;
+  --palette-cream-muted: #fff6e0;
+  --palette-pink: #ffadbb;
+  --palette-lavender: #fff4e8;
+  --palette-brown: #6b4a42;
+  --palette-brown-soft: rgba(107, 74, 66, 0.52);
+  --palette-brown-muted: rgba(107, 74, 66, 0.32);
+
+  /* Superfícies , sem branco puro */
+  --color-background: #fff9eb;
+  --color-surface: #fff9eb;
+  --color-surface-secondary: #ffccbd;
+  --color-surface-cream: var(--palette-cream);
+  --color-surface-peach: #ffb28f;
+  --color-surface-rose: #ffadbb;
+
+  /* Marca */
+  --color-primary: #ffadbb;
+  --color-primary-light: #fff4e8;
+  --color-primary-dark: #e88fa0;
+  --color-accent: #ffb28f;
+  --color-accent-heart: #e85d7a;
+  --color-accent-soft: #ffccbd;
+
+  /* Texto */
+  --color-text: #4a3238;
+  --color-text-muted: #8f6b72;
+  --color-text-inverse: #4a3238;
+
+  /* Bordas */
+  --color-border: var(--palette-brown-muted);
+  --color-border-strong: var(--palette-brown-soft);
+
+  /* Semânticas */
+  --color-success: #7cb88a;
+  --color-success-soft: #e8f5eb;
+  --color-warning: #ffb28f;
+  --color-warning-soft: #ffccbd;
+  --color-error: #d9536f;
+  --color-error-soft: #fff0f2;
+  --color-info: #d4a8a8;
+  --color-info-soft: #fff4e8;
+
+  /* Fases do ciclo , derivadas da paleta */
+  --color-phase-menstruation: #ffadbb;
+  --color-phase-follicular: #ffccbd;
+  --color-phase-ovulation: #ffb28f;
+  --color-phase-luteal: #fff0e8;
+
+  /* Tipografia */
+  --font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Espaçamento */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+  --radius-card: 1.375rem;
+  --radius-full: 9999px;
+
+  /* Cards , estilo janela pastel (borda = pill do streak) */
+  --card-outline: var(--palette-brown-soft);
+  --card-outline-soft: var(--palette-brown-soft);
+  --card-body-bg: var(--palette-cream-soft);
+  --card-header-bg: var(--palette-pink);
+  --card-shadow-color: rgba(255, 204, 189, 0.95);
+  --card-shadow: 7px 7px 0 0 var(--card-shadow-color);
+  --card-shadow-hover: 9px 9px 0 0 rgba(255, 178, 143, 0.85);
+  --card-gap: var(--space-6);
+
+  /* Fundo , bolinhas pastel */
+  --polka-bg: var(--palette-pink);
+  --polka-dot: var(--palette-peach);
+  --polka-spacing: 1.75rem;
+  --polka-dot-size: 0.22rem;
+  --polka-fade-max: 0.3;
+
+  /* Sombras , tom rosado */
+  --shadow-sm: 0 1px 4px rgba(255, 173, 187, 0.18);
+  --shadow-md: 0 4px 14px rgba(255, 173, 187, 0.22);
+  --shadow-lg: 0 8px 28px rgba(232, 143, 160, 0.2);
+  --shadow-soft: 0 2px 18px rgba(255, 173, 187, 0.28);
+
+  /* Layout */
+  --bottom-nav-height: 4.75rem;
+  --sidebar-width: 16rem;
+  --max-width-app: 480px;
+  --max-width-content: 1200px;
+
+  /* Transições */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

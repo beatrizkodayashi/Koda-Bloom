@@ -1,0 +1,232 @@
+/* Bloom Fase C — Relações */
+
+/* Bloom Fase C — Relações */
+
+.page-mascot-section--relations .relations-page-mascot {
+  width: min(15rem, 52vw);
+  max-width: none;
+}
+
+.relations-page .relations-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.relations-page .relations-details[open] summary {
+  margin-bottom: var(--space-2);
+}
+
+.relations-check-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.relations-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.relations-history-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--color-border);
+}
+
+.relations-history-title {
+  font-weight: 700;
+}
+
+.relations-history-remove {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0 var(--space-1);
+  cursor: pointer;
+}
+
+.relations-history-remove:hover {
+  color: var(--color-text);
+}
+
+.relations-pin-form input[type='tel'],
+.relations-pin-input {
+  letter-spacing: 0.35em;
+  text-align: center;
+}
+
+.relations-lock-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: min(100%, 22rem);
+  margin: 0 auto;
+  padding: var(--space-2) 0 var(--space-4);
+}
+
+.relations-lock-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.relations-lock-mascot {
+  width: min(14rem, 58vw);
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.relations-lock-copy h1 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+}
+
+.relations-lock-copy p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  max-width: 16rem;
+  margin-inline: auto;
+}
+
+.relations-lock-stack {
+  width: 100%;
+  margin: 0;
+  gap: 0;
+}
+
+.relations-lock-card {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.relations-pin-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.relations-pin-field {
+  width: 100%;
+}
+
+.relations-pin-field label {
+  text-align: center;
+}
+
+.relations-pin-input {
+  width: 100%;
+  font-size: var(--font-size-lg);
+  padding-block: var(--space-3);
+}
+
+.relations-pin-help {
+  text-align: center;
+  margin-top: var(--space-4);
+  line-height: var(--line-height-normal);
+}
+
+.relations-lock-page .page-back-wrap {
+  width: 100%;
+}
+
+.privacy-section-divider {
+  border-top: 1px solid var(--color-border);
+}
+
+.privacy-section-title {
+  font-weight: 700;
+}
+
+.privacy-status {
+  font-weight: 600;
+  margin: 0;
+}
+
+.privacy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (max-width: 1023px) {
+  .privacy-status {
+    margin-bottom: var(--space-5);
+  }
+
+  .privacy-actions {
+    margin-top: var(--space-1);
+    gap: var(--space-3);
+  }
+}
+
+.relations-history-feeling-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.feeling-chip-grid {
+  gap: var(--space-2);
+}
+
+.chip.feeling-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+}
+
+.chip.feeling-chip .bloom-icon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 767.98px) {
+  .nav-card-body--compact {
+    padding-inline: 0;
+  }
+
+  .nav-card-body--compact .bottom-nav-item {
+    font-size: 0.625rem;
+    padding-inline: 0.125rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  html.pin-keyboard-open .bottom-nav-wrap {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(110%);
+  }
+
+  html.pin-keyboard-open .relations-lock-mascot {
+    width: min(6.75rem, 30vw);
+  }
+
+  html.pin-keyboard-open .relations-lock-page {
+    gap: var(--space-3);
+  }
+
+  html.pin-keyboard-open .relations-pin-help,
+  html.pin-keyboard-open .relations-lock-page .page-back-wrap {
+    display: none;
+  }
+}

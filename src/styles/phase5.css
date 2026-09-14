@@ -1,0 +1,309 @@
+/* Bloom Fase E — Saúde íntima */
+
+.intimate-health-mascot {
+  width: min(13rem, 48vw);
+  max-width: none;
+}
+
+.intimate-health-empty-mascot {
+  width: min(10rem, 38vw);
+  height: auto;
+}
+
+.calendar-intimate-card,
+.calendar-contraceptive-card,
+.register-intimate-card,
+.register-contraceptive-card {
+  margin-bottom: var(--space-4);
+}
+
+.register-intimate-card .profile-pattern-card-glow {
+  right: -1.25rem;
+  left: auto;
+}
+
+.register-intimate-card-panel {
+  padding: 0.65rem 0.85rem;
+}
+
+.register-intimate-card.profile-pattern-card--panel {
+  overflow: hidden;
+}
+
+.register-intimate-card-layout {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.register-intimate-card-duck {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.15rem;
+  width: min(11.5rem, 36vw);
+  max-width: 42%;
+  max-height: calc(100% - 0.3rem);
+  line-height: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.register-intimate-card .register-intimate-card-duck img {
+  position: static;
+  width: 100%;
+  height: auto;
+  max-height: min(14.5rem, calc(100% - 0.3rem));
+  display: block;
+  object-fit: contain;
+  object-position: top right;
+}
+
+.register-intimate-card-stack {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding-right: min(9.5rem, 38vw);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: min(1cm, 0.4cm);
+}
+
+.register-intimate-card-stack > * {
+  margin: 0;
+}
+
+.register-intimate-card .profile-pattern-card-text,
+.register-intimate-card .profile-pattern-card-meta {
+  margin-top: 0;
+}
+
+.register-intimate-card .profile-pattern-card-title {
+  line-height: 1.15;
+}
+
+.register-intimate-card .chip-grid,
+.register-intimate-card .intimate-symptom-grid {
+  margin-top: 0;
+  gap: min(1cm, 0.4cm);
+  width: 100%;
+}
+
+.register-intimate-card .intimate-today-form {
+  width: 100%;
+}
+
+.register-intimate-card .period-section-label {
+  margin-bottom: 0.35rem;
+}
+
+.register-intimate-card .profile-pattern-card-action {
+  margin: 0;
+}
+
+.register-intimate-card.profile-pattern-card--panel .chip {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.calendar-intimate-card-inner .intimate-today-head,
+.register-intimate-card-inner .intimate-today-head,
+.intimate-today-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.intimate-today-label {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+.intimate-symptom-grid {
+  gap: var(--space-2);
+}
+
+.calendar-intimate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.intimate-timeline-head {
+  margin-bottom: var(--space-4);
+}
+
+.intimate-timeline-strip {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+@media (min-width: 480px) {
+  .intimate-timeline-strip {
+    grid-template-columns: repeat(30, minmax(0, 1fr));
+  }
+}
+
+.intimate-timeline-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.intimate-timeline-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 173, 187, 0.25);
+  border: 1px solid rgba(255, 173, 187, 0.45);
+}
+
+.intimate-timeline-day--active .intimate-timeline-dot {
+  background: rgba(232, 141, 159, 0.85);
+  border-color: rgba(232, 141, 159, 0.95);
+}
+
+.intimate-timeline-day--today .intimate-timeline-dot {
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px rgba(255, 173, 187, 0.85);
+}
+
+.intimate-timeline-label {
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+.intimate-timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.intimate-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.intimate-history-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.intimate-history-item:last-child {
+  border-bottom: none;
+}
+
+.profile-module-opt {
+  border-top: 1px solid var(--color-border);
+}
+
+.profile-module-opt + .profile-module-opt {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+}
+
+@media (max-width: 1023px) {
+  .register-intimate-card.profile-pattern-card--panel {
+    overflow: hidden;
+  }
+
+  .register-intimate-card-layout {
+    position: relative;
+    display: block;
+  }
+
+  .register-intimate-card-stack {
+    width: 100%;
+    padding-right: 0;
+    gap: 0.3rem;
+  }
+
+  .register-intimate-card-stack > .profile-pattern-card-eyebrow,
+  .register-intimate-card-stack > .profile-pattern-card-title,
+  .register-intimate-card-stack > .profile-pattern-card-text,
+  .register-intimate-card-stack > .profile-pattern-card-meta {
+    max-width: calc(100% - min(7.5rem, 34vw));
+  }
+
+  .register-intimate-card .profile-pattern-card-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .register-intimate-card-duck {
+    position: absolute;
+    top: 0.1rem;
+    right: 0.05rem;
+    width: min(7.5rem, 34vw);
+    max-width: 36%;
+    max-height: 7.25rem;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .register-intimate-card .register-intimate-card-duck img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: 7.25rem;
+    object-fit: contain;
+    object-position: top right;
+  }
+
+  .register-intimate-card .intimate-today-form {
+    width: 100%;
+    margin-top: 0.15rem;
+  }
+
+  .register-intimate-card .period-section-label {
+    margin: 0.35rem 0 0.2rem;
+    font-size: 0.75rem;
+  }
+
+  .register-intimate-card .period-section-label.mt-4 {
+    margin-top: 0.45rem !important;
+  }
+
+  .register-intimate-card .chip-grid,
+  .register-intimate-card .intimate-symptom-grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 0;
+    gap: 0.3rem;
+  }
+
+  .register-intimate-card .chip {
+    min-height: 1.9rem;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.72rem;
+    box-shadow: none;
+  }
+
+  .register-intimate-card .intimate-today-form .text-muted {
+    margin-top: 0.35rem !important;
+  }
+
+  .register-intimate-card .intimate-today-form .text-muted small {
+    font-size: 0.65rem;
+    line-height: 1.3;
+  }
+
+  .register-intimate-card .profile-pattern-card-action {
+    width: auto;
+    max-width: 100%;
+    margin-top: 0.2rem;
+  }
+}

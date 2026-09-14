@@ -4,7 +4,7 @@ import {
   scrollToTop,
   scrollElement,
   prefersReducedMotion,
-} from '../src/js/utils/scroll.js';
+} from '../src/lib/utils/scroll';
 
 describe('scroll utils', () => {
   beforeEach(() => {
