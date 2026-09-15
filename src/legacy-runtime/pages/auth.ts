@@ -7,19 +7,12 @@ import { setState } from '@/lib/state/store';
 import { GENDER_OPTIONS, savePendingGender } from '@/lib/utils/genderLanguage';
 import { showToast } from '@/legacy-runtime/components/toast';
 import { isValidEmail, isValidPassword } from '@/lib/utils/validators';
+import { formatAuthError } from '@/lib/utils/authErrors';
 import { renderDuckCompanion } from '@/legacy-runtime/components/duckCompanion';
 import { renderPasswordField, mountPasswordToggles } from '@/legacy-runtime/components/passwordField';
 
 const SIGNUP_DUCK_ICON = '/Pato_BoasVindas.png';
 const LOGIN_DUCK_ICON = '/Pato_Abraço.png';
-
-function formatAuthError(err, fallback) {
-  const message = err?.message || '';
-  if (/failed to fetch|fetch failed|network/i.test(message)) {
-    return 'Não foi possível conectar ao Supabase. Confira NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY no .env e reinicie o servidor.';
-  }
-  return message || fallback;
-}
 
 function renderAuthMascot({ message, mascot = 'duck' } = {}) {
   if (mascot === 'abraco') {

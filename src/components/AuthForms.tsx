@@ -11,14 +11,7 @@ import { setState } from '@/lib/state/store';
 import { GENDER_OPTIONS, savePendingGender } from '@/lib/utils/genderLanguage';
 import { isValidEmail, isValidPassword } from '@/lib/utils/validators';
 import { showToast } from '@/components/toast';
-
-function formatAuthError(err: unknown, fallback: string) {
-  const message = err instanceof Error ? err.message : '';
-  if (/failed to fetch|fetch failed|network/i.test(message)) {
-    return 'Não foi possível conectar ao Supabase. Confira NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY no .env.local e reinicie o servidor.';
-  }
-  return message || fallback;
-}
+import { formatAuthError } from '@/lib/utils/authErrors';
 
 function AuthLayout({
   title,
